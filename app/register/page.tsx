@@ -28,17 +28,17 @@ export default function RegisterPage() {
     setError("")
 
     if (!name || !email || !password || !confirmPassword) {
-      setError(t("auth.fillAllFields"))
+      setError(t("FillAllFields"))
       return
     }
 
     if (password !== confirmPassword) {
-      setError(t("auth.passwordsDoNotMatch"))
+      setError(t("PasswordsDoNotMatch"))
       return
     }
 
     if (password.length < 6) {
-      setError(t("auth.passwordTooShort"))
+      setError(t("PasswordTooShort"))
       return
     }
 
@@ -46,7 +46,7 @@ export default function RegisterPage() {
     if (success) {
       router.push("/")
     } else {
-      setError(t("auth.registrationFailed"))
+      setError(t("RegistrationFailed"))
     }
   }
 
@@ -54,26 +54,26 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <img src="/rcs-company-logo.png" alt="RCS Company" className="h-16 mx-auto mb-4" />
+          {/* <img src="/rcs-company-logo.png" alt="RCS Company" className="h-16 mx-auto mb-4" /> */}
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">SmartQuote</h1>
-          <p className="text-gray-600 dark:text-gray-400">{t("auth.aiPoweredQuotations")}</p>
+          <p className="text-gray-600 dark:text-gray-400">{t("aiPoweredQuotations")}</p>
         </div>
 
         <Card className="dark:bg-gray-800 dark:border-gray-700">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center dark:text-white">{t("auth.signUp")}</CardTitle>
-            <CardDescription className="text-center dark:text-gray-400">{t("auth.createAccount")}</CardDescription>
+            <CardTitle className="text-2xl text-center dark:text-white">{t("signUp")}</CardTitle>
+            <CardDescription className="text-center dark:text-gray-400">{t("createAccount")}</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <label htmlFor="name" className="text-sm font-medium dark:text-white">
-                  {t("auth.fullName")}
+                  {t("FullName")}
                 </label>
                 <Input
                   id="name"
                   type="text"
-                  placeholder={t("auth.namePlaceholder")}
+                  placeholder={t("Name")}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="dark:bg-gray-700 dark:border-gray-600 dark:text-white"
@@ -83,12 +83,12 @@ export default function RegisterPage() {
 
               <div className="space-y-2">
                 <label htmlFor="email" className="text-sm font-medium dark:text-white">
-                  {t("auth.email")}
+                  {t("Email")}
                 </label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder={t("auth.emailPlaceholder")}
+                  placeholder={t("Email")}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="dark:bg-gray-700 dark:border-gray-600 dark:text-white"
@@ -98,13 +98,13 @@ export default function RegisterPage() {
 
               <div className="space-y-2">
                 <label htmlFor="password" className="text-sm font-medium dark:text-white">
-                  {t("auth.password")}
+                  {t("Password")}
                 </label>
                 <div className="relative">
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder={t("auth.passwordPlaceholder")}
+                    placeholder={t("Password")}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="dark:bg-gray-700 dark:border-gray-600 dark:text-white pr-10"
@@ -122,12 +122,12 @@ export default function RegisterPage() {
 
               <div className="space-y-2">
                 <label htmlFor="confirmPassword" className="text-sm font-medium dark:text-white">
-                  {t("auth.confirmPassword")}
+                  {t("ConfirmPassword")}
                 </label>
                 <Input
                   id="confirmPassword"
                   type="password"
-                  placeholder={t("auth.confirmPasswordPlaceholder")}
+                  placeholder={t("ConfirmPassword")}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="dark:bg-gray-700 dark:border-gray-600 dark:text-white"
@@ -143,19 +143,19 @@ export default function RegisterPage() {
                 {isLoading ? (
                   <>
                     <IconLoader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {t("auth.creatingAccount")}
+                    {t("CreatingAccount")}
                   </>
                 ) : (
-                  t("auth.signUp")
+                  t("SignUp")
                 )}
               </Button>
             </form>
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {t("auth.haveAccount")}{" "}
+                {t("HaveAccount")}{" "}
                 <Link href="/login" className="text-blue-600 hover:text-blue-500 dark:text-blue-400 font-medium">
-                  {t("auth.signIn")}
+                  {t("SignIn")}
                 </Link>
               </p>
             </div>
