@@ -5,11 +5,15 @@ import { RecentQuotations } from "@/components/recent-quotations"
 import { PendingApprovals } from "@/components/pending-approvals"
 import { DashboardSidebar } from "@/components/dashboard-sidebar"
 import { useLanguage } from "@/lib/i18n/language-context"
+import { AIAssistantInput } from "@/components/ai-assistant-input"
+import { AuthGuard } from "@/components/auth-guard"
 
 export default function DashboardPage() {
   const { t } = useLanguage()
 
   return (
+    <AuthGuard>
+
     <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
       <DashboardSidebar />
       <main className="flex-1 p-6">
@@ -27,8 +31,10 @@ export default function DashboardPage() {
             <RecentQuotations />
             <PendingApprovals />
           </div>
+          <AIAssistantInput />
         </div>
       </main>
     </div>
+    </AuthGuard>
   )
 }

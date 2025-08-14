@@ -12,7 +12,7 @@ export function DashboardSidebar() {
   const navigation = [
     { name: t("dashboard"), href: "/", icon: LayoutDashboard, current: false },
     { name: t("quotations"), href: "/quotations", icon: FileText, current: false },
-    { name: t("customers"), href: "/customers", icon: Users, current: false },
+    { name: t("customers"), href: "/customers", icon: Users, current: false }, // usando tradução para customers
     { name: t("approvals"), href: "/approvals", icon: CheckCircle, current: false },
     { name: t("emails"), href: "/emails", icon: Mail, current: false },
     { name: t("aiProcessing"), href: "/ai-processing", icon: Brain, current: false },
@@ -22,9 +22,14 @@ export function DashboardSidebar() {
 
   return (
     <div className="w-64 bg-white dark:bg-gray-900 shadow-sm border-r border-gray-200 dark:border-gray-700 flex flex-col">
-      <div className="p-6">
-        <h2 className="text-xl font-bold text-blue-600 dark:text-blue-400">SmartQuote</h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">AI-Powered Quotations</p>
+      <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center space-x-3 mb-4">
+          <img src="../" alt="RCS Logo" className="h-10 w-10 rounded-lg" />
+          <div>
+            <h2 className="text-xl font-bold text-blue-600 dark:text-blue-400">RCS</h2>
+            <p className="text-xs text-gray-500 dark:text-gray-400">SmartQuote System</p>
+          </div>
+        </div>
       </div>
 
       <nav className="px-3 pb-4 flex-1">

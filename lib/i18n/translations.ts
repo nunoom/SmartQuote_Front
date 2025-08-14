@@ -56,6 +56,37 @@ export const translations = {
     aiAnalysis: "AI Analysis",
     generateQuotation: "Generate Quotation",
 
+    // AI Assistant
+    aiAssistant: "AI Assistant",
+    aiWelcomeMessage: "Hello! How can I help you with your quotations today?",
+    askAIAssistant: "Ask the AI assistant...",
+
+    // Authentication
+    auth: {
+      signIn: "Sign In",
+      signUp: "Sign Up",
+      email: "Email",
+      password: "Password",
+      fullName: "Full Name",
+      confirmPassword: "Confirm Password",
+      emailPlaceholder: "Enter your email",
+      passwordPlaceholder: "Enter your password",
+      namePlaceholder: "Enter your full name",
+      confirmPasswordPlaceholder: "Confirm your password",
+      enterCredentials: "Enter your credentials to access your account",
+      createAccount: "Create a new account to get started",
+      fillAllFields: "Please fill in all fields",
+      invalidCredentials: "Invalid email or password",
+      passwordsDoNotMatch: "Passwords do not match",
+      passwordTooShort: "Password must be at least 6 characters",
+      registrationFailed: "Registration failed. Please try again.",
+      signingIn: "Signing in...",
+      creatingAccount: "Creating account...",
+      noAccount: "Don't have an account?",
+      haveAccount: "Already have an account?",
+      aiPoweredQuotations: "AI-Powered Quotation System",
+    },
+
     // Common
     loading: "Loading...",
     save: "Save",
@@ -137,6 +168,37 @@ export const translations = {
     processed: "Processado",
     aiAnalysis: "Análise IA",
     generateQuotation: "Gerar Cotação",
+
+    // AI Assistant
+    aiAssistant: "Assistente IA",
+    aiWelcomeMessage: "Olá! Como posso ajudá-lo com suas cotações hoje?",
+    askAIAssistant: "Pergunte ao assistente IA...",
+
+    // Authentication
+    auth: {
+      signIn: "Entrar",
+      signUp: "Cadastrar",
+      email: "Email",
+      password: "Senha",
+      fullName: "Nome Completo",
+      confirmPassword: "Confirmar Senha",
+      emailPlaceholder: "Digite seu email",
+      passwordPlaceholder: "Digite sua senha",
+      namePlaceholder: "Digite seu nome completo",
+      confirmPasswordPlaceholder: "Confirme sua senha",
+      enterCredentials: "Digite suas credenciais para acessar sua conta",
+      createAccount: "Crie uma nova conta para começar",
+      fillAllFields: "Por favor, preencha todos os campos",
+      invalidCredentials: "Email ou senha inválidos",
+      passwordsDoNotMatch: "As senhas não coincidem",
+      passwordTooShort: "A senha deve ter pelo menos 6 caracteres",
+      registrationFailed: "Falha no cadastro. Tente novamente.",
+      signingIn: "Entrando...",
+      creatingAccount: "Criando conta...",
+      noAccount: "Não tem uma conta?",
+      haveAccount: "Já tem uma conta?",
+      aiPoweredQuotations: "Sistema de Cotações com IA",
+    },
 
     // Common
     loading: "Carregando...",
