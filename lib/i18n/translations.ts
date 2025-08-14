@@ -3,6 +3,7 @@ export const translations = {
     // Navigation
     dashboard: "Dashboard",
     quotations: "Quotations",
+    customers: "Customers",
     approvals: "Approvals",
     emails: "Email Requests",
     aiProcessing: "AI Processing",
@@ -30,6 +31,16 @@ export const translations = {
     approved: "Approved",
     rejected: "Rejected",
     draft: "Draft",
+
+    // Customers
+    manageCustomerAccounts: "Manage customer accounts and relationships",
+    searchCustomers: "Search customers...",
+    addCustomer: "Add Customer",
+    viewDetails: "View Details",
+    lastContact: "Last Contact",
+    totalValue: "Total Value",
+    active: "Active",
+    inactive: "Inactive",
 
     // Approvals
     requiresApproval: "Requires Approval",
@@ -74,6 +85,7 @@ export const translations = {
     // Navigation
     dashboard: "Painel",
     quotations: "Cotações",
+    customers: "Clientes",
     approvals: "Aprovações",
     emails: "Solicitações por Email",
     aiProcessing: "Processamento IA",
@@ -101,6 +113,16 @@ export const translations = {
     approved: "Aprovada",
     rejected: "Rejeitada",
     draft: "Rascunho",
+
+    // Customers
+    manageCustomerAccounts: "Gerencie contas e relacionamentos com clientes",
+    searchCustomers: "Pesquisar clientes...",
+    addCustomer: "Adicionar Cliente",
+    viewDetails: "Ver Detalhes",
+    lastContact: "Último Contato",
+    totalValue: "Valor Total",
+    active: "Ativo",
+    inactive: "Inativo",
 
     // Approvals
     requiresApproval: "Requer Aprovação",

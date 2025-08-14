@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTheme } from "next-themes"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,7 +14,7 @@ import { Settings, Globe, Bell, Shield, User, Palette } from "lucide-react"
 
 export function SettingsTabs() {
   const [language, setLanguage] = useState("en")
-  const [theme, setTheme] = useState("light")
+  const { theme, setTheme } = useTheme()
   const [notifications, setNotifications] = useState({
     email: true,
     push: false,
@@ -129,7 +130,6 @@ export function SettingsTabs() {
                   <SelectItem value="usd">USD ($)</SelectItem>
                   <SelectItem value="brl">BRL (R$)</SelectItem>
                   <SelectItem value="eur">EUR (€)</SelectItem>
-                  <SelectItem value="aoa">KZ (AOA)</SelectItem>
                 </SelectContent>
               </Select>
             </div>

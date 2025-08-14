@@ -10,13 +10,13 @@ export default function DashboardPage() {
   const { t } = useLanguage()
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
       <DashboardSidebar />
       <main className="flex-1 p-6">
         <div className="max-w-7xl mx-auto space-y-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold text-gray-900">{t("smartQuotationDashboard")}</h1>
-            <div className="text-sm text-gray-500">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t("smartQuotationDashboard")}</h1>
+            <div className="text-sm text-gray-500 dark:text-gray-400">
               {t("lastUpdated")}: {new Date().toLocaleDateString()}
             </div>
           </div>

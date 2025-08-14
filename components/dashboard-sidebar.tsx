@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils"
 import { LayoutDashboard, FileText, Users, CheckCircle, Mail, Settings, TrendingUp, Brain } from "lucide-react"
 import { LanguageSwitcher } from "@/components/language-switcher"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { useLanguage } from "@/lib/i18n/language-context"
 
 export function DashboardSidebar() {
@@ -11,7 +12,7 @@ export function DashboardSidebar() {
   const navigation = [
     { name: t("dashboard"), href: "/", icon: LayoutDashboard, current: false },
     { name: t("quotations"), href: "/quotations", icon: FileText, current: false },
-    { name: "Customers", href: "/customers", icon: Users, current: false },
+    { name: t("customers"), href: "/customers", icon: Users, current: false },
     { name: t("approvals"), href: "/approvals", icon: CheckCircle, current: false },
     { name: t("emails"), href: "/emails", icon: Mail, current: false },
     { name: t("aiProcessing"), href: "/ai-processing", icon: Brain, current: false },
@@ -20,10 +21,10 @@ export function DashboardSidebar() {
   ]
 
   return (
-    <div className="w-64 bg-white shadow-sm border-r border-gray-200 flex flex-col">
+    <div className="w-64 bg-white dark:bg-gray-900 shadow-sm border-r border-gray-200 dark:border-gray-700 flex flex-col">
       <div className="p-6">
-        <h2 className="text-xl font-bold text-blue-600">SmartQuote</h2>
-        <p className="text-sm text-gray-500 mt-1">AI-Powered Quotations</p>
+        <h2 className="text-xl font-bold text-blue-600 dark:text-blue-400">SmartQuote</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">AI-Powered Quotations</p>
       </div>
 
       <nav className="px-3 pb-4 flex-1">
@@ -35,8 +36,8 @@ export function DashboardSidebar() {
                 className={cn(
                   "flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors",
                   item.current
-                    ? "bg-blue-50 text-blue-700 border-r-2 border-blue-600"
-                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+                    ? "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-r-2 border-blue-600 dark:border-blue-400"
+                    : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100",
                 )}
               >
                 <item.icon className="mr-3 h-5 w-5" />
@@ -47,8 +48,9 @@ export function DashboardSidebar() {
         </ul>
       </nav>
 
-      <div className="p-3 border-t border-gray-200">
+      <div className="p-3 border-t border-gray-200 dark:border-gray-700 space-y-2">
         <LanguageSwitcher />
+        <ThemeToggle />
       </div>
     </div>
   )
