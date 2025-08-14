@@ -1,40 +1,40 @@
-import { AppSidebar } from '@/components/app-sidebar'
-import { ChartAreaInteractive } from '@/components/chart-area-interactive'
-import { DataTable } from '@/components/data-table'
-import { SectionCards } from '@/components/section-cards'
-import { SiteHeader } from '@/components/site-header'
-import {
-  SidebarInset,
-  SidebarProvider,
-} from '@/components/ui/sidebar'
+"use client"
 
-import data from "./data.json"
+import { DashboardOverview } from "@/components/dashboard-overview"
+import { RecentQuotations } from "@/components/recent-quotations"
+import { PendingApprovals } from "@/components/pending-approvals"
+import { DashboardSidebar } from "@/components/dashboard-sidebar"
+import { useLanguage } from "@/lib/i18n/language-context"
+import { AIAssistantInput } from "@/components/ai-assistant-input"
+import { AuthGuard } from "@/components/auth-guard"
 
-export default function Page() {
+export default function DashboardPage() {
+  const { t } = useLanguage()
+
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
-      <AppSidebar variant="inset" />
-      <SidebarInset>
-        <SiteHeader />
-        <div className="flex flex-1 flex-col">
-          <div className="@container/main flex flex-1 flex-col gap-2">
-            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-              <SectionCards />
-              <div className="px-4 lg:px-6">
-                <ChartAreaInteractive />
+    <AuthGuard>
+      <div className="flex min-h-screen bg-background">
+        <DashboardSidebar />
+        <main className="flex-1 p-6">
+          <div className="max-w-7xl mx-auto space-y-6">
+            <div className="flex items-center justify-between">
+              <h1 className="text-3xl font-bold text-foreground">{t("smartQuotationDashboard")}</h1>
+              <div className="text-sm text-muted-foreground">
+                {t("lastUpdated")}: {new Date().toLocaleDateString()}
               </div>
-              <DataTable data={data} />
             </div>
+
+            <DashboardOverview />
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <RecentQuotations />
+              <PendingApprovals />
+            </div>
+
+            <AIAssistantInput />
           </div>
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+        </main>
+      </div>
+    </AuthGuard>
   )
 }

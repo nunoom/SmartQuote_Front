@@ -2,6 +2,7 @@
 
 import type React from "react"
 import { createContext, useContext, useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 
 interface User {
   id: string
@@ -23,6 +24,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
     // Check if user is logged in on app start
@@ -49,6 +51,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(userData)
       localStorage.setItem("smartquote_user", JSON.stringify(userData))
       setIsLoading(false)
+      router.push("/dashboard")
       return true
     }
 
@@ -72,12 +75,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(userData)
     localStorage.setItem("smartquote_user", JSON.stringify(userData))
     setIsLoading(false)
+    router.push("/dashboard")
     return true
   }
 
   const logout = () => {
     setUser(null)
     localStorage.removeItem("smartquote_user")
+    router.push("/")
   }
 
   return <AuthContext.Provider value={{ user, login, register, logout, isLoading }}>{children}</AuthContext.Provider>
