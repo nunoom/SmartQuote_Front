@@ -14,22 +14,22 @@ export default function LandingPage() {
   const features = [
     {
       icon: <Mail className="h-8 w-8 text-secondary" />,
-      title: t("emailToQuote"),
-      description: t("emailToQuoteDesc"),
+      title: t("Email To Quote"),
+      description: t("Email To QuoteDesc"),
     },
     {
       icon: <Zap className="h-8 w-8 text-secondary" />,
-      title: t("aiPowered"),
+      title: t("AI Powered"),
       description: t("aiPoweredDesc"),
     },
     {
       icon: <Shield className="h-8 w-8 text-secondary" />,
-      title: t("approvalWorkflow"),
+      title: t("Approval Workflow"),
       description: t("approvalWorkflowDesc"),
     },
     {
       icon: <BarChart3 className="h-8 w-8 text-secondary" />,
-      title: t("analytics"),
+      title: t("Analytics"),
       description: t("analyticsDesc"),
     },
   ]
@@ -66,29 +66,49 @@ export default function LandingPage() {
             <LanguageSwitcher />
             <ThemeToggle />
             <Link href="/login">
-              <Button variant="outline">{t("auth.signIn")}</Button>
+              <Button variant="outline">{t("signIn")}</Button>
             </Link>
             <Link href="/register">
-              <Button>{t("auth.signUp")}</Button>
+              <Button>{t("signUp")}</Button>
             </Link>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto text-center max-w-4xl">
-          <h1 className="text-5xl font-bold text-foreground mb-6 leading-tight">{t("heroTitle")}</h1>
-          <p className="text-xl text-muted-foreground mb-8 leading-relaxed">{t("heroSubtitle")}</p>
+      <section className="relative py-20 px-4 bg-gradient-to-br from-primary/10 via-secondary/5 to-background overflow-hidden">
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-80 dark:opacity-70"
+          style={{
+            backgroundImage: "url('/IABackground.png')",
+          }}
+        />
+
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/60 to-background/80" />
+
+        {/* Content */}
+        <div className="relative container mx-auto text-center max-w-4xl">
+          <h1 className="text-5xl font-bold text-foreground mb-6 leading-tight drop-shadow-sm">
+            {t("SmartQuote")}
+          </h1>
+          <p className="text-xl text-muted-foreground mb-8 leading-relaxed drop-shadow-sm">
+            {t("landing.heroSubtitle")}
+          </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/register">
-              <Button size="lg" className="text-lg px-8 py-3">
-                {t("getStarted")}
+              <Button size="lg" className="text-lg px-8 py-3 shadow-lg hover:shadow-xl transition-shadow">
+                {t("GetStarted")}
               </Button>
             </Link>
             <Link href="/login">
-              <Button variant="outline" size="lg" className="text-lg px-8 py-3 bg-transparent">
-                {t("signInNow")}
+              <Button
+                variant="outline"
+                size="lg"
+                className="text-lg px-8 py-3 bg-background/80 backdrop-blur-sm hover:bg-background/90 transition-colors"
+              >
+                {t("SignInNow")}
               </Button>
             </Link>
           </div>
@@ -99,8 +119,8 @@ export default function LandingPage() {
       <section className="py-20 px-4 bg-card/30">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-foreground mb-4">{t("featuresTitle")}</h2>
-            <p className="text-lg text-muted-foreground">{t("featuresSubtitle")}</p>
+            <h2 className="text-3xl font-bold text-foreground mb-4">{t("Features")}</h2>
+            <p className="text-lg text-muted-foreground">{t("FeaturesSub")}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -123,7 +143,7 @@ export default function LandingPage() {
       <section className="py-20 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-foreground mb-4">{t("testimonialsTitle")}</h2>
+            <h2 className="text-3xl font-bold text-foreground mb-4">{t("Testimonials")}</h2>
             <p className="text-lg text-muted-foreground">{t("testimonialsSubtitle")}</p>
           </div>
 
@@ -166,7 +186,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-2 mb-4">
-                <img src="/rcs-company-logo.png" alt="RCS" className="h-6 w-6" />
+                <img src="/LogoRCS.png" alt="RCS" className="h-6 w-6" />
                 <span className="font-bold text-foreground">SmartQuote</span>
               </div>
               <p className="text-muted-foreground text-sm">{t("footerDescription")}</p>

@@ -10,7 +10,7 @@ export function DashboardSidebar() {
   const { t } = useLanguage()
 
   const navigation = [
-    { name: t("dashboard"), href: "/", icon: LayoutDashboard, current: false },
+    { name: t("dashboard"), href: "/dashboard", icon: LayoutDashboard, current: false },
     { name: t("quotations"), href: "/quotations", icon: FileText, current: false },
     { name: t("customers"), href: "/customers", icon: Users, current: false }, // usando tradução para customers
     { name: t("approvals"), href: "/approvals", icon: CheckCircle, current: false },
@@ -24,7 +24,7 @@ export function DashboardSidebar() {
     <div className="w-64 bg-white dark:bg-gray-900 shadow-sm border-r border-gray-200 dark:border-gray-700 flex flex-col">
       <div className="p-6 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center space-x-3 mb-4">
-          <img src="../" alt="RCS Logo" className="h-10 w-10 rounded-lg" />
+          <img src="/LogoRCS.png" alt="RCS Logo" className="h-10 w-10 rounded-lg" />
           <div>
             <h2 className="text-xl font-bold text-blue-600 dark:text-blue-400">RCS</h2>
             <p className="text-xs text-gray-500 dark:text-gray-400">SmartQuote System</p>
