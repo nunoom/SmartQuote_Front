@@ -18,13 +18,13 @@ export function LanguageSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="w-full justify-start">
+        <Button variant="ghost" size="sm" className="w-100% justify-start">
           <Globe className="mr-2 h-4 w-4" />
           <span className="mr-2">{currentLanguage?.flag}</span>
           {currentLanguage?.name}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-48">
+      <DropdownMenuContent align="start" className="w-100%">
         {languages.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
