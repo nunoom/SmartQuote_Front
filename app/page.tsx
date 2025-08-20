@@ -73,12 +73,12 @@ export default function LandingPage() {
             <div className="flex items-center gap-2">
               <Link href="/login">
                 <Button variant="outline" size="sm" className="text-xs sm:text-sm px-2 sm:px-4 bg-transparent">
-                  {t("auth.signIn")}
+                  {t("SignIn")}
                 </Button>
               </Link>
               <Link href="/register">
                 <Button size="sm" className="text-xs sm:text-sm px-2 sm:px-4">
-                  {t("auth.signUp")}
+                  {t("SignUp")}
                 </Button>
               </Link>
             </div>
@@ -119,7 +119,7 @@ export default function LandingPage() {
                 size="lg"
                 className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-3 shadow-lg hover:shadow-xl transition-shadow"
               >
-                {t("landing.getStarted")}
+                {t("GetStarted")}
               </Button>
             </Link>
             <Link href="/login">
@@ -128,7 +128,7 @@ export default function LandingPage() {
                 size="lg"
                 className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-3 bg-background/80 backdrop-blur-sm hover:bg-background/90 transition-colors"
               >
-                {t("landing.signInNow")}
+                {t("SignInNow")}
               </Button>
             </Link>
           </div>
