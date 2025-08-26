@@ -5,6 +5,7 @@ import { GeistMono } from "geist/font/mono"
 import { LanguageProvider } from "@/lib/i18n/language-context"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/lib/auth/auth-context"
+import { GlobalMenu } from "@/components/ui/menubar";
 import "./globals.css"
 
 export const metadata: Metadata = {

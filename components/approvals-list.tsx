@@ -86,9 +86,9 @@ export function ApprovalsList() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 ml-4">
+                  <div className="flex items-center gap-4">
                     <Button variant="outline" size="sm" onClick={() => toggleExpanded(approval.id)}>
-                      <Eye className="h-4 w-4 mr-1" />
+                      <Eye className="h-2 w-2 mr-1" />
                       {isExpanded ? "Hide" : "View"} Details
                     </Button>
                   </div>

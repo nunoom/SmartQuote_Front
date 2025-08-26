@@ -9,7 +9,7 @@ export function CustomersHeader() {
   const { t } = useLanguage()
 
   return (
-    <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+    <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between w-full bg-gray-50">
       <div>
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t("customers")}</h1>
         <p className="text-gray-600 dark:text-gray-400 mt-1">{t("manageCustomerAccounts")}</p>
