@@ -4,6 +4,8 @@ import type React from "react"
 import axios from 'axios';
 import { createContext, useContext, useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { TypeOf } from "zod";
+import { config } from "process";
 
 interface User {
   id: string
@@ -18,6 +20,7 @@ interface AuthContextType {
   register: (name: string, email: string, password: string) => Promise<boolean>
   logout: () => void
   isLoading: boolean
+  axiosInstance: typeof axios
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -27,6 +30,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
+  const axiosInstance = axios.create({
+    baseURL: 'http://localhost:3001',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  axiosInstance.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token');
+    if(token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  });
   useEffect(() => {
     // Check if user is logged in on app start
     const savedUser = localStorage.getItem("smartquote_user")
@@ -41,7 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     try
     {
-      const response = await axios.post('http://localhost:3000/auth/login',
+      const response = await axios.post('http://localhost:3001/auth/login',
       {
         email,
         password,
