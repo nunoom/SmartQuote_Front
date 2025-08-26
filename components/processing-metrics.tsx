@@ -34,18 +34,18 @@ const processingStats = [
 
 export function ProcessingMetrics() {
   return (
-    <Card>
+    <Card className="dark:bg-gray-800 dark:border-gray-700">
       <CardHeader>
-        <CardTitle>Processing Pipeline Performance</CardTitle>
-        <p className="text-sm text-gray-600">Success rates across different processing stages</p>
+        <CardTitle className="dark:text-white">Processing Pipeline Performance</CardTitle>
+        <p className="text-sm text-gray-600 dark:text-gray-300">Success rates across different processing stages</p>
       </CardHeader>
       <CardContent>
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {processingStats.map((stat) => (
             <div key={stat.category} className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">{stat.category}</span>
-                <span className="text-sm text-gray-500">
+                <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">{stat.category}</span>
+                <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                   {stat.processed}/{stat.total} ({stat.percentage}%)
                 </span>
               </div>
