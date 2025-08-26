@@ -125,6 +125,7 @@ export function CustomersList() {
                     <div className="text-xs text-gray-500 dark:text-gray-400">{t("quotations")}</div>
                   </div>
                   <div>
+
                     <div className="text-lg sm:text-xl font-bold text-green-600 dark:text-green-400 truncate">
                       {formatCurrency(customer.totalValue)}
                     </div>
