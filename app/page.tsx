@@ -108,15 +108,6 @@ export default function LandingPage() {
             {/* Auth buttons */}
             <div className="flex items-center gap-2">
               <Link href="/login">
-<<<<<<< HEAD
-                <Button variant="outline" size="sm" className="text-xs sm:text-sm px-2 sm:px-4 bg-transparent">
-                  {t("SignIn")}
-                </Button>
-              </Link>
-              <Link href="/register">
-                <Button size="sm" className="text-xs sm:text-sm px-2 sm:px-4">
-                  {t("SignUp")}
-=======
                 <Button
                   variant="outline"
                   size="sm"
@@ -128,7 +119,6 @@ export default function LandingPage() {
               <Link href="/register">
                 <Button size="sm" className="text-sm px-3 py-2 h-8 sm:h-9 md:h-10 sm:text-base sm:px-4 md:px-5">
                   {t("auth.signUp")}
->>>>>>> Nuno
                 </Button>
               </Link>
             </div>

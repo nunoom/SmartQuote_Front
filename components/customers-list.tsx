@@ -125,11 +125,8 @@ export function CustomersList() {
                     <div className="text-xs text-gray-500 dark:text-gray-400">{t("quotations")}</div>
                   </div>
                   <div>
-<<<<<<< HEAD
-                    <div className="text-xl font-bold text-green-600 dark:text-green-400">
-=======
+
                     <div className="text-lg sm:text-xl font-bold text-green-600 dark:text-green-400 truncate">
->>>>>>> Nuno
                       {formatCurrency(customer.totalValue)}
                     </div>
                     <div className="text-xs text-gray-500 dark:text-gray-400">{t("totalValue")}</div>
