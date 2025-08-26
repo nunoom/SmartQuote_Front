@@ -1,8 +1,11 @@
 "use client"
 
 import type React from "react"
+import axios from 'axios';
 import { createContext, useContext, useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { TypeOf } from "zod";
+import { config } from "process";
 
 interface User {
   id: string
@@ -17,6 +20,7 @@ interface AuthContextType {
   register: (name: string, email: string, password: string) => Promise<boolean>
   logout: () => void
   isLoading: boolean
+  axiosInstance: typeof axios
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -26,6 +30,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
+  const axiosInstance = axios.create({
+    baseURL: 'http://localhost:3001',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  axiosInstance.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token');
+    if(token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  });
   useEffect(() => {
     // Check if user is logged in on app start
     const savedUser = localStorage.getItem("smartquote_user")
@@ -38,25 +56,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true)
 
-    // Mock authentication - in real app, this would be an API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    if (email === "admin@rcs.com" && password === "admin123") {
-      const userData = {
-        id: "1",
-        name: "Admin RCS",
-        email: "admin@rcs.com",
-        avatar: "/admin-avatar.png",
-      }
-      setUser(userData)
-      localStorage.setItem("smartquote_user", JSON.stringify(userData))
-      setIsLoading(false)
+    try
+    {
+      const response = await axios.post('http://localhost:3001/auth/login',
+      {
+        email,
+        password,
+      })
+      const { acess_token } = response.data;
+      localStorage.setItem('token', acess_token);
+      setUser({ email });
+      return(true);
+    }catch (error) {
+      console.error('Erro no login:', error)
+      return false;
+    } finally {
+      setIsLoading(false);
       router.push("/dashboard")
-      return true
     }
 
-    setIsLoading(false)
-    return false
+    const logout = () => {
+      localStorage.removeItem('token');
+      setUser(null);
+    };
+    return (
+      <AuthContext.Provider value={{ login, isLoading, user, logout}}>
+        {children}
+      </AuthContext.Provider>
+    );
+    
   }
 
   const register = async (name: string, email: string, password: string): Promise<boolean> => {

@@ -9,31 +9,35 @@ export function CustomersHeader() {
   const { t } = useLanguage()
 
   return (
-    <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t("customers")}</h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-1">{t("manageCustomerAccounts")}</p>
+    <div className="flex flex-col gap-4 items-start justify-between overflow-hidden">
+      <div className="w-full">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{t("customers")}</h1>
+        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">{t("manageCustomerAccounts")}</p>
       </div>
 
-      <div className="flex gap-3 w-full sm:w-auto">
-        <div className="relative flex-1 sm:w-80">
+      <div className="flex flex-col sm:flex-row gap-3 w-full">
+        <div className="relative flex-1 min-w-0">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
           <Input
             placeholder={t("searchCustomers")}
-            className="pl-10 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white"
+            className="pl-10 w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white"
           />
         </div>
-        <Button
-          variant="outline"
-          className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-        >
-          <Filter className="h-4 w-4 mr-2" />
-          {t("filter")}
-        </Button>
-        <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-          <Plus className="h-4 w-4 mr-2" />
-          {t("addCustomer")}
-        </Button>
+
+        <div className="flex gap-2 sm:gap-3">
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex-1 sm:flex-none bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+          >
+            <Filter className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="text-xs sm:text-sm">{t("filter")}</span>
+          </Button>
+          <Button size="sm" className="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white">
+            <Plus className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="text-xs sm:text-sm">{t("addCustomer")}</span>
+          </Button>
+        </div>
       </div>
     </div>
   )

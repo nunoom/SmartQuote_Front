@@ -21,12 +21,14 @@ const quotationData = [
 
 export function QuotationTrends() {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Quotation Activity</CardTitle>
-        <p className="text-sm text-gray-600">Monthly quotation creation and approval rates</p>
+    <Card className="dark:bg-gray-800 dark:border-gray-700 overflow-hidden">
+      <CardHeader className="pb-3">
+        <CardTitle className="dark:text-white text-base sm:text-lg">Quotation Activity</CardTitle>
+        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+          Monthly quotation creation and approval rates
+        </p>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-0 px-2 sm:px-6 overflow-hidden">
         <ChartContainer
           config={{
             created: {
@@ -42,13 +44,13 @@ export function QuotationTrends() {
               color: "hsl(var(--chart-3))",
             },
           }}
-          className="h-[300px]"
+          className="h-[180px] sm:h-[250px] lg:h-[300px] w-full overflow-hidden"
         >
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={quotationData}>
+            <BarChart data={quotationData} margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
+              <XAxis dataKey="month" fontSize={9} />
+              <YAxis fontSize={9} width={40} />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Bar dataKey="created" fill="var(--color-created)" name="Created" />
               <Bar dataKey="approved" fill="var(--color-approved)" name="Approved" />
