@@ -11,9 +11,9 @@ export function RecentQuotations() {
     .slice(0, 5)
 
   return (
-    <Card className="border-0 shadow-sm">
+    <Card className="border-0 shadow-sm ">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-lg font-semibold text-gray-900">Recent Quotations</CardTitle>
+        <CardTitle className="text-lg font-semibold text-gray-900 dark:text-gray-300">Recent Quotations</CardTitle>
         <Button variant="outline" size="sm">
           View All
         </Button>
@@ -22,11 +22,11 @@ export function RecentQuotations() {
         {recentQuotations.map((quotation) => (
           <div
             key={quotation.id}
-            className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+            className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors dark:bg-gray-600 "
           >
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <span className="font-medium text-gray-900">{quotation.id}</span>
+            <div className="flex-1 dark:bg-gray-600 ">
+              <div className="flex items-center gap-3 mb-2 ">
+                <span className="font-medium text-gray-900 dark:text-gray-300">{quotation.id}</span>
                 <Badge className={getStatusColor(quotation.status)}>{quotation.status}</Badge>
                 {quotation.requiresApproval && (
                   <Badge variant="outline" className="text-orange-600 border-orange-200">
@@ -35,7 +35,7 @@ export function RecentQuotations() {
                 )}
               </div>
               <p className="text-sm text-gray-600 mb-1">{quotation.customer.company}</p>
-              <p className="text-lg font-semibold text-gray-900">{formatCurrency(quotation.total)}</p>
+              <p className="text-lg font-semibold text-gray-900 dark:text-gray-900">{formatCurrency(quotation.total)}</p>
             </div>
             <div className="flex items-center gap-2">
               <Button variant="ghost" size="sm">

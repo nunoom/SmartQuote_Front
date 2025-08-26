@@ -196,7 +196,7 @@ export default function LandingPage() {
                 size="lg"
                 className="w-full sm:w-auto text-base sm:text-lg lg:text-xl px-6 sm:px-8 lg:px-10 py-3 sm:py-4 shadow-lg hover:shadow-xl transition-shadow"
               >
-                {t("landing.getStarted")}
+                {t("GetStarted")}
               </Button>
             </Link>
             <Link href="/login">
@@ -205,7 +205,7 @@ export default function LandingPage() {
                 size="lg"
                 className="w-full sm:w-auto text-base sm:text-lg lg:text-xl px-6 sm:px-8 lg:px-10 py-3 sm:py-4 bg-background/80 backdrop-blur-sm hover:bg-background/90 transition-colors"
               >
-                {t("landing.signInNow")}
+                {t("SignInNow")}
               </Button>
             </Link>
           </div>

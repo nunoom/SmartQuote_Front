@@ -30,7 +30,7 @@ export default function LoginPage() {
 
     const success = await login(email, password)
     if (!success) {
-      setError(t("auth.invalidCredentials"))
+      setError(t("invalidCredentials"))
     }
   }
 
