@@ -21,12 +21,12 @@ const revenueData = [
 
 export function RevenueChart() {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Revenue Trends</CardTitle>
-        <p className="text-sm text-gray-600">Monthly revenue vs targets</p>
+    <Card className="dark:bg-gray-800 dark:border-gray-700 overflow-hidden">
+      <CardHeader className="pb-3">
+        <CardTitle className="dark:text-white text-base sm:text-lg">Revenue Trends</CardTitle>
+        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Monthly revenue vs targets</p>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-0 px-2 sm:px-6 overflow-hidden">
         <ChartContainer
           config={{
             revenue: {
@@ -38,13 +38,13 @@ export function RevenueChart() {
               color: "hsl(var(--chart-2))",
             },
           }}
-          className="h-[300px]"
+          className="h-[180px] sm:h-[250px] lg:h-[300px] w-full overflow-hidden"
         >
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={revenueData}>
+            <LineChart data={revenueData} margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
+              <XAxis dataKey="month" fontSize={9} />
+              <YAxis fontSize={9} width={40} />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Line type="monotone" dataKey="revenue" stroke="var(--color-revenue)" strokeWidth={2} name="Revenue" />
               <Line

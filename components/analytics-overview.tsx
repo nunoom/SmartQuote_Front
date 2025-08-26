@@ -38,20 +38,23 @@ const metrics = [
 
 export function AnalyticsOverview() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
       {metrics.map((metric) => {
         const Icon = metric.icon
         const TrendIcon = metric.trend === "up" ? TrendingUp : TrendingDown
-        const trendColor = metric.trend === "up" ? "text-green-600" : "text-red-600"
+        const trendColor =
+          metric.trend === "up" ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
 
         return (
-          <Card key={metric.title}>
+          <Card key={metric.title} className="dark:bg-gray-800 dark:border-gray-700">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">{metric.title}</CardTitle>
+              <CardTitle className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">
+                {metric.title}
+              </CardTitle>
               <Icon className={`h-4 w-4 ${metric.color}`} />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-gray-900">{metric.value}</div>
+              <div className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{metric.value}</div>
               <div className={`flex items-center text-xs ${trendColor} mt-1`}>
                 <TrendIcon className="h-3 w-3 mr-1" />
                 {metric.change} from last month

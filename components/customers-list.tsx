@@ -62,62 +62,70 @@ export function CustomersList() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="space-y-4 overflow-hidden">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
         {mockCustomers.map((customer) => (
           <Card
             key={customer.id}
-            className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow"
+            className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow overflow-hidden"
           >
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-3 px-4 sm:px-6">
               <div className="flex items-start justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
-                    <span className="text-blue-600 dark:text-blue-300 font-semibold text-sm">{customer.avatar}</span>
+                <div className="flex items-center space-x-3 min-w-0 flex-1">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-blue-600 dark:text-blue-300 font-semibold text-xs sm:text-sm">
+                      {customer.avatar}
+                    </span>
                   </div>
-                  <div>
-                    <CardTitle className="text-lg text-gray-900 dark:text-white">{customer.name}</CardTitle>
-                    <Badge className={getStatusColor(customer.status)}>{t(customer.status)}</Badge>
+                  <div className="min-w-0 flex-1">
+                    <CardTitle className="text-sm sm:text-lg text-gray-900 dark:text-white truncate">
+                      {customer.name}
+                    </CardTitle>
+                    <Badge className={`${getStatusColor(customer.status)} text-xs mt-1`}>{t(customer.status)}</Badge>
                   </div>
                 </div>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+                  className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 flex-shrink-0"
                 >
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </div>
             </CardHeader>
 
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 px-4 sm:px-6 overflow-hidden">
               <div className="space-y-2">
-                <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                  <Mail className="h-4 w-4 mr-2" />
-                  {customer.email}
+                <div className="flex items-center text-xs sm:text-sm text-gray-600 dark:text-gray-400 min-w-0">
+                  <Mail className="h-3 w-3 sm:h-4 sm:w-4 mr-2 flex-shrink-0" />
+                  <span className="truncate">{customer.email}</span>
                 </div>
-                <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                  <Phone className="h-4 w-4 mr-2" />
-                  {customer.phone}
+                <div className="flex items-center text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                  <Phone className="h-3 w-3 sm:h-4 sm:w-4 mr-2 flex-shrink-0" />
+                  <span className="truncate">{customer.phone}</span>
                 </div>
-                <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                  <MapPin className="h-4 w-4 mr-2" />
-                  {customer.location}
+                <div className="flex items-center text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                  <MapPin className="h-3 w-3 sm:h-4 sm:w-4 mr-2 flex-shrink-0" />
+                  <span className="truncate">{customer.location}</span>
                 </div>
-                <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  {t("lastContact")}: {new Date(customer.lastContact).toLocaleDateString()}
+                <div className="flex items-center text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                  <Calendar className="h-3 w-3 sm:h-4 sm:w-4 mr-2 flex-shrink-0" />
+                  <span className="truncate">
+                    {t("lastContact")}: {new Date(customer.lastContact).toLocaleDateString()}
+                  </span>
                 </div>
               </div>
 
               <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
                 <div className="grid grid-cols-2 gap-4 text-center">
                   <div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white">{customer.totalQuotations}</div>
+                    <div className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+                      {customer.totalQuotations}
+                    </div>
                     <div className="text-xs text-gray-500 dark:text-gray-400">{t("quotations")}</div>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                    <div className="text-lg sm:text-xl font-bold text-green-600 dark:text-green-400 truncate">
                       {formatCurrency(customer.totalValue)}
                     </div>
                     <div className="text-xs text-gray-500 dark:text-gray-400">{t("totalValue")}</div>
@@ -125,15 +133,15 @@ export function CustomersList() {
                 </div>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  className="flex-1 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600"
+                  className="flex-1 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 text-xs sm:text-sm"
                 >
                   {t("viewDetails")}
                 </Button>
-                <Button size="sm" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">
+                <Button size="sm" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm">
                   {t("newQuotation")}
                 </Button>
               </div>
