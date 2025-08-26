@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import * as React from 'react'
 import {
@@ -7,5 +7,9 @@ import {
 } from 'next-themes'
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
-  return <NextThemesProvider {...props}>{children}</NextThemesProvider>
+  return (
+    <div className="min-h-screen w-full">
+      <NextThemesProvider {...props}>{children}</NextThemesProvider>
+    </div>
+  )
 }

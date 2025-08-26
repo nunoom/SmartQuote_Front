@@ -9,11 +9,6 @@ export function CustomersHeader() {
   const { t } = useLanguage()
 
   return (
-    <div className="flex flex-col gap-4 items-start justify-between overflow-hidden">
-      <div className="w-full">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{t("customers")}</h1>
-        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">{t("manageCustomerAccounts")}</p>
-      </div>
 
       <div className="flex flex-col sm:flex-row gap-3 w-full">
         <div className="relative flex-1 min-w-0">
@@ -39,6 +34,5 @@ export function CustomersHeader() {
           </Button>
         </div>
       </div>
-    </div>
   )
 }
