@@ -29,49 +29,49 @@ export default function LandingPage() {
   const features = [
     {
       icon: <Mail className="h-8 w-8 sm:h-10 sm:w-10 text-secondary" />,
-      title: t("landing.emailToQuote"),
-      description: t("landing.emailToQuoteDesc"),
+      title: t("emailToQuote"),
+      description: t("emailToQuoteDesc"),
     },
     {
       icon: <Zap className="h-8 w-8 sm:h-10 sm:w-10 text-secondary" />,
-      title: t("landing.aiPowered"),
-      description: t("landing.aiPoweredDesc"),
+      title: t("aiPowered"),
+      description: t("aiPoweredDesc"),
     },
     {
       icon: <Shield className="h-8 w-8 sm:h-10 sm:w-10 text-secondary" />,
-      title: t("landing.approvalWorkflow"),
-      description: t("landing.approvalWorkflowDesc"),
+      title: t("approvalWorkflow"),
+      description: t("approvalWorkflowDesc"),
     },
     {
       icon: <BarChart3 className="h-8 w-8 sm:h-10 sm:w-10 text-secondary" />,
-      title: t("landing.analytics"),
-      description: t("landing.analyticsDesc"),
+      title: t("analytics"),
+      description: t("analyticsDesc"),
     },
   ]
 
   const howItWorksSteps = [
     {
       icon: <Send className="h-10 w-10 sm:h-12 sm:w-12 lg:h-14 lg:w-14 text-primary" />,
-      title: t("landing.step1Title"),
-      description: t("landing.step1Desc"),
+      title: t("step1Title"),
+      description: t("step1Desc"),
       step: "01",
     },
     {
       icon: <Brain className="h-10 w-10 sm:h-12 sm:w-12 lg:h-14 lg:w-14 text-primary" />,
-      title: t("landing.step2Title"),
-      description: t("landing.step2Desc"),
+      title: t("step2Title"),
+      description: t("step2Desc"),
       step: "02",
     },
     {
       icon: <FileText className="h-10 w-10 sm:h-12 sm:w-12 lg:h-14 lg:w-14 text-primary" />,
-      title: t("landing.step3Title"),
-      description: t("landing.step3Desc"),
+      title: t("step3Title"),
+      description: t("step3Desc"),
       step: "03",
     },
     {
       icon: <Users className="h-10 w-10 sm:h-12 sm:w-12 lg:h-14 lg:w-14 text-primary" />,
-      title: t("landing.step4Title"),
-      description: t("landing.step4Desc"),
+      title: t("step4Title"),
+      description: t("step4Desc"),
       step: "04",
     },
   ]
@@ -80,17 +80,17 @@ export default function LandingPage() {
     {
       name: "Maria Silva",
       company: "TechCorp",
-      quote: t("landing.testimonial1"),
+      quote: t("testimonial1"),
     },
     {
       name: "João Santos",
       company: "InnovateInc",
-      quote: t("landing.testimonial2"),
+      quote: t("testimonial2"),
     },
     {
       name: "Ana Costa",
       company: "GlobalTrade",
-      quote: t("landing.testimonial3"),
+      quote: t("testimonial3"),
     },
   ]
 
@@ -113,12 +113,12 @@ export default function LandingPage() {
                   size="sm"
                   className="text-sm px-3 py-2 h-8 sm:h-9 md:h-10 sm:text-base sm:px-4 md:px-5 bg-transparent"
                 >
-                  {t("auth.signIn")}
+                  {t("SignIn")}
                 </Button>
               </Link>
               <Link href="/register">
                 <Button size="sm" className="text-sm px-3 py-2 h-8 sm:h-9 md:h-10 sm:text-base sm:px-4 md:px-5">
-                  {t("auth.signUp")}
+                  {t("SignUp")}
                 </Button>
               </Link>
             </div>
@@ -150,11 +150,11 @@ export default function LandingPage() {
               <div className="flex flex-col gap-3">
                 <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button variant="outline" className="w-full bg-transparent h-10 text-base">
-                    {t("auth.signIn")}
+                    {t("SignIn")}
                   </Button>
                 </Link>
                 <Link href="/register" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button className="w-full h-10 text-base">{t("auth.signUp")}</Button>
+                  <Button className="w-full h-10 text-base">{t("SignUp")}</Button>
                 </Link>
               </div>
 
@@ -185,10 +185,10 @@ export default function LandingPage() {
 
         <div className="relative container mx-auto text-center max-w-4xl">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 sm:mb-6 lg:mb-8 leading-tight drop-shadow-sm px-2 sm:px-0">
-            {t("landing.heroTitle")}
+            {t("SmartQuote")}
           </h1>
           <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-muted-foreground mb-6 sm:mb-8 lg:mb-10 leading-relaxed drop-shadow-sm px-2 sm:px-0">
-            {t("landing.heroSubtitle")}
+            {t("heroSubtitle")}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 lg:gap-6 justify-center px-2 sm:px-0">
             <Link href="/register">
@@ -196,7 +196,7 @@ export default function LandingPage() {
                 size="lg"
                 className="w-full sm:w-auto text-base sm:text-lg lg:text-xl px-6 sm:px-8 lg:px-10 py-3 sm:py-4 shadow-lg hover:shadow-xl transition-shadow"
               >
-                {t("GetStarted")}
+                {t("Get Started")}
               </Button>
             </Link>
             <Link href="/login">
@@ -205,7 +205,7 @@ export default function LandingPage() {
                 size="lg"
                 className="w-full sm:w-auto text-base sm:text-lg lg:text-xl px-6 sm:px-8 lg:px-10 py-3 sm:py-4 bg-background/80 backdrop-blur-sm hover:bg-background/90 transition-colors"
               >
-                {t("SignInNow")}
+                {t("SignIn Now")}
               </Button>
             </Link>
           </div>
@@ -217,10 +217,10 @@ export default function LandingPage() {
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-10 sm:mb-12 lg:mb-16 xl:mb-20">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 sm:mb-6 lg:mb-8 xl:mb-10 leading-tight drop-shadow-sm px-2 sm:px-0">
-              {t("landing.howItWorksTitle")}
+              {t("How It Works")}
             </h2>
             <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-muted-foreground mb-6 sm:mb-8 lg:mb-10 xl:mb-12 leading-relaxed drop-shadow-sm px-2 sm:px-0">
-              {t("landing.howItWorksSubtitle")}
+              {t("How It Works")}
             </p>
           </div>
 
@@ -260,10 +260,10 @@ export default function LandingPage() {
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-10 sm:mb-12 lg:mb-16 xl:mb-20">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 sm:mb-6 lg:mb-8 xl:mb-10 leading-tight drop-shadow-sm px-2 sm:px-0">
-              {t("landing.featuresTitle")}
+              {t("Features")}
             </h2>
             <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-muted-foreground mb-6 sm:mb-8 lg:mb-10 xl:mb-12 leading-relaxed drop-shadow-sm px-2 sm:px-0">
-              {t("landing.featuresSubtitle")}
+              {t("Features")}
             </p>
           </div>
 
@@ -290,10 +290,10 @@ export default function LandingPage() {
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-10 sm:mb-12 lg:mb-16 xl:mb-20">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 sm:mb-6 lg:mb-8 xl:mb-10 leading-tight drop-shadow-sm px-2 sm:px-0">
-              {t("landing.testimonialsTitle")}
+              {t("Testimonials")}
             </h2>
             <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-muted-foreground mb-6 sm:mb-8 lg:mb-10 xl:mb-12 leading-relaxed drop-shadow-sm px-2 sm:px-0">
-              {t("landing.testimonialsSubtitle")}
+              {t("Testimonials")}
             </p>
           </div>
 
@@ -323,10 +323,10 @@ export default function LandingPage() {
       <section className="py-10 sm:py-12 lg:py-16 xl:py-20 px-4 sm:px-6 bg-primary text-primary-foreground">
         <div className="container mx-auto text-center max-w-4xl">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 lg:mb-8 xl:mb-10 leading-tight drop-shadow-sm px-2 sm:px-0">
-            {t("landing.ctaTitle")}
+            {t("cta")}
           </h2>
           <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl mb-6 sm:mb-8 lg:mb-10 xl:mb-12 opacity-90 leading-relaxed px-2 sm:px-0">
-            {t("landing.ctaSubtitle")}
+            {t("cta")}
           </p>
           <Link href="/register">
             <Button
@@ -334,7 +334,7 @@ export default function LandingPage() {
               variant="secondary"
               className="text-base sm:text-lg lg:text-xl xl:text-2xl px-6 sm:px-8 lg:px-10 xl:px-12 py-3 sm:py-4 lg:py-5 h-12 sm:h-14 lg:h-16"
             >
-              {t("landing.startFree")}
+              {t("Start Free")}
             </Button>
           </Link>
         </div>
@@ -349,27 +349,27 @@ export default function LandingPage() {
                 <img src="/rcs-company-logo.png" alt="RCS" className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10" />
                 <span className="font-bold text-foreground text-base sm:text-lg lg:text-xl">SmartQuote</span>
               </div>
-              <p className="text-muted-foreground text-sm sm:text-base lg:text-lg">{t("landing.footerDescription")}</p>
+              <p className="text-muted-foreground text-sm sm:text-base lg:text-lg">{t("Footer Description")}</p>
             </div>
 
             <div>
               <h4 className="font-semibold text-foreground mb-4 sm:mb-6 lg:mb-8 text-base sm:text-lg">
-                {t("landing.product")}
+                {t("Product")}
               </h4>
               <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base lg:text-lg text-muted-foreground">
                 <li>
                   <a href="#" className="hover:text-foreground transition-colors">
-                    {t("landing.features")}
+                    {t("Features")}
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:text-foreground transition-colors">
-                    {t("landing.pricing")}
+                    {t("Pricing")}
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:text-foreground transition-colors">
-                    {t("landing.security")}
+                    {t("Security")}
                   </a>
                 </li>
               </ul>
@@ -377,22 +377,22 @@ export default function LandingPage() {
 
             <div>
               <h4 className="font-semibold text-foreground mb-4 sm:mb-6 lg:mb-8 text-base sm:text-lg">
-                {t("landing.company")}
+                {t("Company")}
               </h4>
               <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base lg:text-lg text-muted-foreground">
                 <li>
                   <a href="#" className="hover:text-foreground transition-colors">
-                    {t("landing.about")}
+                    {t("About")}
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:text-foreground transition-colors">
-                    {t("landing.contact")}
+                    {t("Contact")}
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:text-foreground transition-colors">
-                    {t("landing.careers")}
+                    {t("Careers")}
                   </a>
                 </li>
               </ul>
@@ -400,22 +400,22 @@ export default function LandingPage() {
 
             <div>
               <h4 className="font-semibold text-foreground mb-4 sm:mb-6 lg:mb-8 text-base sm:text-lg">
-                {t("landing.support")}
+                {t("Support")}
               </h4>
               <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base lg:text-lg text-muted-foreground">
                 <li>
                   <a href="#" className="hover:text-foreground transition-colors">
-                    {t("landing.help")}
+                    {t("Help")}
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:text-foreground transition-colors">
-                    {t("landing.documentation")}
+                    {t("Documentation")}
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:text-foreground transition-colors">
-                    {t("landing.api")}
+                    {t("api")}
                   </a>
                 </li>
               </ul>
@@ -424,7 +424,7 @@ export default function LandingPage() {
 
           <div className="border-t border-border mt-6 sm:mt-8 lg:mt-10 xl:mt-12 pt-6 sm:pt-8 lg:pt-10 xl:pt-12 text-center">
             <p className="text-sm sm:text-base lg:text-lg text-muted-foreground">
-              © 2024 RCS SmartQuote. {t("landing.allRightsReserved")}
+              © 2024 RCS SmartQuote. {t("All Rights Reserved")}
             </p>
           </div>
         </div>
