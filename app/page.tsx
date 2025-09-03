@@ -463,6 +463,7 @@ import {
   Star,
   Award,
 } from "lucide-react"
+import Link from "next/link"
 
 export default function SmartQuoteLandingPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -629,9 +630,11 @@ export default function SmartQuoteLandingPage() {
               <a href="#funcionamento" className="text-gray-600 hover:text-blue-600 transition-colors">Como Funciona</a>
               <a href="#beneficios" className="text-gray-600 hover:text-blue-600 transition-colors">Benefícios</a>
             </nav>
+            <Link href="/login">
             <button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-lg hover:shadow-lg transition-shadow">
-              Demonstração
+              Entrar
             </button>
+            </Link>
           </div>
 
           <button
