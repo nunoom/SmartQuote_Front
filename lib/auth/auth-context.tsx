@@ -154,7 +154,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   const axiosInstance = axios.create({
-    baseURL: 'http://localhost:3001',
+    baseURL: 'https://smart-quote-ia-1.onrender.com/',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -180,7 +180,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const response = await axios.post('http://localhost:3001/auth/login', {
+      const response = await axios.post('https://smart-quote-ia-1.onrender.com/auth/login', {
         email,
         password,
       });
@@ -202,7 +202,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const register = async (name: string, email: string, password: string) => {
     setIsLoading(true);
     try {
-      const response = await axios.post('http://localhost:3001/auth/register', {
+      const response = await axios.post('https://smart-quote-ia-1.onrender.com/auth/register', {
         name,
         email,
         password,

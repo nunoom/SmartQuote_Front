@@ -12,15 +12,15 @@ export default function CustomersPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden">
+    <div className="flex min-h-screen bg-black overflow-hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-neutral-900 rounded-md shadow-lg border border-yellow-900/30 hover:bg-yellow-900/20 transition-all duration-300"
       >
         {sidebarOpen ? (
-          <X className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+          <X className="h-5 w-5 text-yellow-400 hover:rotate-6 transition-transform duration-200" />
         ) : (
-          <Menu className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+          <Menu className="h-5 w-5 text-yellow-400 hover:rotate-6 transition-transform duration-200" />
         )}
       </button>
 
@@ -30,9 +30,9 @@ export default function CustomersPage() {
 
       <div
         className={`
-        fixed lg:static inset-y-0 left-0 z-40 w-64 transform transition-transform duration-300 ease-in-out
-        ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-      `}
+          fixed lg:static inset-y-0 left-0 z-40 w-64 transform transition-transform duration-300 ease-in-out
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+        `}
       >
         <DashboardSidebar />
       </div>

@@ -4,7 +4,7 @@ import { DashboardSidebar } from "@/components/dashboard-sidebar"
 
 export default function QuotationsPage() {
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-black" style={{ fontFamily: "'Inter', sans-serif" }}>
       <DashboardSidebar />
       <main className="flex-1 p-6">
         <div className="max-w-7xl mx-auto space-y-6">
