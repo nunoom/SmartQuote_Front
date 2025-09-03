@@ -1,41 +1,76 @@
-"use client"
+'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Line, LineChart, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { useEffect, useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Line, LineChart, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { useAuth } from '@/lib/auth/auth-context';
+import { useLanguage } from '@/lib/i18n/language-context';
 
-const revenueData = [
-  { month: "Jan", revenue: 185000, target: 200000 },
-  { month: "Feb", revenue: 220000, target: 210000 },
-  { month: "Mar", revenue: 195000, target: 220000 },
-  { month: "Apr", revenue: 275000, target: 240000 },
-  { month: "May", revenue: 310000, target: 260000 },
-  { month: "Jun", revenue: 285000, target: 280000 },
-  { month: "Jul", revenue: 340000, target: 300000 },
-  { month: "Aug", revenue: 365000, target: 320000 },
-  { month: "Sep", revenue: 295000, target: 340000 },
-  { month: "Oct", revenue: 420000, target: 360000 },
-  { month: "Nov", revenue: 385000, target: 380000 },
-  { month: "Dec", revenue: 445000, target: 400000 },
-]
+interface RevenueData {
+  month: string;
+  revenue: number;
+  target: number;
+}
 
 export function RevenueChart() {
+  const { t } = useLanguage();
+  const { axiosInstance } = useAuth();
+  const [revenueData, setRevenueData] = useState<RevenueData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!axiosInstance) {
+      console.error('axiosInstance is undefined');
+      setError('Failed to initialize HTTP client');
+      setLoading(false);
+      return;
+    }
+
+    const fetchRevenueTrends = async () => {
+      try {
+        console.log('Fetching revenue trends...');
+        const response = await axiosInstance.get('/dashboard/revenue-trends', {
+          params: { year: new Date().getFullYear() }, // Fetch for current year
+        });
+        console.log('Revenue trends response:', response.data);
+        setRevenueData(response.data);
+      } catch (err: any) {
+        console.error('Error fetching revenue trends:', err);
+        setError(`Failed to load revenue trends: ${err.message}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRevenueTrends();
+  }, [axiosInstance]);
+
+  if (loading) {
+    return <div className="text-center text-gray-600 dark:text-gray-400">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center text-red-500">{error}</div>;
+  }
+
   return (
     <Card className="dark:bg-gray-800 dark:border-gray-700 overflow-hidden">
       <CardHeader className="pb-3">
-        <CardTitle className="dark:text-white text-base sm:text-lg">Revenue Trends</CardTitle>
-        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Monthly revenue vs targets</p>
+        <CardTitle className="dark:text-white text-base sm:text-lg">{t('revenue_trends')}</CardTitle>
+        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">{t('monthly_revenue_vs_targets')}</p>
       </CardHeader>
       <CardContent className="pt-0 px-2 sm:px-6 overflow-hidden">
         <ChartContainer
           config={{
             revenue: {
-              label: "Revenue",
-              color: "hsl(var(--chart-1))",
+              label: t('revenue'),
+              color: 'hsl(var(--chart-1))',
             },
             target: {
-              label: "Target",
-              color: "hsl(var(--chart-2))",
+              label: t('target'),
+              color: 'hsl(var(--chart-2))',
             },
           }}
           className="h-[180px] sm:h-[250px] lg:h-[300px] w-full overflow-hidden"
@@ -46,19 +81,19 @@ export function RevenueChart() {
               <XAxis dataKey="month" fontSize={9} />
               <YAxis fontSize={9} width={40} />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <Line type="monotone" dataKey="revenue" stroke="var(--color-revenue)" strokeWidth={2} name="Revenue" />
+              <Line type="monotone" dataKey="revenue" stroke="var(--color-revenue)" strokeWidth={2} name={t('revenue')} />
               <Line
                 type="monotone"
                 dataKey="target"
                 stroke="var(--color-target)"
                 strokeWidth={2}
                 strokeDasharray="5 5"
-                name="Target"
+                name={t('target')}
               />
             </LineChart>
           </ResponsiveContainer>
         </ChartContainer>
       </CardContent>
     </Card>
-  )
+  );
 }

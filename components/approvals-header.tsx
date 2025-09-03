@@ -9,7 +9,7 @@ export function ApprovalsHeader() {
   const rejectedCount = mockApprovalRequests.filter((req) => req.status === "rejected").length
 
   return (
-    <div className="space-y-4 flex items-center gap-3">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-900">Approval Requests</h1>
         <div className="flex items-center gap-4">
@@ -28,7 +28,7 @@ export function ApprovalsHeader() {
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
         <Select defaultValue="all">
           <SelectTrigger className="w-48">
             <SelectValue />

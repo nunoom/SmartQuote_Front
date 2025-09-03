@@ -1,59 +1,77 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { mockEmailRequests } from "@/lib/mock-data"
-import { Mail, Clock, CheckCircle, AlertTriangle } from "lucide-react"
+'use client';
 
-export function EmailProcessingStats() {
-  const totalEmails = mockEmailRequests.length
-  const pendingEmails = mockEmailRequests.filter((email) => email.status === "pending").length
-  const processedEmails = mockEmailRequests.filter((email) => email.status === "processed").length
-  const failedEmails = mockEmailRequests.filter((email) => email.status === "failed").length
+import { useState, useEffect } from 'react';
+import { useAuth } from '@/lib/auth/auth-context';
+import { useLanguage } from '@/lib/i18n/language-context';
 
-  const stats = [
-    {
-      title: "Total Emails",
-      value: totalEmails.toString(),
-      icon: Mail,
-      color: "text-blue-600",
-      bgColor: "bg-blue-50",
-    },
-    {
-      title: "Pending Processing",
-      value: pendingEmails.toString(),
-      icon: Clock,
-      color: "text-orange-600",
-      bgColor: "bg-orange-50",
-    },
-    {
-      title: "Successfully Processed",
-      value: processedEmails.toString(),
-      icon: CheckCircle,
-      color: "text-green-600",
-      bgColor: "bg-green-50",
-    },
-    {
-      title: "Processing Failed",
-      value: failedEmails.toString(),
-      icon: AlertTriangle,
-      color: "text-red-600",
-      bgColor: "bg-red-50",
-    },
-  ]
+interface EmailProcessingStatsProps {
+  syncTrigger: number;
+  filters?: {
+    status?: 'PENDING' | 'PROCESSED' | 'FAILED' | 'ALL';
+    sortBy?: 'recent' | 'oldest' | 'priority';
+    search?: string;
+  };
+}
+
+export function EmailProcessingStats({ syncTrigger, filters = { status: 'ALL', sortBy: 'recent', search: '' } }: EmailProcessingStatsProps) {
+  const { t } = useLanguage();
+  const { axiosInstance } = useAuth();
+  const [stats, setStats] = useState({
+    totalCount: 0,
+    pendingCount: 0,
+    processedCount: 0,
+    failedCount: 0,
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchStats = async () => {
+    if (!axiosInstance) return;
+    setLoading(true);
+    try {
+      const response = await axiosInstance.get('/dashboard/quotation-requests', {
+        params: {
+          status: filters.status,
+          sortBy: filters.sortBy,
+          search: filters.search,
+        },
+      });
+      console.log('Email processing stats response:', response.data);
+      setStats(response.data);
+    } catch (err: any) {
+      setError(`Failed to fetch stats: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchStats();
+  }, [axiosInstance, syncTrigger, filters.status, filters.sortBy, filters.search]);
+
+  const statItems = [
+    { label: t('total_requests'), value: stats.totalCount, color: 'bg-blue-100 text-blue-800' },
+    { label: t('pending'), value: stats.pendingCount, color: 'bg-orange-100 text-orange-800' },
+    { label: t('processed'), value: stats.processedCount, color: 'bg-green-100 text-green-800' },
+    { label: t('failed'), value: stats.failedCount, color: 'bg-red-100 text-red-800' },
+  ];
+
+  if (loading) {
+    return <div className="text-center text-gray-600 dark:text-gray-400">{t('loading')}</div>;
+  }
+
+  if (error) {
+    return <div className="text-center text-red-500">{error}</div>;
+  }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      {stats.map((stat) => (
-        <Card key={stat.title} className="border-0 shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">{stat.title}</CardTitle>
-            <div className={`p-2 rounded-md ${stat.bgColor}`}>
-              <stat.icon className={`h-4 w-4 ${stat.color}`} />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
-          </CardContent>
-        </Card>
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {statItems.map((item) => (
+        <div key={item.label} className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+          <p className="text-sm text-gray-500 dark:text-gray-400">{item.label}</p>
+          <p className={`text-lg font-semibold ${item.color}`}>{item.value}</p>
+        </div>
       ))}
     </div>
-  )
+  );
 }

@@ -1,71 +1,159 @@
-// app/email-requests/page.tsx
-"use client"; // Adicionada para suportar useState
-import { useState } from "react";
-import { EmailRequestsHeader } from "@/components/email-requests-header";
-import { EmailRequestsList } from "@/components/email-requests-list";
-import { EmailProcessingStats } from "@/components/email-processing-stats";
-import { DashboardSidebar } from "@/components/dashboard-sidebar";
-import { MenuIcon, XIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import { EmailRequestsHeader } from '@/components/email-requests-header';
+import { EmailRequestsList } from '@/components/email-requests-list';
+import { EmailProcessingStats } from '@/components/email-processing-stats';
+import { DashboardSidebar } from '@/components/dashboard-sidebar';
+import { useAuth } from '@/lib/auth/auth-context';
+import { useLanguage } from '@/lib/i18n/language-context';
+
+interface QuotationRequest {
+  id: string;
+  requester: string;
+  email: string;
+  description: string;
+  status: string;
+  createdAt: string;
+  priority?: string;
+}
 
 export default function EmailRequestsPage() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
+  const { t } = useLanguage();
+  const { axiosInstance } = useAuth();
+  const [requests, setRequests] = useState<QuotationRequest[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [filters, setFilters] = useState<{
+    status: 'ALL' | 'PENDING' | 'COMLETED' | 'REJECTED';
+    sortBy: 'recent' | 'oldest' | 'priority';
+    search: string;
+  }>({
+    status: 'ALL',
+    sortBy: 'recent',
+    search: '',
+  });
+  const [syncTrigger, setSyncTrigger] = useState(0);
+  const handleFilterChange = useCallback(
+    (newFilters: { status: string; sortBy: string; search: string }) => {
+      setFilters({
+        status: newFilters.status as 'ALL' | 'PENDING' | 'COMLETED' | 'REJECTED',
+        sortBy: newFilters.sortBy as 'recent' | 'oldest' | 'priority',
+        search: newFilters.search,
+      });
+    },
+    [], // Stable reference, no dependencies
+  );
+  const handleSync = () => {
+    setSyncTrigger((prev) => prev + 1);
   };
 
+
+  useEffect(() => {
+    if (!axiosInstance) {
+      console.error('axiosInstance is undefined');
+      setError('Failed to initialize HTTP client');
+      setLoading(false);
+      return;
+    }
+
+    const fetchRequests = async () => {
+      try {
+        console.log('Fetching filtered quotation requests...', filters);
+        const response = await axiosInstance.get('/dashboard/quotation-requests', {
+          params: {
+            status: filters.status === 'ALL' ? 'ALL' : filters.status.toUpperCase(),
+            sortBy: filters.sortBy,
+            search: filters.search,
+          },
+        });
+        console.log('Filtered requests response:', response.data);
+        setRequests(response.data.requests);
+      } catch (err: any) {
+        console.error('Error fetching requests:', err);
+        setError(`Failed to load requests: ${err.message}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRequests();
+  }, [axiosInstance, filters]);
+
   return (
-    <div className="flex h-screen w-full bg-gray-50">
-      {/* Sidebar */}
-      <div
-        className={cn(
-          "fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out",
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full",
-          "md:static md:translate-x-0 md:w-64 md:flex-shrink-0"
-        )}
-      >
-        <div className="flex items-center justify-between p-4 md:hidden">
-          <span className="text-lg font-bold text-gray-900">Menu</span>
-          <button
-            onClick={toggleSidebar}
-            className="p-2 focus:outline-none"
-            aria-label="Close sidebar"
-          >
-            <XIcon className="h-6 w-6" />
-          </button>
-        </div>
-        <DashboardSidebar />
-      </div>
-
-      {/* Botão Hambúrguer (visível apenas no mobile) */}
-      <button
-        onClick={toggleSidebar}
-        className={cn(
-          "fixed top-24 z-50 p-2 bg-white border rounded-md shadow-md md:hidden",
-          isSidebarOpen && "hidden"
-        )}
-        aria-label="Open sidebar"
-      >
-        <MenuIcon className="h-6 w-6" />
-      </button>
-
-      {/* Conteúdo Principal */}
-      <main className="flex-1 p-6 pt-24 md:pt-16 overflow-auto">
+    <div className="flex min-h-screen bg-gray-50">
+      <DashboardSidebar />
+      <main className="flex-1 p-6">
         <div className="max-w-7xl mx-auto space-y-6">
-          <EmailRequestsHeader />
-          <EmailProcessingStats />
-          <EmailRequestsList />
+          <EmailRequestsHeader onFilterChange={handleFilterChange} onSync={handleSync} />
+          <EmailProcessingStats syncTrigger={syncTrigger} filters={filters}/>
+          {loading && <div className="text-center text-gray-600 dark:text-gray-400">{t('loading')}</div>}
+          {error && <div className="text-center text-red-500">{error}</div>}
+          {!loading && !error && <EmailRequestsList requests={requests} />}
         </div>
       </main>
-
-      {/* Overlay para mobile quando a sidebar está aberta */}
-      {isSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-30 md:hidden"
-          onClick={toggleSidebar}
-        />
-      )}
     </div>
   );
 }
+
+// 'use client';
+
+// import { useState, useCallback, useEffect } from 'react';
+// import EmailProcessingStats from '@/components/email-processing-stats';
+// import EmailRequestsList from '@/components/email-requests-list';
+// import EmailRequestsHeader from '@/components/email-requests-header';
+// import { useAuth } from '@/lib/auth/auth-context';
+
+// export default function EmailRequestsPage() {
+//   const { axiosInstance } = useAuth();
+//   const [filters, setFilters] = useState({
+//     status: 'ALL' as 'PENDING' | 'COMLETED' | 'FAILED' | 'ALL',
+//     sortBy: 'recent' as 'recent' | 'oldest' | 'priority',
+//     search: '',
+//   });
+//   const [syncTrigger, setSyncTrigger] = useState(0);
+//   const [requests, setRequests] = useState([]);
+
+//   const handleFilterChange = useCallback((newFilters: Partial<typeof filters>) => {
+//     setFilters((prev) => ({ ...prev, ...newFilters }));
+//   }, []);
+
+//   const handleSync = useCallback(async () => {
+//     if (!axiosInstance) return;
+//     try {
+//       await axiosInstance.post('/dashboard/sync-emails');
+//       setSyncTrigger((prev) => prev + 1);
+//     } catch (err: any) {
+//       console.error('Error syncing emails:', err);
+//     }
+//   }, [axiosInstance]);
+
+//   const fetchRequests = async () => {
+//     if (!axiosInstance) return;
+//     try {
+//       const response = await axiosInstance.get('/dashboard/quotation-requests', {
+//         params: filters,
+//       });
+//       console.log('Filtered requests response:', response.data);
+//       setRequests(response.data.requests);
+//     } catch (err: any) {
+//       console.error('Error fetching requests:', err);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchRequests();
+//   }, [axiosInstance, syncTrigger, filters.status, filters.sortBy, filters.search]);
+
+//   return (
+//     <div className="p-6">
+//       <EmailRequestsHeader
+//         filters={filters}
+//         onFilterChange={handleFilterChange}
+//         onSync={handleSync}
+//       />
+//       <EmailProcessingStats syncTrigger={syncTrigger} filters={filters} />
+//       <EmailRequestsList requests={requests} />
+//     </div>
+//   );
+// }

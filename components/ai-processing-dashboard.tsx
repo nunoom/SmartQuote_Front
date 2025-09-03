@@ -1,4 +1,3 @@
-// components/AIProcessingDashboard.tsx
 "use client"
 
 import { useState } from "react"
@@ -26,9 +25,9 @@ export function AIProcessingDashboard() {
   const selectedEmailData = mockEmailRequests.find((email) => email.id === selectedEmail)
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* AI Performance Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="border-0 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">Emails Processed</CardTitle>
@@ -83,7 +82,7 @@ export function AIProcessingDashboard() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="text-sm font-medium text-gray-700">Processing Model</label>
               <Select defaultValue="gpt-4">
@@ -127,7 +126,7 @@ export function AIProcessingDashboard() {
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 border-t">
+          <div className="flex items-center gap-4 pt-4 border-t">
             <Badge variant="secondary" className="bg-green-100 text-green-800">
               AI Model: Active
             </Badge>
@@ -175,14 +174,14 @@ export function AIProcessingDashboard() {
         <CardContent>
           <div className="space-y-3">
             {processedEmails.slice(0, 3).map((email) => (
-              <div key={email.id} className="flex flex-col sm:flex-row items-center justify-between p-3 bg-gray-50 rounded-md">
+              <div key={email.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
                 <div>
-                  <p className="font-medium text-gray-900 truncate">{email.subject}</p>
-                  <p className="text-sm text-gray-600 truncate">
+                  <p className="font-medium text-gray-900">{email.subject}</p>
+                  <p className="text-sm text-gray-600">
                     Processed {email.processedAt?.toLocaleDateString()} • {email.from}
                   </p>
                 </div>
-                <div className="flex items-center gap-2 mt-2 sm:mt-0">
+                <div className="flex items-center gap-2">
                   <Badge className="bg-green-100 text-green-800">Success</Badge>
                   <Button variant="outline" size="sm">
                     View Result
