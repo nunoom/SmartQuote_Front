@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
   Mail,
   Zap,
@@ -44,6 +44,8 @@ import {
   Cloud,
   Lock,
   Sparkles,
+  Play,
+  Pause
 } from "lucide-react"
 import Link from "next/link"
 import { LanguageSwitcher } from "@/components/language-switcher"
@@ -55,6 +57,10 @@ export default function SmartQuoteLandingPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [currentTeamIndex, setCurrentTeamIndex] = useState(0)
   const { t } = useLanguage()
+  // Dentro do seu componente, adicione estes estados:
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [progress, setProgress] = useState(0);
+
 
   // Dados da equipe desenvolvedora
   const teamMembers = [
@@ -114,6 +120,34 @@ export default function SmartQuoteLandingPage() {
       }
     }
   ]
+
+  // Efeito para o carousel automático
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    let progressInterval: NodeJS.Timeout;
+
+    if (isAutoPlaying) {
+      // Intervalo para mudar de membro a cada 8 segundos
+      interval = setInterval(() => {
+        setCurrentTeamIndex((prev) => (prev + 1) % teamMembers.length);
+      }, 8000);
+
+      // Intervalo para atualizar a barra de progresso
+      progressInterval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 8) {
+            return 0;
+          }
+          return prev + 0.1;
+        });
+      }, 100);
+    }
+
+    return () => {
+      clearInterval(interval);
+      clearInterval(progressInterval);
+    };
+  }, [isAutoPlaying, teamMembers.length]);
 
   // Funções para navegar no carousel da equipe
   const nextTeamMember = () => {
@@ -349,7 +383,7 @@ export default function SmartQuoteLandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative py-20 px-4 bg-gradient-to-br from-blue-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 overflow-hidden transition-colors duration-300">
+      <section className="relative py-13 px-4 bg-gradient-to-br from-blue-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 overflow-hidden transition-colors duration-300">
         <div className="absolute inset-0 opacity-5 dark:opacity-[0.03]">
           <div className="absolute inset-0" style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%233B82F6' fill-opacity='0.2'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
@@ -370,13 +404,55 @@ export default function SmartQuoteLandingPage() {
             </p>
           </div>
 
-          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-8 shadow-sm border border-gray-200 dark:border-gray-700 mb-12 transition-colors duration-300">
-            <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
-              {t("fromEmailToQuote")}
-            </p>
-            <p className="text-md text-gray-600 dark:text-gray-400 mt-4">
-              A solução completa para automatizar seu processo de cotações, desde a captura de pedidos por email até a aprovação final e análise de desempenho.
-            </p>
+          <div className="relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700 mb-12 transition-all duration-500 hover:shadow-xl hover:scale-[1.01] relative overflow-hidden group">
+            {/* Efeito de fundo animado */}
+            <div className="absolute inset-0 overflow-hidden rounded-2xl">
+              <div className="absolute -inset-10 opacity-30">
+                <div className="absolute top-0 left-0 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+                <div className="absolute top-0 right-0 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+                <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+              </div>
+            </div>
+
+            {/* Container principal com animação de entrada */}
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-gray-200/70 dark:border-gray-700/70  transition-all duration-500 hover:shadow-xl hover:scale-[1.02] relative overflow-hidden">
+
+              {/* Elementos decorativos animados */}
+              <div className="absolute top-0 right-0 w-24 h-24 -mt-10 -mr-10">
+                <div className="absolute w-16 h-16 bg-blue-500/10 rounded-full animate-ping"></div>
+                <div className="absolute w-16 h-16 bg-blue-500/20 rounded-full"></div>
+              </div>
+
+              <div className="absolute bottom-0 left-0 w-16 h-16 -mb-6 -ml-6">
+                <div className="absolute w-12 h-12 bg-yellow-500/10 rounded-full animate-pulse"></div>
+              </div>
+
+              {/* Ícone flutuante */}
+              <div className="absolute top-4 left-4 opacity-10">
+                <Zap className="h-16 w-16 text-blue-500 animate-bounce-slow" />
+              </div>
+
+              {/* Conteúdo de texto */}
+              <div className="relative z-10">
+                <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed transform transition-transform duration-700 hover:translate-x-1">
+                  {t("fromEmailToQuote")}
+                </p>
+                <p className="text-md text-gray-600 dark:text-gray-400 mt-4 transform transition-transform duration-700 hover:translate-x-1">
+                  A solução completa para automatizar seu processo de cotações, desde a captura de pedidos por email até a aprovação final e análise de desempenho.
+                </p>
+              </div>
+
+              {/* Elementos decorativos inferiores */}
+              <div className="absolute bottom-2 right-4 flex space-x-1">
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="w-2 h-2 bg-blue-400/30 rounded-full animate-bounce"
+                    style={{ animationDelay: `${i * 0.2}s` }}
+                  ></div>
+                ))}
+              </div>
+            </div>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -389,10 +465,10 @@ export default function SmartQuoteLandingPage() {
             </button>
           </div>
         </div>
-      </section>
+      </section >
 
       {/* Estatísticas */}
-      <section className="py-12 bg-gray-50 dark:bg-gray-800/50 transition-colors duration-300">
+      < section className="py-12 bg-gray-50 dark:bg-gray-800/50 transition-colors duration-300" >
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
@@ -403,10 +479,10 @@ export default function SmartQuoteLandingPage() {
             ))}
           </div>
         </div>
-      </section>
+      </section >
 
       {/* Problema e Solução */}
-      <section id="problema" className="py-20 px-4 bg-white dark:bg-gray-900 transition-colors duration-300">
+      < section id="problema" className="py-20 px-4 bg-white dark:bg-gray-900 transition-colors duration-300" >
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
@@ -453,10 +529,10 @@ export default function SmartQuoteLandingPage() {
             ))}
           </div>
         </div>
-      </section>
+      </section >
 
       {/* Fluxo de Funcionamento */}
-      <section id="funcionamento" className="py-20 px-4 bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
+      < section id="funcionamento" className="py-20 px-4 bg-gray-50 dark:bg-gray-950 transition-colors duration-300" >
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
@@ -468,22 +544,86 @@ export default function SmartQuoteLandingPage() {
           </div>
 
           {/* Diagrama Visual Simples */}
-          <div className="mb-16 p-8 bg-white dark:bg-gray-800/30 rounded-2xl border border-gray-200 dark:border-gray-700 transition-colors duration-300">
-            <div className="flex flex-wrap justify-center items-center gap-4 text-center">
-              <div className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-lg font-semibold shadow-sm">Pedido</div>
-              <ArrowRight className="h-6 w-6 text-gray-500 dark:text-gray-400" />
-              <div className="bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 px-4 py-2 rounded-lg font-semibold shadow-sm">IA</div>
-              <ArrowRight className="h-6 w-6 text-gray-500 dark:text-gray-400" />
-              <div className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 px-4 py-2 rounded-lg font-semibold shadow-sm">Fornecedores</div>
-              <ArrowRight className="h-6 w-6 text-gray-500 dark:text-gray-400" />
-              <div className="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-4 py-2 rounded-lg font-semibold shadow-sm">Cotação</div>
-              <ArrowRight className="h-6 w-6 text-gray-500 dark:text-gray-400" />
-              <div className="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 px-4 py-2 rounded-lg font-semibold shadow-sm">Gestor</div>
-              <ArrowRight className="h-6 w-6 text-gray-500 dark:text-gray-400" />
-              <div className="bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 px-4 py-2 rounded-lg font-semibold shadow-sm">Cliente</div>
+          <div className="mb-16 p-8 bg-white dark:bg-gray-800/30 rounded-2xl border border-gray-200 dark:border-gray-700 transition-all duration-500 hover:shadow-lg relative overflow-hidden">
+            {/* Efeito de fundo sutil */}
+            <div className="absolute inset-0 opacity-5">
+              <div className="absolute top-0 left-0 w-32 h-32 bg-blue-400 rounded-full blur-3xl animate-pulse"></div>
+              <div className="absolute bottom-0 right-0 w-32 h-32 bg-purple-400 rounded-full blur-3xl animate-pulse animation-delay-2000"></div>
+            </div>
+
+            <div className="relative z-10">
+              <div className="flex flex-wrap justify-center items-center gap-4 text-center">
+                {/* Pedido */}
+                <div className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-lg font-semibold shadow-sm transform transition-all duration-700 hover:scale-110 hover:shadow-md animate-fade-in-up animation-delay-100">
+                  <div className="flex items-center">
+                    <Mail className="h-4 w-4 mr-2" />
+                    <span>Pedido</span>
+                  </div>
+                </div>
+
+                <ArrowRight className="h-6 w-6 text-gray-500 dark:text-gray-400 animate-bounce-horizontal" />
+
+                {/* IA */}
+                <div className="bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 px-4 py-2 rounded-lg font-semibold shadow-sm transform transition-all duration-700 hover:scale-110 hover:shadow-md animate-fade-in-up animation-delay-300">
+                  <div className="flex items-center">
+                    <Brain className="h-4 w-4 mr-2" />
+                    <span>IA</span>
+                  </div>
+                </div>
+
+                <ArrowRight className="h-6 w-6 text-gray-500 dark:text-gray-400 animate-bounce-horizontal animation-delay-200" />
+
+                {/* Fornecedores */}
+                <div className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 px-4 py-2 rounded-lg font-semibold shadow-sm transform transition-all duration-700 hover:scale-110 hover:shadow-md animate-fade-in-up animation-delay-500">
+                  <div className="flex items-center">
+                    <Users className="h-4 w-4 mr-2" />
+                    <span>Fornecedores</span>
+                  </div>
+                </div>
+
+                <ArrowRight className="h-6 w-6 text-gray-500 dark:text-gray-400 animate-bounce-horizontal animation-delay-400" />
+
+                {/* Cotação */}
+                <div className="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-4 py-2 rounded-lg font-semibold shadow-sm transform transition-all duration-700 hover:scale-110 hover:shadow-md animate-fade-in-up animation-delay-700">
+                  <div className="flex items-center">
+                    <FileText className="h-4 w-4 mr-2" />
+                    <span>Cotação</span>
+                  </div>
+                </div>
+
+                <ArrowRight className="h-6 w-6 text-gray-500 dark:text-gray-400 animate-bounce-horizontal animation-delay-600" />
+
+                {/* Gestor */}
+                <div className="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 px-4 py-2 rounded-lg font-semibold shadow-sm transform transition-all duration-700 hover:scale-110 hover:shadow-md animate-fade-in-up animation-delay-900">
+                  <div className="flex items-center">
+                    <UserCheck className="h-4 w-4 mr-2" />
+                    <span>Gestor</span>
+                  </div>
+                </div>
+
+                <ArrowRight className="h-6 w-6 text-gray-500 dark:text-gray-400 animate-bounce-horizontal animation-delay-800" />
+
+                {/* Cliente */}
+                <div className="bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 px-4 py-2 rounded-lg font-semibold shadow-sm transform transition-all duration-700 hover:scale-110 hover:shadow-md animate-fade-in-up animation-delay-1100">
+                  <div className="flex items-center">
+                    <span>Cliente</span>
+                    <CheckCircle className="h-4 w-4 ml-2 text-green-500" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Barra de progresso animada */}
+            <div className="mt-6 relative">
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div className="bg-gradient-to-r from-blue-500 to-indigo-500 h-2 rounded-full animate-progress-bar"></div>
+              </div>
+              <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+                <span>Início</span>
+                <span>Concluído</span>
+              </div>
             </div>
           </div>
-
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {flowSteps.map((step, index) => (
               <div key={index} className={`relative ${step.color} border rounded-2xl p-6 hover:shadow-md transition-all duration-300`}>
@@ -499,10 +639,10 @@ export default function SmartQuoteLandingPage() {
             ))}
           </div>
         </div>
-      </section>
+      </section >
 
       {/* Principais Funcionalidades */}
-      <section className="py-20 px-4 bg-white dark:bg-gray-900 transition-colors duration-300">
+      < section className="py-20 px-4 bg-white dark:bg-gray-900 transition-colors duration-300" >
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
@@ -525,10 +665,10 @@ export default function SmartQuoteLandingPage() {
             ))}
           </div>
         </div>
-      </section>
+      </section >
 
       {/* Tecnologias Utilizadas */}
-      <section className="py-16 bg-gray-50 dark:bg-gray-800/50 transition-colors duration-300">
+      < section className="py-16 bg-gray-50 dark:bg-gray-800/50 transition-colors duration-300" >
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
@@ -548,10 +688,10 @@ export default function SmartQuoteLandingPage() {
             ))}
           </div>
         </div>
-      </section>
+      </section >
 
       {/* Benefícios */}
-      <section id="beneficios" className="py-20 px-4 bg-white dark:bg-gray-900 transition-colors duration-300">
+      < section id="beneficios" className="py-20 px-4 bg-white dark:bg-gray-900 transition-colors duration-300" >
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
@@ -577,95 +717,118 @@ export default function SmartQuoteLandingPage() {
             ))}
           </div>
         </div>
-      </section>
+      </section >
 
       {/* Equipa Desenvolvedora */}
-      <section id="equipa" className="py-20 px-4 bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-              Nossa Equipa
-            </h2>
-            <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
-              Conheça os talentosos profissionais por trás do SmartQuote, dedicados a revolucionar o processo de cotações com tecnologia de ponta.
-            </p>
-          </div>
-
-          <div className="relative">
-            {/* Carousel Container */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700 transition-all duration-300">
-              <div className="flex flex-col md:flex-row items-center">
-                {/* Imagem do membro da equipa */}
-                <div className="w-full md:w-1/3 mb-6 md:mb-0 md:pr-8">
-                  <div className="relative w-48 h-48 mx-auto">
-                    <div className="w-full h-full bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-400">
-                      <Users className="h-16 w-16" />
+      < section id="equipa" className="py-20 px-30 bg-gray-50 dark:bg-gray-950 transition-colors duration-300" >
+        <div className="relative">
+          {/* Card principal com animação de transição */}
+          <div
+            className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700 transition-all duration-500"
+            key={currentTeamIndex} // Esta key força a recriação do componente para animações de entrada/saída
+          >
+            <div className="flex flex-col md:flex-row items-center">
+              {/* Imagem do membro da equipa */}
+              <div className="w-full md:w-1/3 mb-6 md:mb-0 md:pr-8">
+                <div className="relative w-48 h-48 mx-auto">
+                  <div className="w-full h-full bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-400">
+                    <Users className="h-16 w-16" />
+                  </div>
+                  {/* Indicador de carregamento da próxima imagem */}
+                  <div className="absolute -bottom-2 left-0 right-0">
+                    <div className="h-1 w-full bg-gray-200 dark:bg-gray-700 rounded-full">
+                      <div
+                        className="h-1 bg-blue-500 rounded-full transition-all duration-5000 ease-linear"
+                        style={{ width: `${(progress / 8) * 100}%` }}
+                      ></div>
                     </div>
                   </div>
                 </div>
+              </div>
 
-                {/* Informações do membro da equipa */}
-                <div className="w-full md:w-2/3">
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-                    {teamMembers[currentTeamIndex].name}
-                  </h3>
-                  <p className="text-blue-600 dark:text-blue-400 font-medium mb-4">
-                    {teamMembers[currentTeamIndex].role}
-                  </p>
-                  <p className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
-                    {teamMembers[currentTeamIndex].description}
-                  </p>
+              {/* Informações do membro da equipa */}
+              <div className="w-full md:w-2/3">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2 animate-fade-in">
+                  {teamMembers[currentTeamIndex].name}
+                </h3>
+                <p className="text-blue-600 dark:text-blue-400 font-medium mb-4 animate-fade-in animation-delay-100">
+                  {teamMembers[currentTeamIndex].role}
+                </p>
+                <p className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed animate-fade-in animation-delay-200">
+                  {teamMembers[currentTeamIndex].description}
+                </p>
 
-                  {/* Social Links */}
-                  <div className="flex space-x-4">
-                    <a href={teamMembers[currentTeamIndex].social.github} className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300">
-                      <Github className="h-6 w-6" />
-                    </a>
-                    <a href={teamMembers[currentTeamIndex].social.linkedin} className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300">
-                      <Linkedin className="h-6 w-6" />
-                    </a>
-                    <a href={teamMembers[currentTeamIndex].social.portfolio} className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300">
-                      <Globe className="h-6 w-6" />
-                    </a>
-                  </div>
+                {/* Social Links */}
+                <div className="flex space-x-4 animate-fade-in animation-delay-300">
+                  <a href={teamMembers[currentTeamIndex].social.github} className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                    <Github className="h-6 w-6" />
+                  </a>
+                  <a href={teamMembers[currentTeamIndex].social.linkedin} className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                    <Linkedin className="h-6 w-6" />
+                  </a>
+                  <a href={teamMembers[currentTeamIndex].social.portfolio} className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 transform hover:scale-110">
+                    <Globe className="h-6 w-6" />
+                  </a>
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Navigation Buttons */}
-            <button
-              onClick={prevTeamMember}
-              className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-6 bg-white dark:bg-gray-800 p-2 rounded-full shadow-md border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300"
-            >
-              <ChevronLeft className="h-6 w-6 text-gray-600 dark:text-gray-300" />
-            </button>
-            <button
-              onClick={nextTeamMember}
-              className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-6 bg-white dark:bg-gray-800 p-2 rounded-full shadow-md border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300"
-            >
-              <ChevronRightIcon className="h-6 w-6 text-gray-600 dark:text-gray-300" />
-            </button>
+          {/* Navigation Buttons */}
+          <button
+            onClick={prevTeamMember}
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-6 bg-white dark:bg-gray-800 p-3 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 hover:scale-110"
+          >
+            <ChevronLeft className="h-6 w-6 text-gray-600 dark:text-gray-300" />
+          </button>
+          <button
+            onClick={nextTeamMember}
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-6 bg-white dark:bg-gray-800 p-3 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 hover:scale-110"
+          >
+            <ChevronRightIcon className="h-6 w-6 text-gray-600 dark:text-gray-300" />
+          </button>
 
-            {/* Indicators */}
-            <div className="flex justify-center mt-6 space-x-2">
-              {teamMembers.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentTeamIndex(index)}
-                  className={`w-3 h-3 rounded-full transition-colors duration-300 ${
-                    index === currentTeamIndex
-                      ? "bg-blue-600"
-                      : "bg-gray-300 dark:bg-gray-600"
+          {/* Indicators */}
+          <div className="flex justify-center mt-6 space-x-2">
+            {teamMembers.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  setCurrentTeamIndex(index);
+                  setProgress(0); // Reinicia o progresso ao clicar manualmente
+                }}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentTeamIndex
+                  ? "bg-blue-600 scale-125"
+                  : "bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500"
                   }`}
-                />
-              ))}
-            </div>
+              />
+            ))}
+          </div>
+
+          {/* Controles de autoplay */}
+          <div className="flex justify-center mt-4 space-x-4">
+            <button
+              onClick={() => setIsAutoPlaying(!isAutoPlaying)}
+              className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 flex items-center"
+            >
+              {isAutoPlaying ? (
+                <>
+                  <Pause className="h-4 w-4 mr-1" />
+                  Pausar
+                </>
+              ) : (
+                <>
+                  <Play className="h-4 w-4 mr-1" />
+                  Reproduzir
+                </>
+              )}
+            </button>
           </div>
         </div>
-      </section>
+      </section >
 
       {/* Call to Action Final */}
-      <section className="py-20 px-4 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/30 text-foreground relative overflow-hidden transition-colors duration-300">
+      < section className="py-20 px-4 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/30 text-foreground relative overflow-hidden transition-colors duration-300" >
         <div className="absolute inset-0 bg-white/30 dark:bg-black/10"></div>
         <div className="relative container mx-auto text-center max-w-4xl">
           <div className="mb-8">
@@ -703,10 +866,10 @@ export default function SmartQuoteLandingPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section >
 
       {/* Footer */}
-      <footer className="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 py-12 px-4 transition-colors duration-300">
+      < footer className="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 py-12 px-4 transition-colors duration-300" >
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
@@ -769,7 +932,7 @@ export default function SmartQuoteLandingPage() {
             </p>
           </div>
         </div>
-      </footer>
-    </div>
+      </footer >
+    </div >
   )
 }
