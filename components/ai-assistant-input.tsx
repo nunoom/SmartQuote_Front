@@ -31,99 +31,81 @@ export function AIAssistantInput() {
   const [error, setError] = useState<string | null>(null)
 
   const handleSend = async () => {
-    if (!input.trim()) return;
-    if (input.length > 500) {
-      setError("Mensagem muito longa. Use até 500 caracteres.");
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: Date.now().toString(),
-          content: "Mensagem muito longa. Use até 500 caracteres.",
-          sender: "ai",
-          timestamp: new Date(),
-          isError: true,
-        },
-      ]);
-      return;
-    }
-  
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      content: input,
-      sender: "user",
-      timestamp: new Date(),
-    };
-    setMessages((prev) => [...prev, userMessage]);
-    setInput("");
-    setIsLoading(true);
-    setError(null);
-  
-    let retries = 0;
-    const maxRetries = 3;
-    const retryDelay = 60000; // 1 minute
-    const timeout = 60000; // 60 seconds
-  
-    while (retries < maxRetries) {
-      try {
-        console.log(`Attempt ${retries + 1}/${maxRetries}: Sending request to /chat`, {
-          mensagem: input,
-          nome: "João",
-        });
-        const response = await fetch("https://smartquote-production-fc54.up.railway.app/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ mensagem: input, nome: "João" }),
-          signal: AbortSignal.timeout(timeout),
-        });
-  
-        console.log(`Response status: ${response.status}`, { headers: response.headers });
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(
-            errorData.response || `Erro HTTP: ${response.status} ${response.statusText}`
-          );
-        }
-  
-        const data = await response.json();
-        console.log("Response data:", data);
-        const aiMessage: Message = {
-          id: (Date.now() + 1).toString(),
-          content: data.response || "Desculpe not recebi uma resposta válida.",
-          sender: "ai",
-          timestampsony: new Date(),
-        };
-        setMessages((prev) => [...prev, aiMessage]);
-        break;
-      } catch (err) {
-        retries++;
-        console.error(`Attempt ${retries}/${maxRetries} failed:`, err);
-        const errorMessage =
-          err instanceof Error
-            ? err.message.includes("rate_limit_exceeded")
-              ? `Limite de tokens excedido. Tentando novamente (${retries}/${maxRetries})...`
-              : err.message.includes("signal timed out")
-              ? `Tempo de conexão esgotado. Tentando novamente (${retries}/${maxRetries})...`
-              : err.message.includes("Failed to fetch")
-              ? "Não foi possível conectar ao servidor. Verifique sua conexão ou tente novamente."
-              : err.message
-            : "Erro desconhecido. Tente novamente.";
-        
-        if (retries < maxRetries) {
-          setMessages((prev) => [
-            ...prev,
-            {
-              id: (Date.now() + 1).toString(),
-              content: errorMessage,
-              sender: "ai",
-              timestamp: new Date(),
-              isError: true,
-            },
-          ]);
-          await new Promise((resolve) => setTimeout(resolve, retryDelay));
-          continue;
-        }
-  
-        setError(errorMessage);
+  if (!input.trim()) return;
+  if (input.length > 500) {
+    setError("Mensagem muito longa. Use até 500 caracteres.");
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now().toString(),
+        content: "Mensagem muito longa. Use até 500 caracteres.",
+        sender: "ai",
+        timestamp: new Date(),
+        isError: true,
+      },
+    ]);
+    return;
+  }
+
+  const userMessage: Message = {
+    id: Date.now().toString(),
+    content: input,
+    sender: "user",
+    timestamp: new Date(),
+  };
+  setMessages((prev) => [...prev, userMessage]);
+  setInput("");
+  setIsLoading(true);
+  setError(null);
+
+  let retries = 0;
+  const maxRetries = 3;
+  const retryDelay = 60000; // 1 minute
+  const timeout = 60000; // 60 seconds to account for cold starts
+
+  while (retries < maxRetries) {
+    try {
+      console.log(`Attempt ${retries + 1}/${maxRetries}: Sending request to /chat`);
+      const response = await fetch("https://smartquote-iom8.onrender.com/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mensagem: input, nome: "João" }),
+        signal: AbortSignal.timeout(timeout),
+      });
+
+      console.log(`Response status: ${response.status}`);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData.response || `Erro HTTP: ${response.status} ${response.statusText}`
+        );
+      }
+
+      const data = await response.json();
+      console.log("Response data:", data);
+      const aiMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content: data.response || "Desculpe, não recebi uma resposta válida.",
+        sender: "ai",
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, aiMessage]);
+      break;
+    } catch (err) {
+      retries++;
+      console.error(`Attempt ${retries}/${maxRetries} failed:`, err);
+      const errorMessage =
+        err instanceof Error
+          ? err.message.includes("rate_limit_exceeded")
+            ? `Limite de tokens excedido. Tentando novamente (${retries}/${maxRetries})...`
+            : err.message.includes("signal timed out")
+            ? `Tempo de conexão esgotado. Tentando novamente (${retries}/${maxRetries})...`
+            : err.message.includes("Failed to fetch")
+            ? "Não foi possível conectar ao servidor. Verifique sua conexão ou tente novamente."
+            : err.message
+          : "Erro desconhecido. Tente novamente.";
+      
+      if (retries < maxRetries) {
         setMessages((prev) => [
           ...prev,
           {
@@ -134,14 +116,30 @@ export function AIAssistantInput() {
             isError: true,
           },
         ]);
-        break;
-      } finally {
-        if (retries >= maxRetries || retries === 0) {
-          setIsLoading(false);
-        }
+        await new Promise((resolve) => setTimeout(resolve, retryDelay));
+        continue;
+      }
+
+      setError(errorMessage);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: (Date.now() + 1).toString(),
+          content: errorMessage,
+          sender: "ai",
+          timestamp: new Date(),
+          isError: true,
+        },
+      ]);
+      break;
+    } finally {
+      if (retries >= maxRetries || retries === 0) {
+        setIsLoading(false);
       }
     }
-  };
+  }
+};
+
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
