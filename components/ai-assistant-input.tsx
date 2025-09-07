@@ -308,9 +308,9 @@ export function AIAssistantInput() {
   const [error, setError] = useState<string | null>(null)
 
   const handleSend = async () => {
-    if (!input.trim()) return
+    if (!input.trim()) return;
     if (input.length > 500) {
-      setError("Mensagem muito longa. Use até 500 caracteres.")
+      setError("Mensagem muito longa. Use até 500 caracteres.");
       setMessages((prev) => [
         ...prev,
         {
@@ -320,29 +320,29 @@ export function AIAssistantInput() {
           timestamp: new Date(),
           isError: true,
         },
-      ])
-      return
+      ]);
+      return;
     }
-
+  
     const userMessage: Message = {
       id: Date.now().toString(),
       content: input,
       sender: "user",
       timestamp: new Date(),
-    }
-    setMessages((prev) => [...prev, userMessage])
-    setInput("")
-    setIsLoading(true)
-    setError(null)
-
-    let retries = 0
-    const maxRetries = 3
-    const retryDelay = 60000 // 1 minute
-    const timeout = 120000 // 120 seconds
-
+    };
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setIsLoading(true);
+    setError(null);
+  
+    let retries = 0;
+    const maxRetries = 3;
+    const retryDelay = 60000; // 1 minute
+    const timeout = 120000; // 120 seconds
+  
     while (retries < maxRetries) {
       try {
-        console.log(`Attempt ${retries + 1}/${maxRetries}: Sending request to /api/chat`)
+        console.log(`Attempt ${retries + 1}/${maxRetries}: Sending request to /api/chat`);
         const response = await axios.post(
           "/api/chat",
           {
@@ -357,28 +357,38 @@ export function AIAssistantInput() {
             },
             timeout: timeout,
           }
-        )
-
-        console.log(`Response status: ${response.status}`)
+        );
+  
+        console.log(`Response status: ${response.status}`);
         const aiMessage: Message = {
           id: (Date.now() + 1).toString(),
           content: response.data.response || "Desculpe, não recebi uma resposta válida.",
           sender: "ai",
           timestamp: new Date(),
-        }
-        setMessages((prev) => [...prev, aiMessage])
-        break
+        };
+        setMessages((prev) => [...prev, aiMessage]);
+        break;
       } catch (err) {
-        retries++
-        console.error(`Attempt ${retries}/${maxRetries} failed:`, err)
-        const errorMessage = err.response
-          ? err.response.data?.response || `Erro HTTP: ${err.response.status} ${err.response.statusText}`
-          : err.code === "ECONNABORTED"
-          ? `Tempo de conexão esgotado. Tentando novamente (${retries}/${maxRetries})...`
-          : err.message.includes("Network Error")
-          ? "Não foi possível conectar ao servidor. Verifique sua conexão ou tente novamente."
-          : err.message
-
+        retries++;
+        console.error(`Attempt ${retries}/${maxRetries} failed:`, err);
+        let errorMessage = "Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.";
+        
+        if (err.response) {
+          if (err.response.status === 500) {
+            errorMessage = "Erro interno no servidor. Por favor, contate o suporte técnico.";
+          } else if (err.response.status === 401) {
+            errorMessage = "Autenticação falhou. Verifique suas credenciais.";
+          } else {
+            errorMessage = err.response.data?.response || `Erro HTTP: ${err.response.status} ${err.response.statusText}`;
+          }
+        } else if (err.code === "ECONNABORTED") {
+          errorMessage = `Tempo de conexão esgotado. Tentando novamente (${retries}/${maxRetries})...`;
+        } else if (err.message.includes("Network Error")) {
+          errorMessage = "Não foi possível conectar ao servidor. Verifique sua conexão ou tente novamente.";
+        } else {
+          errorMessage = err.message;
+        }
+  
         if (retries < maxRetries) {
           setMessages((prev) => [
             ...prev,
@@ -389,12 +399,12 @@ export function AIAssistantInput() {
               timestamp: new Date(),
               isError: true,
             },
-          ])
-          await new Promise((resolve) => setTimeout(resolve, retryDelay))
-          continue
+          ]);
+          await new Promise((resolve) => setTimeout(resolve, retryDelay));
+          continue;
         }
-
-        setError(errorMessage)
+  
+        setError(errorMessage);
         setMessages((prev) => [
           ...prev,
           {
@@ -404,15 +414,15 @@ export function AIAssistantInput() {
             timestamp: new Date(),
             isError: true,
           },
-        ])
-        break
+        ]);
+        break;
       } finally {
         if (retries >= maxRetries || retries === 0) {
-          setIsLoading(false)
+          setIsLoading(false);
         }
       }
     }
-  }
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
