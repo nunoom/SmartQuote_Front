@@ -429,7 +429,7 @@ export function SettingsTabs({ onSave }: { onSave: (data: SettingsData) => Promi
     }
     try {
       await axios.patch(
-        "http://localhost:3001/api/security/password",
+        "https://smart-quote-ia-1.onrender.com/api/security/password",
         { currentPassword, newPassword },
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
@@ -446,7 +446,7 @@ export function SettingsTabs({ onSave }: { onSave: (data: SettingsData) => Promi
   const handle2FAToggle = async (enabled: boolean) => {
     try {
       await axios.post(
-        "http://localhost:3001/api/security/2fa",
+        "https://smart-quote-ia-1.onrender.com/security/2fa",
         { enabled },
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );

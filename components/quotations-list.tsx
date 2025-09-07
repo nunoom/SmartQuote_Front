@@ -228,7 +228,30 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Eye, Edit, Send, MoreHorizontal, AlertTriangle, Loader2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
+// Interface for API response (with optional fields for safety)
+interface ApiQuotation {
+  id?: string;
+  requestId?: string;
+  jsonData?: {
+    email?: string;
+    itens?: Array<{
+      descricao?: string;
+      precoUnit?: number;
+      quantidade?: number;
+    }>;
+    total?: number;
+    cliente?: string;
+    revisao?: boolean;
+    isvalide?: boolean;
+    observacoes?: string;
+  };
+  createdAt?: string;
+  status?: string;
+}
+
+// Interface for frontend (unchanged)
 interface Quotation {
   id: string;
   totalValue: number;
@@ -270,7 +293,8 @@ export function QuotationsList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  // Define fetchQuotations inside the component to access state
+  const fetchQuotations = async () => {
     if (!axiosInstance) {
       console.error('axiosInstance está indefinido');
       setError('Falha ao inicializar o cliente HTTP');
@@ -278,27 +302,77 @@ export function QuotationsList() {
       return;
     }
 
-    const fetchQuotations = async () => {
-      try {
-        console.log('Buscando cotações...');
-        const response = await axiosInstance.get('/dashboard/quotations');
-        console.log('Resposta recebida:', response.data);
-        // Garantir que approvals seja um array vazio se undefined ou null
-        const sanitizedQuotations = response.data.map((quotation: Quotation) => ({
-          ...quotation,
-          approvals: quotation.approvals || [],
-        }));
-        setQuotations(sanitizedQuotations);
-      } catch (err: any) {
-        console.error('Erro ao buscar cotações:', err);
-        console.log('Status do erro:', err.response?.status);
-        console.log('Mensagem do erro:', err.message);
-        setError(`Falha ao carregar cotações: ${err.message}`);
-      } finally {
-        setLoading(false);
-      }
-    };
+    try {
+      console.log('Buscando cotações...');
+      const response = await axiosInstance.get('/emails/quotations');
+      console.log('Resposta completa:', response); // Log full response for debugging
+      console.log('Resposta.data:', response.data); // Log data specifically
+      console.log('Tipo de response.data:', typeof response.data); // Log type
 
+      // Safety check: Ensure response.data is an array
+      if (!Array.isArray(response.data)) {
+        console.error('response.data não é um array:', response.data);
+        throw new Error('Resposta da API inválida: dados não são um array');
+      }
+
+      // Map API response to Quotation interface with null checks
+      const sanitizedQuotations: Quotation[] = response.data
+        .filter((apiQuotation: any) => apiQuotation && apiQuotation.id) // Filter out invalid items
+        .map((apiQuotation: ApiQuotation) => {
+          // Ensure jsonData exists
+          const jsonData = apiQuotation.jsonData || {};
+          console.log(`Processando item ${apiQuotation.id}:`, jsonData); // Debug per item
+
+          // Default itens to empty array if undefined/null
+          const itens = jsonData.itens || [];
+
+          return {
+            id: apiQuotation.id || 'unknown-id', // Fallback ID
+            totalValue: jsonData.total || 0,
+            approved: (apiQuotation.status || '').toUpperCase() === 'APPROVED',
+            createdAt: apiQuotation.createdAt || new Date().toISOString(), // Fallback to now
+            request: {
+              requester: 'Unknown', // No requester in API
+              email: jsonData.email || '',
+              description: jsonData.observacoes || 'No description',
+              status: apiQuotation.status || 'PENDING',
+            },
+            customer: {
+              name: jsonData.cliente || 'N/A',
+              email: jsonData.email || null,
+            },
+            approvals: [], // No approvals in API
+            items: itens
+              .filter((item: any) => item && item.descricao) // Filter invalid items
+              .map((item: any, index: number) => ({
+                id: `${apiQuotation.id || 'unknown'}-${index}`,
+                description: item.descricao || 'Unknown item',
+                quantity: item.quantidade || 0,
+                unitPrice: item.precoUnit || 0,
+                total: (item.quantidade || 0) * (item.precoUnit || 0),
+                supplier: {
+                  name: 'Unknown', // No supplier in API
+                },
+              })),
+          };
+        });
+
+      console.log('Quotations mapeadas:', sanitizedQuotations); // Log final mapped data
+      setQuotations(sanitizedQuotations);
+    } catch (err: any) {
+      console.error('Erro ao buscar cotações:', err);
+      console.log('Status do erro:', err.response?.status);
+      console.log('Mensagem do erro:', err.message);
+      console.log('Response do erro:', err.response?.data); // Log error response body
+      const errorMsg = `Falha ao carregar cotações: ${err.message}`;
+      setError(errorMsg);
+      toast.error(errorMsg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchQuotations();
   }, [axiosInstance]);
 
@@ -311,12 +385,18 @@ export function QuotationsList() {
   };
 
   const handleSend = async (id: string) => {
+    if (!axiosInstance) {
+      toast.error('Cliente HTTP não inicializado');
+      return;
+    }
     try {
-      await axiosInstance.post(`/dashboard/quotations/${id}/send`);
-      alert('Cotação enviada com sucesso!');
+      await axiosInstance.post(`/emails/quotations/${id}/send`);
+      toast.success('Cotação enviada com sucesso!');
+      // Refresh the list after sending
+      fetchQuotations();
     } catch (err: any) {
       console.error('Erro ao enviar cotação:', err);
-      setError(`Falha ao enviar cotação: ${err.message}`);
+      toast.error(`Falha ao enviar cotação: ${err.message}`);
     }
   };
 
@@ -344,7 +424,7 @@ export function QuotationsList() {
     return (
       <div className="text-center">
         <Loader2 className="h-8 w-8 text-yellow-400 animate-spin mx-auto" />
-        <p className="text-yellow-400/70 mt-2">Carregando...</p>
+        <p className="text-yellow-400/70 mt-2">{t('loading') || 'Carregando...'}</p>
       </div>
     );
   }
@@ -352,7 +432,22 @@ export function QuotationsList() {
   if (error) {
     return (
       <Card className="bg-red-900/20 border-red-900/50 text-red-500 p-4 text-center">
-        {error}
+        <p>{error}</p>
+        <Button
+          variant="outline"
+          className="ml-4 text-yellow-400 border-yellow-900/30 hover:bg-yellow-900/10 mt-2"
+          onClick={fetchQuotations}
+        >
+          {t('retry') || 'Tentar novamente'}
+        </Button>
+      </Card>
+    );
+  }
+
+  if (quotations.length === 0) {
+    return (
+      <Card className="bg-neutral-900 border-yellow-900/30 text-yellow-400/70 p-4 text-center">
+        {t('noQuotationsFound') || 'Nenhuma cotação encontrada.'}
       </Card>
     );
   }
@@ -370,54 +465,49 @@ export function QuotationsList() {
                 <div className="flex items-center gap-3 mb-3">
                   <h3 className="text-lg font-semibold text-gray-200">{quotation.id}</h3>
                   <Badge className={getStatusColor(quotation.approved ? 'approved' : 'pending')}>
-                    {quotation.approved ? t('approved') : t('pending')}
+                    {quotation.approved ? (t('approved') || 'Aprovada') : (t('pending') || 'Pendente')}
                   </Badge>
-                  {quotation.approvals.some((a) => a.status === 'PENDING') && (
+                  {quotation.request.status === 'PENDING' && (
                     <Badge variant="outline" className="text-yellow-400 border-yellow-900/30">
                       <AlertTriangle className="h-3 w-3 mr-1 hover:rotate-6 transition-transform duration-200" />
-                      {t('approvalRequired')}
+                      {t('approvalRequired') || 'Aprovação Necessária'}
                     </Badge>
                   )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                   <div>
-                    <p className="text-sm text-yellow-400/70">{t('customer')}</p>
+                    <p className="text-sm text-yellow-400/70">{t('customer') || 'Cliente'}</p>
                     <p className="font-medium text-gray-200">{quotation.customer?.name || 'N/A'}</p>
                     <p className="text-sm text-yellow-400/70">{quotation.customer?.email || 'N/A'}</p>
                   </div>
 
                   <div>
-                    <p className="text-sm text-yellow-400/70">{t('totalAmount')}</p>
+                    <p className="text-sm text-yellow-400/70">{t('totalAmount') || 'Valor Total'}</p>
                     <p className="text-xl font-bold text-gray-200">{formatCurrency(quotation.totalValue)}</p>
                     <p className="text-sm text-yellow-400/70">
-                      {quotation.items.length} {t(quotation.items.length !== 1 ? 'items' : 'item')}
+                      {quotation.items.length} {t(quotation.items.length !== 1 ? 'items' : 'item') || (quotation.items.length !== 1 ? 'itens' : 'item')}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-sm text-yellow-400/70">{t('created')}</p>
+                    <p className="text-sm text-yellow-400/70">{t('created') || 'Criado'}</p>
                     <p className="font-medium text-gray-200">{new Date(quotation.createdAt).toLocaleDateString()}</p>
-                    {quotation.approvals.some((a) => a.status === 'approved') && (
-                      <p className="text-sm text-green-400">
-                        {t('approved')} {new Date(quotation.approvals.find((a) => a.status === 'approved')!.createdAt).toLocaleDateString()}
-                      </p>
-                    )}
                   </div>
                 </div>
 
                 {quotation.request.email && (
                   <div className="bg-yellow-900/20 p-3 rounded-md mb-4 border border-yellow-900/30">
                     <p className="text-sm text-yellow-400/70">
-                      <span className="font-medium">{t('emailRequest')}:</span> {quotation.request.email}
+                      <span className="font-medium">{t('emailRequest') || 'Solicitação de Email'}:</span> {quotation.request.email}
                     </p>
                   </div>
                 )}
 
-                {quotation.approvals.some((a) => a.reason) && (
+                {quotation.request.description && (
                   <div className="bg-yellow-900/20 p-3 rounded-md mb-4 border border-yellow-900/30">
                     <p className="text-sm text-yellow-400/70">
-                      <span className="font-medium">{t('notes')}:</span> {quotation.approvals.find((a) => a.reason)?.reason || 'N/A'}
+                      <span className="font-medium">{t('notes') || 'Observações'}:</span> {quotation.request.description}
                     </p>
                   </div>
                 )}
@@ -431,7 +521,7 @@ export function QuotationsList() {
                   onClick={() => handleViewDetails(quotation.id)}
                 >
                   <Eye className="h-4 w-4 mr-1 hover:rotate-6 transition-transform duration-200" />
-                  {t('view')}
+                  {t('view') || 'Visualizar'}
                 </Button>
                 <Button
                   variant="outline"
@@ -440,7 +530,7 @@ export function QuotationsList() {
                   onClick={() => handleEdit(quotation.id)}
                 >
                   <Edit className="h-4 w-4 mr-1 hover:rotate-6 transition-transform duration-200" />
-                  {t('edit')}
+                  {t('edit') || 'Editar'}
                 </Button>
                 {quotation.approved && (
                   <Button
@@ -449,7 +539,7 @@ export function QuotationsList() {
                     onClick={() => handleSend(quotation.id)}
                   >
                     <Send className="h-4 w-4 mr-1 hover:rotate-6 transition-transform duration-200" />
-                    {t('send')}
+                    {t('send') || 'Enviar'}
                   </Button>
                 )}
                 <Button variant="ghost" size="sm" className="text-yellow-400 hover:bg-yellow-900/10">
