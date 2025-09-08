@@ -224,6 +224,51 @@ export const translations = {
     projectDeveloped: "Project developed to revolutionize business quotations.",
 
     // Quotations
+
+    not_authenticated: "Not authenticated",
+    report_exported_successfully: "Report exported successfully",
+    failed_to_export_report: "Failed to export report",
+    date_range_updated: "Date range updated",
+    filter_functionality_not_implemented: "Filter functionality not implemented",
+    analytics_dashboard: "Analytics Dashboard",
+    track_performance_and_insights_across_your_quotation_system: "Track performance and insights across your quotation system",
+    select_date_range: "Select Date Range",
+    last_7_days: "Last 7 Days",
+    last_30_days: "Last 30 Days",
+    this_month: "This Month",
+    exporting: "Exporting...",
+    export_report: "Export Report",
+    last_month: "Last month",
+    this_quarter: "This quarter",
+    export_csv: "Export as CSV",
+    export_excel: "Export as Excel",
+
+    failed_to_initialize_http_client: "Failed to initialize HTTP client",
+    failed_to_load_analytics: "Failed to load analytics data",
+    failed_to_load_data: "Failed to load data",
+    try_again: "Try Again",
+    from_last_month: "From last month",
+
+    failed_to_load_revenue_trends: "Failed to load revenue trends",
+    failed_to_load_chart: "Failed to load chart",
+    no_revenue_data: "No revenue data available",
+    no_revenue_data_description: "There's no revenue data to display for the selected period",
+    revenue_trends: "Revenue Trends",
+    monthly_revenue_vs_targets: "Monthly Revenue vs. Goals",
+    revenue: "Revenue",
+    target: "Goal",
+
+    failed_to_load_quotation_trends: "Failed to load quotation trends",
+    no_quotation_data: "No quotation data available",
+    no_quotation_data_description: "There's no quotation data to display for the selected period",
+    total_created: "Total Created",
+    total_approved: "Total Approved",
+    total_rejected: "Total Rejected",
+    quotation_activity: "Quotation Activity",
+
+    monthly_quotation_creation_and_approval_rates: "Monthly Quotation Creation and Approval Rates",
+    created: "Created",
+
   },
   pt: {
     // Navigation
@@ -451,6 +496,53 @@ export const translations = {
     language: "Idioma",
     theme: "Tema",
     preferences: "Preferências",
+
+    // Quotations
+
+    not_authenticated: "Não autenticado",
+    report_exported_successfully: "Relatório exportado com sucesso",
+    failed_to_export_report: "Falha ao exportar relatório",
+    date_range_updated: "Intervalo de datas atualizado",
+    filter_functionality_not_implemented: "Funcionalidade de filtro não implementada",
+    analytics_dashboard: "Painel de Análises",
+    track_performance_and_insights_across_your_quotation_system: "Acompanhe o desempenho e insights do seu sistema de cotações",
+    select_date_range: "Selecionar intervalo de datas",
+    last_7_days: "Últimos 7 dias",
+    last_30_days: "Últimos 30 dias",
+    this_month: "Este mês",
+    exporting: "Exportando...",
+    export_report: "Exportar Relatório",
+    last_month: "Mês anterior",
+    this_quarter: "Este trimestre",
+    export_csv: "Exportar como CSV",
+    export_excel: "Exportar como Excel",
+
+    failed_to_initialize_http_client: "Falha ao inicializar cliente HTTP",
+    failed_to_load_analytics: "Falha ao carregar dados analíticos",
+    failed_to_load_data: "Falha ao carregar dados",
+    try_again: "Tentar Novamente",
+    from_last_month: "Do mês passado",
+
+    failed_to_load_revenue_trends: "Falha ao carregar tendências de receita",
+    failed_to_load_chart: "Falha ao carregar gráfico",
+    no_revenue_data: "Nenhum dado de receita disponível",
+    no_revenue_data_description: "Não há dados de receita para exibir no período selecionado",
+    revenue_trends: "Tendências de Receita",
+    monthly_revenue_vs_targets: "Receita Mensal vs Metas",
+    revenue: "Receita",
+    target: "Meta",
+
+    failed_to_load_quotation_trends: "Falha ao carregar tendências de cotações",
+    no_quotation_data: "Nenhum dado de cotação disponível",
+    no_quotation_data_description: "Não há dados de cotações para exibir no período selecionado",
+    total_created: "Total Criadas",
+    total_approved: "Total Aprovadas",
+    total_rejected: "Total Rejeitadas",
+
+    quotation_activity: "Atividade de Cotação",
+    monthly_quotation_creation_and_approval_rates: "Taxas de Criação e Aprovação de Cotações Mensais",
+    created: "Criado",
+
   },
 } as const
 
