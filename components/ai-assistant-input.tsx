@@ -344,10 +344,10 @@ export function AIAssistantInput() {
       try {
         console.log(`Attempt ${retries + 1}/${maxRetries}: Sending request to /api/chat`);
         const response = await axios.post(
-          "/api/chat",
+          "http://37.60.253.29:8080/chat",
           {
             mensagem: input,
-            nome: "João",
+            nome: "rcs",
           },
           {
             headers: {

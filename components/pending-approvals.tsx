@@ -1,3 +1,277 @@
+// 'use client';
+
+// import { useEffect, useState } from 'react';
+// import { useAuth } from '@/lib/auth/auth-context';
+// import { useLanguage } from '@/lib/i18n/language-context';
+// import { useDateRange } from '@/components/analytics-header';
+// import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+// import { Button } from '@/components/ui/button';
+// import { Badge } from '@/components/ui/badge';
+// import { formatCurrency } from '@/lib/utils/quotation-utils';
+// import { AlertCircle, Check, X, CheckCircle, Loader2 } from 'lucide-react';
+// import toast from 'react-hot-toast';
+
+// // Interface for API response
+// interface ApiQuotation {
+//   id: string;
+//   requestId: string;
+//   jsonData: {
+//     email?: string;
+//     itens?: Array<{
+//       descricao: string;
+//       precoUnit: number;
+//       quantidade: number;
+//     }>;
+//     total?: number;
+//     cliente?: string;
+//     revisao?: boolean;
+//     isvalide?: boolean;
+//     observacoes?: string;
+//   };
+//   createdAt: string;
+//   status: string;
+// }
+
+// // Interface for frontend (matches UI expectations)
+// interface Approval {
+//   id: string;
+//   quotationId: string;
+//   status: string;
+//   reason?: string;
+//   createdAt: string;
+//   quotation: {
+//     id: string;
+//     totalValue: number;
+//     approved: boolean;
+//     request: {
+//       requester: string;
+//       email: string;
+//       description: string;
+//       status: string;
+//     };
+//   };
+// }
+
+// export function PendingApprovals() {
+//   const { t } = useLanguage();
+//   const { axiosInstance } = useAuth();
+//   const { dateRange } = useDateRange();
+//   const [approvals, setApprovals] = useState<Approval[]>([]);
+//   const [visibleCount, setVisibleCount] = useState(2); // Show 2 by default
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+
+//   useEffect(() => {
+//     if (!axiosInstance) {
+//       console.error('axiosInstance is undefined');
+//       setError(t('failed_to_initialize_http_client'));
+//       toast.error(t('not_authenticated'));
+//       setLoading(false);
+//       return;
+//     }
+
+//     const fetchPendingApprovals = async () => {
+//       try {
+//         console.log('Fetching pending approvals...');
+//         setLoading(true);
+//         setError(null);
+
+//         const response = await axiosInstance.get<ApiQuotation[]>('/emails/quotations', {
+//           params: {
+//             startDate: dateRange.startDate.toISOString(),
+//             endDate: dateRange.endDate.toISOString(),
+//           },
+//         });
+//         console.log('Full API response:', JSON.stringify(response.data, null, 2));
+
+//         // Map API response to Approval interface, filtering for pending and date range
+//         const sanitizedApprovals: Approval[] = response.data
+//           .filter((apiQuotation) => {
+//             const created = new Date(apiQuotation.createdAt);
+//             return (
+//               (apiQuotation.status === 'PENDING' || apiQuotation.jsonData.revisao) &&
+//               created >= dateRange.startDate &&
+//               created <= dateRange.endDate
+//             );
+//           })
+//           .map((apiQuotation) => ({
+//             id: apiQuotation.requestId || apiQuotation.id,
+//             quotationId: apiQuotation.id,
+//             status: apiQuotation.status || 'PENDING',
+//             reason: apiQuotation.jsonData.observacoes || undefined,
+//             createdAt: apiQuotation.createdAt || new Date().toISOString(),
+//             quotation: {
+//               id: apiQuotation.id,
+//               totalValue: apiQuotation.jsonData.total ?? 0,
+//               approved: apiQuotation.status.toUpperCase() === 'COMPLETED',
+//               request: {
+//                 requester: apiQuotation.jsonData.cliente || 'Unknown',
+//                 email: apiQuotation.jsonData.email || 'N/A',
+//                 description: apiQuotation.jsonData.observacoes || 'No description',
+//                 status: apiQuotation.status || 'UNKNOWN',
+//               },
+//             },
+//           }));
+
+//         setApprovals(sanitizedApprovals);
+//       } catch (err: any) {
+//         console.error('Error fetching approvals:', err);
+//         console.log('Error status:', err.response?.status);
+//         console.log('Error message:', err.message);
+//         const errorMessage = err.response?.data?.message || t('failed_to_load_pending_approvals');
+//         setError(errorMessage);
+//         toast.error(errorMessage);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchPendingApprovals();
+//   }, [axiosInstance, t, dateRange]);
+
+//   const handleApprove = async (approvalId: string) => {
+//     try {
+//       console.log(`Approving approval ${approvalId}...`);
+//       const approval = approvals.find((a) => a.id === approvalId);
+//       if (!approval) throw new Error('Approval not found');
+//       await axiosInstance.patch(`/emails/quotations/${approval.quotationId}/approve`, {
+//         status: 'COMPLETED',
+//       });
+//       setApprovals(approvals.filter((a) => a.id !== approvalId));
+//       toast.success(t('approval_approved_successfully'));
+//     } catch (err: any) {
+//       console.error('Error approving:', err);
+//       toast.error(t('failed_to_approve'));
+//     }
+//   };
+
+//   const handleReject = async (approvalId: string) => {
+//     try {
+//       console.log(`Rejecting approval ${approvalId}...`);
+//       const approval = approvals.find((a) => a.id === approvalId);
+//       if (!approval) throw new Error('Approval not found');
+//       await axiosInstance.post(`/emails/quotations/${approval.quotationId}/reject`, {
+//         status: 'REJECTED',
+//       });
+//       setApprovals(approvals.filter((a) => a.id !== approvalId));
+//       toast.success(t('approval_rejected_successfully'));
+//     } catch (err: any) {
+//       console.error('Error rejecting:', err);
+//       toast.error(t('failed_to_reject'));
+//     }
+//   };
+
+//   const toggleShowMore = () => {
+//     setVisibleCount(visibleCount === 2 ? approvals.length : 2);
+//   };
+
+//   if (loading) {
+//     return (
+//       <div className="text-center">
+//         <Loader2 className="h-8 w-8 text-yellow-400 animate-spin mx-auto" />
+//         <p className="text-yellow-400/70 mt-2">{t('loading')}</p>
+//       </div>
+//     );
+//   }
+
+//   if (error) {
+//     return (
+//       <Card className="bg-red-900/20 border-red-900/50 text-red-500 p-4 text-center">
+//         {error}
+//         <Button
+//           variant="outline"
+//           className="ml-4 text-yellow-400 border-yellow-900/30 hover:bg-yellow-900/10"
+//           onClick={() => fetchPendingApprovals()}
+//         >
+//           {t('retry')}
+//         </Button>
+//       </Card>
+//     );
+//   }
+
+//   return (
+//     <Card
+//       className="border-yellow-900/30 bg-neutral-900 shadow-md hover:shadow-lg hover:shadow-yellow-900/20 transition-all duration-300"
+//       style={{ fontFamily: "'Inter', sans-serif" }}
+//     >
+//       <CardHeader className="flex flex-row items-center justify-between">
+//         <CardTitle className="text-lg font-semibold text-gray-200 flex items-center gap-2">
+//           <AlertCircle className="h-5 w-5 text-yellow-400 hover:rotate-6 transition-transform duration-200" />
+//           {t('pending_approvals')}
+//         </CardTitle>
+//         <Badge variant="secondary" className="bg-yellow-900/20 text-yellow-400 border-yellow-900/30">
+//           {approvals.length} {t('pending')}
+//         </Badge>
+//       </CardHeader>
+//       <CardContent className="space-y-4">
+//         {approvals.length === 0 ? (
+//           <div className="text-center py-8 text-yellow-400/70">
+//             <CheckCircle className="h-12 w-12 mx-auto mb-3 text-yellow-400 hover:rotate-6 transition-transform duration-200" />
+//             <p>{t('no_pending_approvals')}</p>
+//           </div>
+//         ) : (
+//           <>
+//             {approvals.slice(0, visibleCount).map((approval) => {
+//               const quotation = approval.quotation;
+//               if (!quotation) return null;
+
+//               return (
+//                 <div
+//                   key={approval.id}
+//                   className="p-4 bg-neutral-900 border border-yellow-900/30 rounded-lg hover:bg-yellow-900/10 hover:scale-[1.02] transition-all duration-300"
+//                 >
+//                   <div className="flex items-start justify-between mb-3">
+//                     <div>
+//                       <h4 className="font-medium text-gray-200">{quotation.id}</h4>
+//                       <p className="text-sm text-yellow-400/70">{quotation.request.requester}</p>
+//                     </div>
+//                     <div className="text-right">
+//                       <p className="text-lg font-semibold text-gray-200">{formatCurrency(quotation.totalValue)}</p>
+//                       <p className="text-xs text-yellow-400/70">{new Date(approval.createdAt).toLocaleDateString()}</p>
+//                     </div>
+//                   </div>
+
+//                   {approval.reason && (
+//                     <p className="text-sm text-yellow-400/70 mb-4">{approval.reason}</p>
+//                   )}
+
+//                   <div className="flex gap-2">
+//                     <Button
+//                       size="sm"
+//                       className="bg-gradient-to-r from-yellow-600 to-yellow-400 text-black hover:bg-yellow-700"
+//                       onClick={() => handleApprove(approval.id)}
+//                     >
+//                       <Check className="h-4 w-4 mr-1 hover:rotate-6 transition-transform duration-200" />
+//                       {t('approve')}
+//                     </Button>
+//                     <Button
+//                       size="sm"
+//                       variant="outline"
+//                       className="text-yellow-400 border-yellow-900/30 hover:bg-yellow-900/10 bg-transparent"
+//                       onClick={() => handleReject(approval.id)}
+//                     >
+//                       <X className="h-4 w-4 mr-1 hover:rotate-6 transition-transform duration-200" />
+//                       {t('reject')}
+//                     </Button>
+//                   </div>
+//                 </div>
+//               );
+//             })}
+//             {approvals.length > 2 && (
+//               <Button
+//                 variant="outline"
+//                 className="w-full text-yellow-400 border-yellow-900/30 hover:bg-yellow-900/10"
+//                 onClick={toggleShowMore}
+//               >
+//                 {visibleCount === 2 ? t('show_more') : t('show_less')}
+//               </Button>
+//             )}
+//           </>
+//         )}
+//       </CardContent>
+//     </Card>
+//   );
+// }
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -11,8 +285,8 @@ import { formatCurrency } from '@/lib/utils/quotation-utils';
 import { AlertCircle, Check, X, CheckCircle, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-// Interface for API response
-interface ApiQuotation {
+// Interface for API response (matches QuotationGenerated model)
+interface Quotation {
   id: string;
   requestId: string;
   jsonData: {
@@ -29,26 +303,11 @@ interface ApiQuotation {
     observacoes?: string;
   };
   createdAt: string;
-  status: string;
-}
-
-// Interface for frontend (matches UI expectations)
-interface Approval {
-  id: string;
-  quotationId: string;
-  status: string;
-  reason?: string;
-  createdAt: string;
-  quotation: {
-    id: string;
-    totalValue: number;
-    approved: boolean;
-    request: {
-      requester: string;
-      email: string;
-      description: string;
-      status: string;
-    };
+  status: 'PENDING' | 'COMPLETED' | 'REJECTED';
+  request?: {
+    requester: string;
+    email: string;
+    description: string;
   };
 }
 
@@ -56,12 +315,13 @@ export function PendingApprovals() {
   const { t } = useLanguage();
   const { axiosInstance } = useAuth();
   const { dateRange } = useDateRange();
-  const [approvals, setApprovals] = useState<Approval[]>([]);
+  const [quotations, setQuotations] = useState<Quotation[]>([]);
   const [visibleCount, setVisibleCount] = useState(2); // Show 2 by default
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  // Fetch pending quotations
+  const fetchPendingQuotations = async () => {
     if (!axiosInstance) {
       console.error('axiosInstance is undefined');
       setError(t('failed_to_initialize_http_client'));
@@ -70,99 +330,68 @@ export function PendingApprovals() {
       return;
     }
 
-    const fetchPendingApprovals = async () => {
-      try {
-        console.log('Fetching pending approvals...');
-        setLoading(true);
-        setError(null);
-
-        const response = await axiosInstance.get<ApiQuotation[]>('/emails/quotations', {
-          params: {
-            startDate: dateRange.startDate.toISOString(),
-            endDate: dateRange.endDate.toISOString(),
-          },
-        });
-        console.log('Full API response:', JSON.stringify(response.data, null, 2));
-
-        // Map API response to Approval interface, filtering for pending and date range
-        const sanitizedApprovals: Approval[] = response.data
-          .filter((apiQuotation) => {
-            const created = new Date(apiQuotation.createdAt);
-            return (
-              (apiQuotation.status === 'PENDING' || apiQuotation.jsonData.revisao) &&
-              created >= dateRange.startDate &&
-              created <= dateRange.endDate
-            );
-          })
-          .map((apiQuotation) => ({
-            id: apiQuotation.requestId || apiQuotation.id,
-            quotationId: apiQuotation.id,
-            status: apiQuotation.status || 'PENDING',
-            reason: apiQuotation.jsonData.observacoes || undefined,
-            createdAt: apiQuotation.createdAt || new Date().toISOString(),
-            quotation: {
-              id: apiQuotation.id,
-              totalValue: apiQuotation.jsonData.total ?? 0,
-              approved: apiQuotation.status.toUpperCase() === 'COMPLETED',
-              request: {
-                requester: apiQuotation.jsonData.cliente || 'Unknown',
-                email: apiQuotation.jsonData.email || 'N/A',
-                description: apiQuotation.jsonData.observacoes || 'No description',
-                status: apiQuotation.status || 'UNKNOWN',
-              },
-            },
-          }));
-
-        setApprovals(sanitizedApprovals);
-      } catch (err: any) {
-        console.error('Error fetching approvals:', err);
-        console.log('Error status:', err.response?.status);
-        console.log('Error message:', err.message);
-        const errorMessage = err.response?.data?.message || t('failed_to_load_pending_approvals');
-        setError(errorMessage);
-        toast.error(errorMessage);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPendingApprovals();
-  }, [axiosInstance, t, dateRange]);
-
-  const handleApprove = async (approvalId: string) => {
     try {
-      console.log(`Approving approval ${approvalId}...`);
-      const approval = approvals.find((a) => a.id === approvalId);
-      if (!approval) throw new Error('Approval not found');
-      await axiosInstance.patch(`/emails/quotations/${approval.quotationId}/status`, {
-        status: 'COMPLETED',
+      console.log('Fetching pending quotations...');
+      setLoading(true);
+      setError(null);
+
+      const response = await axiosInstance.get<Quotation[]>('/emails/quotations/pending', {
+        params: {
+          startDate: dateRange.startDate.toISOString(),
+          endDate: dateRange.endDate.toISOString(),
+        },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
       });
-      setApprovals(approvals.filter((a) => a.id !== approvalId));
-      toast.success(t('approval_approved_successfully'));
+
+      console.log('Full API response:', JSON.stringify(response.data, null, 2));
+      setQuotations(response.data);
     } catch (err: any) {
-      console.error('Error approving:', err);
-      toast.error(t('failed_to_approve'));
+      console.error('Error fetching pending quotations:', err);
+      const errorMessage =
+        err.response?.data?.message || t('failed_to_load_pending_approvals');
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleReject = async (approvalId: string) => {
+  useEffect(() => {
+    fetchPendingQuotations();
+  }, [axiosInstance, t, dateRange]);
+
+  const handleApprove = async (quotationId: string) => {
     try {
-      console.log(`Rejecting approval ${approvalId}...`);
-      const approval = approvals.find((a) => a.id === approvalId);
-      if (!approval) throw new Error('Approval not found');
-      await axiosInstance.patch(`/emails/quotations/${approval.quotationId}/status`, {
-        status: 'REJECTED',
-      });
-      setApprovals(approvals.filter((a) => a.id !== approvalId));
-      toast.success(t('approval_rejected_successfully'));
+      console.log(`Approving quotation ${quotationId}...`);
+      await axiosInstance.post(`/emails/quotations/${quotationId}/approve`, {});
+      setQuotations(quotations.filter((q) => q.id !== quotationId));
+      toast.success(t('quotation_approved_successfully'));
+    } catch (err: any) {
+      console.error('Error approving:', err);
+      const errorMessage =
+        err.response?.data?.message || t('failed_to_approve');
+      toast.error(errorMessage);
+    }
+  };
+
+  const handleReject = async (quotationId: string) => {
+    try {
+      console.log(`Rejecting quotation ${quotationId}...`);
+      await axiosInstance.post(`/emails/quotations/${quotationId}/reject`, {});
+      setQuotations(quotations.filter((q) => q.id !== quotationId));
+      toast.success(t('quotation_rejected_successfully'));
     } catch (err: any) {
       console.error('Error rejecting:', err);
-      toast.error(t('failed_to_reject'));
+      const errorMessage =
+        err.response?.data?.message || t('failed_to_reject');
+      toast.error(errorMessage);
     }
   };
 
   const toggleShowMore = () => {
-    setVisibleCount(visibleCount === 2 ? approvals.length : 2);
+    setVisibleCount(visibleCount === 2 ? quotations.length : 2);
   };
 
   if (loading) {
@@ -181,7 +410,7 @@ export function PendingApprovals() {
         <Button
           variant="outline"
           className="ml-4 text-yellow-400 border-yellow-900/30 hover:bg-yellow-900/10"
-          onClick={() => fetchPendingApprovals()}
+          onClick={fetchPendingQuotations}
         >
           {t('retry')}
         </Button>
@@ -200,64 +429,65 @@ export function PendingApprovals() {
           {t('pending_approvals')}
         </CardTitle>
         <Badge variant="secondary" className="bg-yellow-900/20 text-yellow-400 border-yellow-900/30">
-          {approvals.length} {t('pending')}
+          {quotations.length} {t('pending')}
         </Badge>
       </CardHeader>
       <CardContent className="space-y-4">
-        {approvals.length === 0 ? (
+        {quotations.length === 0 ? (
           <div className="text-center py-8 text-yellow-400/70">
             <CheckCircle className="h-12 w-12 mx-auto mb-3 text-yellow-400 hover:rotate-6 transition-transform duration-200" />
             <p>{t('no_pending_approvals')}</p>
           </div>
         ) : (
           <>
-            {approvals.slice(0, visibleCount).map((approval) => {
-              const quotation = approval.quotation;
-              if (!quotation) return null;
-
-              return (
-                <div
-                  key={approval.id}
-                  className="p-4 bg-neutral-900 border border-yellow-900/30 rounded-lg hover:bg-yellow-900/10 hover:scale-[1.02] transition-all duration-300"
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <h4 className="font-medium text-gray-200">{quotation.id}</h4>
-                      <p className="text-sm text-yellow-400/70">{quotation.request.requester}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-lg font-semibold text-gray-200">{formatCurrency(quotation.totalValue)}</p>
-                      <p className="text-xs text-yellow-400/70">{new Date(approval.createdAt).toLocaleDateString()}</p>
-                    </div>
+            {quotations.slice(0, visibleCount).map((quotation) => (
+              <div
+                key={quotation.id}
+                className="p-4 bg-neutral-900 border border-yellow-900/30 rounded-lg hover:bg-yellow-900/10 hover:scale-[1.02] transition-all duration-300"
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div>
+                    <h4 className="font-medium text-gray-200">{quotation.id}</h4>
+                    <p className="text-sm text-yellow-400/70">
+                      {quotation.jsonData.cliente || quotation.request?.requester || 'Unknown'}
+                    </p>
                   </div>
-
-                  {approval.reason && (
-                    <p className="text-sm text-yellow-400/70 mb-4">{approval.reason}</p>
-                  )}
-
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      className="bg-gradient-to-r from-yellow-600 to-yellow-400 text-black hover:bg-yellow-700"
-                      onClick={() => handleApprove(approval.id)}
-                    >
-                      <Check className="h-4 w-4 mr-1 hover:rotate-6 transition-transform duration-200" />
-                      {t('approve')}
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="text-yellow-400 border-yellow-900/30 hover:bg-yellow-900/10 bg-transparent"
-                      onClick={() => handleReject(approval.id)}
-                    >
-                      <X className="h-4 w-4 mr-1 hover:rotate-6 transition-transform duration-200" />
-                      {t('reject')}
-                    </Button>
+                  <div className="text-right">
+                    <p className="text-lg font-semibold text-gray-200">
+                      {formatCurrency(quotation.jsonData.total ?? 0)}
+                    </p>
+                    <p className="text-xs text-yellow-400/70">
+                      {new Date(quotation.createdAt).toLocaleDateString()}
+                    </p>
                   </div>
                 </div>
-              );
-            })}
-            {approvals.length > 2 && (
+
+                {quotation.jsonData.observacoes && (
+                  <p className="text-sm text-yellow-400/70 mb-4">{quotation.jsonData.observacoes}</p>
+                )}
+
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    className="bg-gradient-to-r from-yellow-600 to-yellow-400 text-black hover:bg-yellow-700"
+                    onClick={() => handleApprove(quotation.id)}
+                  >
+                    <Check className="h-4 w-4 mr-1 hover:rotate-6 transition-transform duration-200" />
+                    {t('approve')}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-yellow-400 border-yellow-900/30 hover:bg-yellow-900/10 bg-transparent"
+                    onClick={() => handleReject(quotation.id)}
+                  >
+                    <X className="h-4 w-4 mr-1 hover:rotate-6 transition-transform duration-200" />
+                    {t('reject')}
+                  </Button>
+                </div>
+              </div>
+            ))}
+            {quotations.length > 2 && (
               <Button
                 variant="outline"
                 className="w-full text-yellow-400 border-yellow-900/30 hover:bg-yellow-900/10"
