@@ -268,6 +268,17 @@ export const translations = {
 
     monthly_quotation_creation_and_approval_rates: "Monthly Quotation Creation and Approval Rates",
     created: "Created",
+    failed_to_load_processing_metrics: "Failed to load processing metrics",
+    failed_to_load_metrics: "Failed to load metrics",
+    no_processing_data: "No processing data available",
+    no_processing_data_description: "There's no processing data to display for the selected period",
+    completion: "completion",
+    total_submissions: "Total Submissions",
+    ai_processed: "AI Processed",
+    emails_sent: "Emails Sent",
+
+    processing_pipeline_performance: "Processing Pipeline Performance",
+    success_rates_across_processing_stages: "Success rates at different stages of processing",
 
   },
   pt: {
@@ -542,7 +553,16 @@ export const translations = {
     quotation_activity: "Atividade de Cotação",
     monthly_quotation_creation_and_approval_rates: "Taxas de Criação e Aprovação de Cotações Mensais",
     created: "Criado",
-
+    failed_to_load_processing_metrics: "Falha ao carregar métricas de processamento",
+    failed_to_load_metrics: "Falha ao carregar métricas",
+    no_processing_data: "Nenhum dado de processamento disponível",
+    no_processing_data_description: "Não há dados de processamento para exibir no período selecionado",
+    completion: "conclusão",
+    total_submissions: "Total de Submissões",
+    ai_processed: "Processadas por IA",
+    emails_sent: "Emails Enviados",
+    processing_pipeline_performance: "Desempenho do Pipeline de Processamento",
+    success_rates_across_processing_stages: "Taxas de Sucesso em Diferentes Estágios de Processamento",
   },
 } as const
 
