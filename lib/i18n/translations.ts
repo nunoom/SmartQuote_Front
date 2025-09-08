@@ -280,6 +280,12 @@ export const translations = {
     processing_pipeline_performance: "Processing Pipeline Performance",
     success_rates_across_processing_stages: "Success rates at different stages of processing",
 
+    quotation_rejected_successfully: "Quotation Rejected Successfully",
+    failed_to_reject: "Failed to Reject",
+    failed_to_approve: "Failed to Approve",
+    quotation_approved_successfully: "Quotation Approved Successfully",
+    failed_to_load_approvals: "Failed to Load Approvals",
+
   },
   pt: {
     // Navigation
@@ -563,6 +569,11 @@ export const translations = {
     emails_sent: "Emails Enviados",
     processing_pipeline_performance: "Desempenho do Pipeline de Processamento",
     success_rates_across_processing_stages: "Taxas de Sucesso em Diferentes Estágios de Processamento",
+    quotation_rejected_successfully: "Cotação rejeitada com sucesso",
+    failed_to_reject: "Falha ao rejeitar",
+    failed_to_approve: "Falha ao aprovar",
+    quotation_approved_successfully: "Cotação aprovada com sucesso",
+    failed_to_load_approvals: "Falha ao carregar aprovações",
   },
 } as const
 
