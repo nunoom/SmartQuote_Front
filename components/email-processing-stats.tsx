@@ -67,44 +67,64 @@ export function EmailProcessingStats({ filters = { status: 'ALL', sortBy: 'recen
   }, [axiosInstance]);
 
   const statItems = [
-    { label: t('total_requests'), value: stats.totalCount, color: 'bg-yellow-900/20 text-yellow-400 border-yellow-900/30' },
-    { label: t('pending'), value: stats.pendingCount, color: 'bg-yellow-900/20 text-yellow-400 border-yellow-900/30' },
-    { label: t('completed'), value: stats.processedCount, color: 'bg-green-900/20 text-green-400 border-green-900/30' },
-    { label: t('rejected'), value: stats.failedCount, color: 'bg-red-900/20 text-red-400 border-red-900/30' },
+    { 
+      label: t('total_requests') || 'Total Requests', 
+      value: stats.totalCount, 
+      color: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800' 
+    },
+    { 
+      label: t('pending') || 'Pending', 
+      value: stats.pendingCount, 
+      color: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800' 
+    },
+    { 
+      label: t('completed') || 'Completed', 
+      value: stats.processedCount, 
+      color: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800' 
+    },
+    { 
+      label: t('rejected') || 'Rejected', 
+      value: stats.failedCount, 
+      color: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800' 
+    },
   ];
 
   if (loading) {
     return (
-      <div className="text-center">
-        <Loader2 className="h-8 w-8 text-yellow-400 animate-spin mx-auto" />
-        <p className="text-yellow-400/70 mt-2">{t('loading')}</p>
+      <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-6 text-center transition-all duration-300">
+        <Loader2 className="h-8 w-8 text-blue-500 animate-spin mx-auto" />
+        <p className="text-gray-600 dark:text-gray-300 mt-2">{t('loading') || 'Loading...'}</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="bg-red-900/20 border-red-900/50 text-red-500 p-4 rounded-md text-center">
-        {error}
+      <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-6 text-center transition-all duration-300">
+        <p className="text-red-500 dark:text-red-400 mb-3">{error}</p>
         <button
-          className="ml-4 text-yellow-400 border-yellow-900/30 hover:bg-yellow-900/10 px-4 py-2 rounded-md"
+          className="text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 px-4 py-2 rounded-lg border"
           onClick={fetchStats}
         >
-          {t('retry')}
+          {t('retry') || 'Try Again'}
         </button>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4" style={{ fontFamily: "'Inter', sans-serif" }}>
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
       {statItems.map((item) => (
         <div
           key={item.label}
-          className={`bg-neutral-900 p-4 rounded-lg border ${item.color} shadow-sm hover:shadow-lg hover:shadow-yellow-900/20 hover:scale-102 transition-all duration-300`}
+          className={`bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border ${item.color} p-6 transition-all duration-300 hover:shadow-md`}
         >
-          <p className="text-sm text-yellow-400/70">{item.label}</p>
-          <p className={`text-lg font-semibold ${item.color.split(' ')[1]}`}>{item.value}</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">{item.label}</p>
+          <p className={`text-2xl font-bold ${item.color.includes('text-blue') ? 'text-blue-600 dark:text-blue-400' : 
+                         item.color.includes('text-green') ? 'text-green-600 dark:text-green-400' : 
+                         'text-red-600 dark:text-red-400'}`}>
+            {item.value}
+          </p>
         </div>
       ))}
     </div>
