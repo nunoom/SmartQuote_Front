@@ -19,6 +19,9 @@ export const translations = {
     processingRate: "Processing Rate",
     recentQuotations: "Recent Quotations",
     viewAll: "View All",
+    logout: "Logout",
+    lightMode: "Light Mode",
+    darkMode: "Dark Mode",
 
     // Landing Page
     landing: {
@@ -232,6 +235,7 @@ export const translations = {
     aiProcessing: "Processamento IA",
     analytics: "Análises",
     settings: "Configurações",
+    logout: "Sair",
 
     // Dashboard
     smartQuotationDashboard: "Painel de Cotações Inteligentes",
@@ -242,6 +246,8 @@ export const translations = {
     processingRate: "Taxa de Processamento",
     recentQuotations: "Cotações Recentes",
     viewAll: "Ver Todas",
+    lightMode: "Modo Claro",
+    darkMode: "Modo Escuro",
 
     // Landing Page
     landing: {

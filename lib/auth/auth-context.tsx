@@ -131,7 +131,7 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 
 interface User {
   email: string;
@@ -143,7 +143,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<boolean>;
   register: (name: string, email: string, password: string) => Promise<boolean>;
   logout: () => void;
-  axiosInstance: typeof axios;
+  axiosInstance: AxiosInstance;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
