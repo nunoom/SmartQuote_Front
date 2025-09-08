@@ -9,6 +9,7 @@ import { useLanguage } from '@/lib/i18n/language-context';
 import { Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { EmailRequestsList } from '@/components/email-requests-list';
+import { Menu, X, BarChart3 } from 'lucide-react';
 
 interface Attachment {
   id: string;
@@ -46,6 +47,7 @@ export default function EmailRequestsPage() {
     search: '',
   });
   const [syncTrigger, setSyncTrigger] = useState(0);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Memoize filters to ensure stable reference
   const filters = useMemo(
@@ -131,30 +133,96 @@ export default function EmailRequestsPage() {
   }, [fetchRequests, syncTrigger]);
 
   return (
-    <div className="flex min-h-screen bg-black" style={{ fontFamily: "'Inter', sans-serif" }}>
-      <DashboardSidebar />
-      <main className="flex-1 p-6">
-        <div className="max-w-7xl mx-auto space-y-6">
-          <EmailRequestsHeader onFilterChange={handleFilterChange} onSync={handleSync} />
-          <EmailProcessingStats syncTrigger={syncTrigger} filters={filters} />
-          {loading && (
-            <div className="text-center">
-              <Loader2 className="h-8 w-8 text-yellow-400 animate-spin mx-auto" />
-              <p className="text-yellow-400/70 mt-2">{t('loading')}</p>
+    <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-950 transition-colors duration-300">
+      {/* Sidebar para desktop */}
+      <div className="hidden lg:block fixed inset-y-0 left-0 z-30">
+        <DashboardSidebar />
+      </div>
+
+      {/* Overlay para mobile */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden transition-opacity duration-300"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar para mobile */}
+      <div className={`
+        fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-300 ease-in-out
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
+        lg:hidden
+      `}>
+        <DashboardSidebar />
+      </div>
+
+      {/* Conteúdo principal */}
+      <main className="flex-1 lg:ml-64 min-h-screen transition-all duration-300">
+        {/* Header flutuante para mobile */}
+        <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 transition-colors duration-300">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="h-8 w-8 bg-gradient-to-br from-blue-600 to-blue-400 rounded-lg flex items-center justify-center shadow-md">
+                <BarChart3 className="h-5 w-5 text-white" />
+              </div>
+              <h1 className="text-xl font-bold text-gray-900 dark:text-white">Email Requests</h1>
             </div>
-          )}
-          {error && (
-            <div className="bg-red-900/20 border-red-900/50 text-red-500 p-4 rounded-md text-center">
-              {error}
-              <button
-                className="ml-4 text-yellow-400 border-yellow-900/30 hover:bg-yellow-900/10 px-4 py-2 rounded-md"
-                onClick={fetchRequests}
-              >
-                {t('retry')}
-              </button>
+            
+            <button
+              className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-300"
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            >
+              {isSidebarOpen ? (
+                <X className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+              ) : (
+                <Menu className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Container do conteúdo */}
+        <div className="p-4 lg:p-6 pt-16 lg:pt-6">
+          {/* Efeito de background decorativo */}
+          <div className="absolute top-0 right-0 w-1/3 h-72 bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
+          
+          <div className="max-w-7xl mx-auto space-y-6 relative z-10">
+            {/* Header */}
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-6 transition-all duration-300 hover:shadow-md">
+              <EmailRequestsHeader onFilterChange={handleFilterChange} onSync={handleSync} />
             </div>
-          )}
-          {!loading && !error && <EmailRequestsList requests={requests} />}
+
+            {/* Estatísticas */}
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-6 transition-all duration-300 hover:shadow-md">
+              <EmailProcessingStats syncTrigger={syncTrigger} filters={filters} />
+            </div>
+
+            {/* Lista de requests */}
+            {loading && (
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-6 text-center transition-all duration-300">
+                <Loader2 className="h-8 w-8 text-blue-500 animate-spin mx-auto" />
+                <p className="text-gray-600 dark:text-gray-300 mt-2">{t('loading')}</p>
+              </div>
+            )}
+            
+            {error && (
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-6 text-center transition-all duration-300">
+                <p className="text-red-500 dark:text-red-400 mb-3">{error}</p>
+                <button
+                  className="text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 px-4 py-2 rounded-lg border"
+                  onClick={fetchRequests}
+                >
+                  {t('retry')}
+                </button>
+              </div>
+            )}
+            
+            {!loading && !error && (
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-6 transition-all duration-300 hover:shadow-md">
+                <EmailRequestsList requests={requests} />
+              </div>
+            )}
+          </div>
         </div>
       </main>
     </div>
