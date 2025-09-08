@@ -1,120 +1,3 @@
-// // "use client"
-// // import { AnalyticsHeader } from "@/components/analytics-header"
-// // import { AnalyticsOverview } from "@/components/analytics-overview"
-// // import { RevenueChart } from "@/components/revenue-chart"
-// // import { QuotationTrends } from "@/components/quotation-trends"
-// // import { ProcessingMetrics } from "@/components/processing-metrics"
-// // import { DashboardSidebar } from "@/components/dashboard-sidebar"
-// // import { useState } from "react"
-
-// // export default function AnalyticsPage() {
-// //   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-// //   return (
-// //     <div className="flex min-h-screen bg-gray-50">
-// //       <aside
-// //         className={`fixed inset-y-0 left-0 z-50 w-64 bg-white transform ${
-// //           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-// //         } lg:translate-x-0 lg:static lg:w-64 transition-transform duration-300 ease-in-out`}
-// //       >
-// //         <DashboardSidebar />
-// //         <button
-// //           className="lg:hidden p-4"
-// //           onClick={() => setIsSidebarOpen(false)}
-// //         >
-// //           Fechar
-// //         </button>
-// //       </aside>
-// //       {/* <DashboardSidebar /> */}
-// //       {/* Botão de menu hambúrguer */}
-// //       <button
-// //         className="lg:hidden p-4 fixed top-4 left-4 z-50"
-// //         onClick={() => setIsSidebarOpen(true)}
-// //       >
-// //         <svg
-// //           className="w-6 h-6"
-// //           fill="none"
-// //           stroke="currentColor"
-// //           viewBox="0 0 24 24"
-// //           xmlns="http://www.w3.org/2000/svg"
-// //         >
-// //           <path
-// //             strokeLinecap="round"
-// //             strokeLinejoin="round"
-// //             strokeWidth="2"
-// //             d="M4 6h16M4 12h16M4 18h16"
-// //           />
-// //         </svg>
-// //       </button>
-// //       <main className="flex-1 p-4 sm:p-6 lg:p-8">
-// //         <div className="max-w-full sm:max-w-4xl lg:max-w-7xl mx-auto space-y-4 sm:space-y-6">
-// //           <AnalyticsHeader />
-
-// //           <AnalyticsOverview />
-
-// //           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6">
-// //             <RevenueChart />
-// //             <QuotationTrends />
-// //           </div>
-
-// //           <ProcessingMetrics />
-// //         </div>
-// //       </main>
-// //     </div>
-// //   )
-// // }
-
-// "use client"
-
-// import { AnalyticsHeader } from "@/components/analytics-header"
-// import { AnalyticsOverview } from "@/components/analytics-overview"
-// import { RevenueChart } from "@/components/revenue-chart"
-// import { QuotationTrends } from "@/components/quotation-trends"
-// import { ProcessingMetrics } from "@/components/processing-metrics"
-// import { DashboardSidebar } from "@/components/dashboard-sidebar"
-// import { useState } from "react"
-
-// export default function AnalyticsPage() {
-//   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-
-//   return (
-//     <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
-//       <aside
-//         className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out ${
-//           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-//         } lg:translate-x-0 lg:static lg:shadow-none`}
-//       >
-//         <DashboardSidebar />
-//       </aside>
-
-//       {isSidebarOpen && (
-//         <div className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" onClick={() => setIsSidebarOpen(false)} />
-//       )}
-
-//       <button
-//         className="lg:hidden fixed top-4 left-4 z-60 p-2 bg-white dark:bg-gray-800 rounded-md shadow-md"
-//         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-//       >
-//         <svg className="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-//           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-//         </svg>
-//       </button>
-
-//       <main className="flex-1 w-full min-w-0 p-4 lg:p-8 pt-16 lg:pt-8">
-//         <div className="w-full space-y-4 lg:space-y-6">
-//           <AnalyticsHeader />
-//           <AnalyticsOverview />
-
-//           <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-6">
-//             <RevenueChart />
-//             <QuotationTrends />
-//           </div>
-
-//           <ProcessingMetrics />
-//         </div>
-//       </main>
-//     </div>
-//   )
-// }
 'use client';
 
 import { AnalyticsHeader, DateRangeProvider } from '@/components/analytics-header';
@@ -124,55 +7,98 @@ import { QuotationTrends } from '@/components/quotation-trends';
 import { ProcessingMetrics } from '@/components/processing-metrics';
 import { DashboardSidebar } from '@/components/dashboard-sidebar';
 import { useState } from 'react';
+import { Menu, X, BarChart3 } from 'lucide-react';
 
 export default function AnalyticsPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
     <DateRangeProvider>
-      <div className="flex min-h-screen bg-gray-50 dark:bg-neutral-900">
-        <aside
-          className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-neutral-900 shadow-lg transform transition-transform duration-300 ease-in-out ${
-            isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          } lg:translate-x-0 lg:static lg:shadow-none`}
-        >
+      <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-950 transition-colors duration-300">
+        {/* Sidebar para desktop */}
+        <div className="hidden lg:block fixed inset-y-0 left-0 z-30">
           <DashboardSidebar />
-        </aside>
+        </div>
 
+        {/* Overlay para mobile */}
         {isSidebarOpen && (
           <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden transition-opacity duration-300"
             onClick={() => setIsSidebarOpen(false)}
           />
         )}
 
-        <button
-          className="lg:hidden fixed top-4 left-4 z-60 p-2 bg-white dark:bg-neutral-900 rounded-md shadow-md"
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        >
-          <svg
-            className="w-5 h-5 text-gray-600 dark:text-yellow-400/70"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
+        {/* Sidebar para mobile */}
+        <div className={`
+          fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-300 ease-in-out
+          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
+          lg:hidden
+        `}>
+          <DashboardSidebar />
+        </div>
 
-        <main className="flex-1 w-full min-w-0 p-4 lg:p-8 pt-16 lg:pt-8">
-          <div className="w-full space-y-4 lg:space-y-6">
-            <AnalyticsHeader />
-            <AnalyticsOverview />
-            <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-6">
-              <RevenueChart />
-              <QuotationTrends />
+        {/* Conteúdo principal */}
+        <main className="flex-1 lg:ml-64 min-h-screen transition-all duration-300">
+          {/* Header flutuante para mobile */}
+          <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 transition-colors duration-300">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="h-8 w-8 bg-gradient-to-br from-blue-600 to-blue-400 rounded-lg flex items-center justify-center shadow-md">
+                  <BarChart3 className="h-5 w-5 text-white" />
+                </div>
+                <h1 className="text-xl font-bold text-gray-900 dark:text-white">Analytics</h1>
+              </div>
+              
+              <button
+                className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-300"
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              >
+                {isSidebarOpen ? (
+                  <X className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+                ) : (
+                  <Menu className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+                )}
+              </button>
             </div>
-            <ProcessingMetrics />
+          </div>
+
+          {/* Container do conteúdo */}
+          <div className="p-4 lg:p-6 pt-16 lg:pt-6">
+            {/* Efeito de background decorativo */}
+            <div className="absolute top-0 right-0 w-1/3 h-72 bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div className="max-w-7xl mx-auto space-y-6 relative z-10">
+              {/* Header */}
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-6 transition-all duration-300 hover:shadow-md">
+                <AnalyticsHeader />
+              </div>
+
+              {/* Overview Cards */}
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-6 transition-all duration-300 hover:shadow-md">
+                <AnalyticsOverview />
+              </div>
+
+              {/* Gráficos em grid responsivo */}
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                {/* Revenue Chart */}
+                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-6 transition-all duration-300 hover:shadow-md">
+                  <RevenueChart />
+                </div>
+
+                {/* Quotation Trends */}
+                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-6 transition-all duration-300 hover:shadow-md">
+                  <QuotationTrends />
+                </div>
+              </div>
+
+              {/* Processing Metrics */}
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-6 transition-all duration-300 hover:shadow-md">
+                <ProcessingMetrics />
+              </div>
+            </div>
           </div>
         </main>
       </div>
     </DateRangeProvider>
   );
 }
-
