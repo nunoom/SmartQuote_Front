@@ -19,7 +19,6 @@ export function DashboardSidebar() {
   const navigation = [
     { name: t("dashboard"), href: "/dashboard", icon: LayoutDashboard },
     { name: t("quotations"), href: "/quotations", icon: FileText },
-    { name: t("customers"), href: "/customers", icon: Users },
     { name: t("approvals"), href: "/approvals", icon: CheckCircle },
     { name: t("emails"), href: "/emails", icon: Mail },
     { name: t("aiProcessing"), href: "/ai-processing", icon: Brain },
