@@ -285,6 +285,7 @@ export const translations = {
     failed_to_approve: "Failed to Approve",
     quotation_approved_successfully: "Quotation Approved Successfully",
     failed_to_load_approvals: "Failed to Load Approvals",
+    failed_to_load_pending_approvals: "Failed to Load Pending Approvals",
 
   },
   pt: {
@@ -574,6 +575,7 @@ export const translations = {
     failed_to_approve: "Falha ao aprovar",
     quotation_approved_successfully: "Cotação aprovada com sucesso",
     failed_to_load_approvals: "Falha ao carregar aprovações",
+    failed_to_load_pending_approvals: "Falha ao carregar aprovações pendentes",
   },
 } as const
 

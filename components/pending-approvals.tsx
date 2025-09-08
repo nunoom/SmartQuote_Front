@@ -37,6 +37,53 @@ interface Quotation {
   };
 }
 
+// Componente Content Loader para PendingApprovals
+function PendingApprovalsContentLoader() {
+  return (
+    <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-6 transition-all duration-300">
+      {/* Header do loader */}
+      <div className="flex flex-row items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <div className="h-5 w-5 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+          <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-32 animate-pulse"></div>
+        </div>
+        <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-16 animate-pulse"></div>
+      </div>
+      
+      {/* Lista de aprovações do loader */}
+      <div className="space-y-4">
+        {[1, 2].map((item) => (
+          <div
+            key={item}
+            className="p-4 bg-white dark:bg-gray-700/50 border border-gray-200/50 dark:border-gray-600/50 rounded-xl"
+          >
+            {/* Header da aprovação */}
+            <div className="flex items-start justify-between mb-3">
+              <div className="space-y-2">
+                <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-20 animate-pulse"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24 animate-pulse"></div>
+              </div>
+              <div className="space-y-2 text-right">
+                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-16 animate-pulse"></div>
+                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-12 animate-pulse ml-auto"></div>
+              </div>
+            </div>
+
+            {/* Descrição */}
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-4 animate-pulse"></div>
+
+            {/* Botões de ação */}
+            <div className="flex gap-2">
+              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-20 animate-pulse"></div>
+              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-20 animate-pulse"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function PendingApprovals() {
   const { t } = useLanguage();
   const { axiosInstance } = useAuth();
@@ -125,13 +172,9 @@ export function PendingApprovals() {
     setVisibleCount(visibleCount === 2 ? quotations.length : 2);
   };
 
+  // Exibir content loader durante o carregamento
   if (loading) {
-    return (
-      <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-6 text-center transition-all duration-300">
-        <Loader2 className="h-8 w-8 text-blue-500 animate-spin mx-auto" />
-        <p className="text-gray-600 dark:text-gray-300 mt-2">Loading approvals...</p>
-      </div>
-    );
+    return <PendingApprovalsContentLoader />;
   }
 
   if (error) {
