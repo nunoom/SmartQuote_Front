@@ -1,154 +1,29 @@
-// "use client"
-
-// import type React from "react"
-
-// import { useState } from "react"
-// import Link from "next/link"
-// import { useAuth } from "@/lib/auth/auth-context"
-// import { useLanguage } from "@/lib/i18n/language-context"
-// import { Button } from "@/components/ui/button"
-// import { Input } from "@/components/ui/input"
-// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-// import { IconEye, IconEyeOff, IconLoader2 } from "@tabler/icons-react"
-
-// export default function LoginPage() {
-//   const [email, setEmail] = useState("")
-//   const [password, setPassword] = useState("")
-//   const [showPassword, setShowPassword] = useState(false)
-//   const [error, setError] = useState("")
-//   const { login, isLoading } = useAuth()
-//   const { t } = useLanguage()
-
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault()
-//     setError("")
-
-//     if (!email || !password) {
-//       setError(t("auth.fillAllFields"))
-//       return
-//     }
-
-//     const success = await login(email, password)
-//     if (!success) {
-//       setError(t("invalidCredentials"))
-//     }
-//   }
-
-//   return (
-//     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 sm:px-6 py-8">
-//       <div className="w-full max-w-md">
-//         <div className="text-center mb-6 sm:mb-8">
-//           <img src="/rcs-company-logo.png" alt="RCS Company" className="h-12 sm:h-16 mx-auto mb-3 sm:mb-4" />
-//           <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">SmartQuote</h1>
-//           <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">{t("auth.aiPoweredQuotations")}</p>
-//         </div>
-
-//         <Card className="dark:bg-gray-800 dark:border-gray-700 overflow-hidden">
-//           <CardHeader className="space-y-1 px-4 sm:px-6 py-4 sm:py-6">
-//             <CardTitle className="text-xl sm:text-2xl text-center dark:text-white">{t("auth.signIn")}</CardTitle>
-//             <CardDescription className="text-sm text-center dark:text-gray-400">
-//               {t("auth.enterCredentials")}
-//             </CardDescription>
-//           </CardHeader>
-//           <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
-//             <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
-//               <div className="space-y-1 sm:space-y-2">
-//                 <label htmlFor="email" className="text-xs sm:text-sm font-medium dark:text-white">
-//                   {t("auth.email")}
-//                 </label>
-//                 <Input
-//                   id="email"
-//                   type="email"
-//                   placeholder={t("auth.emailPlaceholder")}
-//                   value={email}
-//                   onChange={(e) => setEmail(e.target.value)}
-//                   className="dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm sm:text-base h-10 sm:h-11"
-//                   disabled={isLoading}
-//                 />
-//               </div>
-
-//               <div className="space-y-1 sm:space-y-2">
-//                 <label htmlFor="password" className="text-xs sm:text-sm font-medium dark:text-white">
-//                   {t("auth.password")}
-//                 </label>
-//                 <div className="relative">
-//                   <Input
-//                     id="password"
-//                     type={showPassword ? "text" : "password"}
-//                     placeholder={t("auth.passwordPlaceholder")}
-//                     value={password}
-//                     onChange={(e) => setPassword(e.target.value)}
-//                     className="dark:bg-gray-700 dark:border-gray-600 dark:text-white pr-10 text-sm sm:text-base h-10 sm:h-11"
-//                     disabled={isLoading}
-//                   />
-//                   <button
-//                     type="button"
-//                     onClick={() => setShowPassword(!showPassword)}
-//                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-//                   >
-//                     {showPassword ? <IconEyeOff size={18} /> : <IconEye size={18} />}
-//                   </button>
-//                 </div>
-//               </div>
-
-//               {error && (
-//                 <div className="text-red-500 text-xs sm:text-sm text-center bg-red-50 dark:bg-red-900/20 p-2 rounded">
-//                   {error}
-//                 </div>
-//               )}
-
-//               <Button type="submit" className="w-full h-10 sm:h-11 text-sm sm:text-base" disabled={isLoading}>
-//                 {isLoading ? (
-//                   <>
-//                     <IconLoader2 className="mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
-//                     {t("auth.signingIn")}
-//                   </>
-//                 ) : (
-//                   t("auth.signIn")
-//                 )}
-//               </Button>
-//             </form>
-
-//             <div className="mt-4 sm:mt-6 text-center">
-//               <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-//                 {t("auth.noAccount")}{" "}
-//                 <Link href="/register" className="text-blue-600 hover:text-blue-500 dark:text-blue-400 font-medium">
-//                   {t("auth.signUp")}
-//                 </Link>
-//               </p>
-//             </div>
-
-//             <div className="mt-3 sm:mt-4 p-2 sm:p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-//               <p className="text-xs text-blue-700 dark:text-blue-300 text-center">
-//                 <strong>Demo:</strong> admin@rcs.com / admin123
-//               </p>
-//             </div>
-//           </CardContent>
-//         </Card>
-//       </div>
-//     </div>
-//   )
-// }
-
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useAuth } from "@/lib/auth/auth-context"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { IconEye, IconEyeOff, Loader2, IconSparkles, IconLoader2 } from "@tabler/icons-react"
+import { Eye, EyeOff, Loader2, Sparkles, Mail, Lock, Zap, ChevronRight } from "lucide-react"
+import { ThemeToggle } from "@/components/theme-toggle"
+import { LanguageSwitcher } from "@/components/language-switcher"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
+  const [isMounted, setIsMounted] = useState(false)
   const { login, isLoading } = useAuth()
   const { t } = useLanguage()
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -161,182 +36,177 @@ export default function LoginPage() {
 
     const success = await login(email, password)
     if (!success) {
-      setError(t("invalidCredentials"))
+      setError(t("auth.invalidCredentials"))
     }
   }
 
-  return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      {/* Background com gradiente animado */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-yellow-900/20 via-transparent to-transparent"></div>
+  if (!isMounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
       </div>
-      
-      {/* Elementos decorativos flutuantes */}
-      <div className="absolute top-20 left-20 w-72 h-72 bg-yellow-500/5 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute bottom-20 right-20 w-96 h-96 bg-yellow-600/3 rounded-full blur-3xl animate-pulse delay-1000"></div>
-      
-      <div className="relative z-10 w-full max-w-lg px-4 sm:px-6 py-8">
-        {/* Header com logo e título */}
-        <div className="text-center mb-8 sm:mb-12">
-          <div className="relative inline-block mb-6">
-            <div className="absolute inset-0 bg-yellow-500/20 rounded-full blur-xl animate-pulse"></div>
-            {/* <img 
-              src="/rcs-company-logo.png" 
-              alt="RCS Company" 
-              className="relative h-16 sm:h-20 mx-auto drop-shadow-2xl" 
-            /> */}
+    )
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-950 p-4 transition-colors duration-300">
+      {/* Background pattern */}
+      <div className="absolute inset-0 opacity-10 dark:opacity-5">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%233B82F6' fill-opacity='0.2'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          backgroundSize: '60px 60px'
+        }} />
+      </div>
+
+      {/* Floating elements */}
+      <div className="absolute top-10 left-10 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl animate-pulse"></div>
+      <div className="absolute bottom-10 right-10 w-96 h-96 bg-blue-600/3 rounded-full blur-3xl animate-pulse delay-1000"></div>
+
+      <div className="relative z-10 w-full max-w-md">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center space-x-3 mb-6">
+            <div className="h-12 w-12 bg-gradient-to-br from-blue-600 to-blue-400 rounded-xl flex items-center justify-center shadow-lg">
+              <Zap className="h-6 w-6 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              Smart<span className="text-blue-600">Quote</span>
+            </h1>
           </div>
           
-          <div className="space-y-2">
-            <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500 bg-clip-text text-transparent">
-              SmartQuote
-            </h1>
-            <div className="flex items-center justify-center gap-2 text-yellow-400/80">
-              <IconSparkles size={16} className="animate-pulse" />
-              <p className="text-sm sm:text-base font-medium">{t("aiPoweredQuotations")}</p>
-              <IconSparkles size={16} className="animate-pulse delay-500" />
-            </div>
+          <div className="flex items-center justify-center gap-2 text-blue-600 dark:text-blue-400 mb-2">
+            <Sparkles size={16} className="animate-pulse" />
+            <p className="text-sm font-medium">{t("auth.aiPoweredQuotations")}</p>
+            <Sparkles size={16} className="animate-pulse delay-500" />
           </div>
         </div>
 
-        {/* Card principal com glassmorphism */}
-        <Card className="bg-black/40 backdrop-blur-xl border border-yellow-500/20 shadow-2xl shadow-yellow-500/10 hover:shadow-yellow-500/20 transition-all duration-500 overflow-hidden">
-          {/* Borda animada */}
-          <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/20 via-transparent to-yellow-500/20 opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
+        {/* Login Card */}
+        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-gray-200/50 dark:border-gray-700/50 shadow-xl rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-2xl">
+          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-blue-500 via-blue-400 to-blue-600"></div>
           
-          <CardHeader className="space-y-3 px-6 sm:px-8 py-6 sm:py-8 relative">
-            <CardTitle className="text-2xl sm:text-3xl text-center font-bold text-white">
-              {t("Login")}
-            </CardTitle>
-            <CardDescription className="text-center text-yellow-400/70 text-sm sm:text-base">
+          <CardHeader className="space-y-3 pb-6">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">
+                {t("auth.signIn")}
+              </CardTitle>
+              <div className="flex items-center gap-2">
+                <LanguageSwitcher />
+                <ThemeToggle />
+              </div>
+            </div>
+            <CardDescription className="text-gray-600 dark:text-gray-400">
               {t("auth.enterCredentials")}
             </CardDescription>
-            
-            {/* Linha decorativa */}
-            <div className="w-16 h-px bg-gradient-to-r from-transparent via-yellow-500 to-transparent mx-auto"></div>
           </CardHeader>
-          
-          <CardContent className="px-6 sm:px-8 pb-6 sm:pb-8 relative">
-            <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
-              {/* Campo Email */}
+
+          <CardContent className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Email Field */}
               <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-semibold text-gray-200 flex items-center gap-2">
-                  {t("Email")}
+                <label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                  <Mail className="h-4 w-4" />
+                  {t("auth.email")}
                 </label>
                 <div className="relative group">
                   <Input
                     id="email"
                     type="email"
-                    placeholder={t("example@gmail.com")}
+                    placeholder={t("auth.emailPlaceholder")}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="bg-gray-900/50 border-yellow-500/30 text-gray-100 placeholder:text-yellow-400/50 
-                             h-12 sm:h-14 px-4 text-sm sm:text-base rounded-xl
-                             focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 focus:bg-gray-900/70
-                             transition-all duration-300 group-hover:border-yellow-400/50"
+                    className="bg-white dark:bg-gray-700/50 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 h-12 px-4 rounded-xl transition-all duration-300 group-hover:border-blue-300 dark:group-hover:border-blue-500 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20"
                     disabled={isLoading}
                   />
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-yellow-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
                 </div>
               </div>
 
-              {/* Campo Password */}
+              {/* Password Field */}
               <div className="space-y-2">
-                <label htmlFor="password" className="text-sm font-semibold text-gray-200">
-                  {t("Palavra-Passe")}
+                <label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                  <Lock className="h-4 w-4" />
+                  {t("auth.password")}
                 </label>
                 <div className="relative group">
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder={t("Digite sua senha")}
+                    placeholder={t("auth.passwordPlaceholder")}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="bg-gray-900/50 border-yellow-500/30 text-gray-100 placeholder:text-yellow-400/50 
-                             h-12 sm:h-14 px-4 pr-12 text-sm sm:text-base rounded-xl
-                             focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 focus:bg-gray-900/70
-                             transition-all duration-300 group-hover:border-yellow-400/50"
+                    className="bg-white dark:bg-gray-700/50 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 h-12 px-4 pr-12 rounded-xl transition-all duration-300 group-hover:border-blue-300 dark:group-hover:border-blue-500 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20"
                     disabled={isLoading}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-yellow-400/70 
-                             hover:text-yellow-300 hover:scale-110 transition-all duration-200 z-10"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
                   >
-                    {showPassword ? <IconEyeOff size={20} /> : <IconEye size={20} />}
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-yellow-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
                 </div>
               </div>
 
-              {/* Mensagem de erro */}
+              {/* Error Message */}
               {error && (
-                <div className="relative overflow-hidden rounded-xl bg-red-900/20 border border-red-500/30 p-4 text-center">
-                  <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 to-transparent"></div>
-                  <p className="text-red-400 text-sm relative z-10">{error}</p>
+                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-3">
+                  <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
                 </div>
               )}
 
-              {/* Botão de login */}
+              {/* Login Button */}
               <Button
                 type="submit"
-                className="w-full h-12 sm:h-14 text-base sm:text-lg font-semibold
-                         bg-gradient-to-r from-yellow-600 via-yellow-500 to-yellow-400 
-                         hover:from-yellow-500 hover:via-yellow-400 hover:to-yellow-300
-                         text-black rounded-xl shadow-lg shadow-yellow-500/25
-                         hover:shadow-yellow-500/40 hover:scale-[1.02] 
-                         transition-all duration-300 relative overflow-hidden group"
+                className="w-full h-12 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white rounded-xl font-semibold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300 transform hover:scale-[1.02] group"
                 disabled={isLoading}
               >
-                <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 {isLoading ? (
-                  <div className="flex items-center justify-center gap-3">
-                    <IconLoader2 className="h-5 w-5 animate-spin" />
-                    <span>{t("Entrando")}</span>
+                  <div className="flex items-center justify-center gap-2">
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <span>{t("auth.signingIn")}</span>
                   </div>
                 ) : (
-                  <span className="relative z-10">{t("Entrar")}</span>
+                  <div className="flex items-center justify-center gap-2">
+                    <span>{t("auth.signIn")}</span>
+                    <ChevronRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  </div>
                 )}
               </Button>
             </form>
 
-            {/* Link para registro */}
-            <div className="mt-8 text-center">
-              <p className="text-sm text-yellow-400/70">
+            {/* Register Link */}
+            <div className="text-center pt-4 border-t border-gray-200 dark:border-gray-700">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 {t("auth.noAccount")}{" "}
-                <Link 
-                  href="/register" 
-                  className="text-yellow-400 hover:text-yellow-300 font-semibold 
-                           hover:underline underline-offset-2 transition-all duration-200"
+                <Link
+                  href="/register"
+                  className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold transition-colors duration-200"
                 >
                   {t("auth.signUp")}
                 </Link>
               </p>
             </div>
 
-            {/* Demo credentials */}
-            {/* <div className="mt-6 relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/10 via-yellow-400/5 to-yellow-500/10 rounded-xl"></div>
-              <div className="relative bg-yellow-900/20 border border-yellow-500/30 rounded-xl p-4 backdrop-blur-sm">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <IconSparkles size={14} className="text-yellow-400" />
-                  <span className="text-xs font-semibold text-yellow-400 uppercase tracking-wider">Demo</span>
-                  <IconSparkles size={14} className="text-yellow-400" />
-                </div>
-                <p className="text-sm text-yellow-300/90 text-center font-mono">
-                  admin@rcs.com / admin123
-                </p>
+            {/* Demo Credentials (optional) */}
+            {/* <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Sparkles size={14} className="text-blue-500" />
+                <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
+                  Demo Access
+                </span>
+                <Sparkles size={14} className="text-blue-500" />
               </div>
+              <p className="text-xs text-blue-700 dark:text-blue-300 text-center font-mono">
+                admin@smartquote.com / admin123
+              </p>
             </div> */}
           </CardContent>
         </Card>
-        
+
         {/* Footer */}
-        <div className="mt-8 text-center">
-          <p className="text-xs text-yellow-400/50">
-            © 2024 RCS Angola - SmartQuote System
+        <div className="text-center mt-8">
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            © 2024 SmartQuote • {t("projectDeveloped")}
           </p>
         </div>
       </div>
