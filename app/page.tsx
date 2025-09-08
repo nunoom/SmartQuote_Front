@@ -65,41 +65,41 @@ export default function SmartQuoteLandingPage() {
   // Dados da equipe desenvolvedora
   const teamMembers = [
     {
-      name: "Carlos Silva",
-      role: "Tech Lead & Full-Stack Developer",
+      name: "Nuno Mendes",
+      role: "Tech Lead & Front-end Developer",
       image: "/team/carlos.jpg",
       description: "Liderou a arquitetura do sistema e desenvolvimento da API principal. Especialista em React, Node.js e integração de IA.",
       social: {
-        github: "https://github.com/carlossilva",
-        linkedin: "https://linkedin.com/in/carlossilva",
+        github: "https://github.com/nunoom",
+        linkedin: "https://linkedin.com/in/nuno-mendes-07a259253",
         portfolio: "https://carlossilva.dev"
       }
     },
     {
-      name: "Ana Rodrigues",
+      name: "Reinaldo Sambinga",
       role: "Frontend Engineer",
       image: "/team/ana.jpg",
-      description: "Desenvolveu a interface do usuário e experiência do dashboard. Especialista em React, TypeScript e design systems.",
+      description: "Desenvolveu a interface do usuário e experiência do dashboard, Responsável pela infraestrutura de banco de dados. Especialista em React, TypeScript e design systems.",
       social: {
-        github: "https://github.com/anarodrigues",
+        github: "https://github.com/rsambing",
         linkedin: "https://linkedin.com/in/anarodrigues",
         portfolio: "https://anarodrigues.dev"
       }
     },
     {
-      name: "Miguel Santos",
+      name: "Joison Miguel",
       role: "Backend Engineer",
       image: "/team/miguel.jpg",
       description: "Responsável pela infraestrutura de banco de dados e APIs de integração. Especialista em Python, PostgreSQL e AWS.",
       social: {
-        github: "https://github.com/miguelsantos",
-        linkedin: "https://linkedin.com/in/miguelsantos",
+        github: "https://github.com/joissonm1",
+        linkedin: "https://www.linkedin.com/in/joisson-miguel-4a921b262/",
         portfolio: "https://miguelsantos.dev"
       }
     },
     {
-      name: "Sofia Costa",
-      role: "AI Engineer",
+      name: "Aurora Simão",
+      role: "UI/UX",
       image: "/team/sofia.jpg",
       description: "Desenvolveu os algoritmos de IA para processamento de emails e análise de cotações. Especialista em machine learning e NLP.",
       social: {
@@ -109,8 +109,19 @@ export default function SmartQuoteLandingPage() {
       }
     },
     {
-      name: "Ricardo Lima",
-      role: "UX/UI Designer",
+      name: "Liedson Habacuc",
+      role: "AI Engineer",
+      image: "/team/ricardo.jpg",
+      description: "Criou a experiência do usuário e interface visual da plataforma. Especialista em design thinking e prototipagem.",
+      social: {
+        github: "https://github.com/ricardolima",
+        linkedin: "https://linkedin.com/in/ricardolima",
+        portfolio: "https://ricardolima.design"
+      }
+    },
+    {
+      name: "Gildo Komba",
+      role: "AI Engineer",
       image: "/team/ricardo.jpg",
       description: "Criou a experiência do usuário e interface visual da plataforma. Especialista em design thinking e prototipagem.",
       social: {
