@@ -35,6 +35,7 @@ export default function EmailRequestsPage() {
   const { t } = useLanguage();
   const { axiosInstance } = useAuth();
   const [requests, setRequests] = useState<QuotationRequest[]>([]);
+  const [filteredRequests, setFilteredRequests] = useState<QuotationRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filtersState, setFiltersState] = useState<{
@@ -48,6 +49,8 @@ export default function EmailRequestsPage() {
   });
   const [syncTrigger, setSyncTrigger] = useState(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   // Memoize filters to ensure stable reference
   const filters = useMemo(
@@ -66,13 +69,45 @@ export default function EmailRequestsPage() {
         sortBy: newFilters.sortBy as 'recent' | 'oldest',
         search: newFilters.search,
       });
+      setCurrentPage(1); // Reset to first page when filters change
     },
     []
   );
 
   const handleSync = useCallback(() => {
     setSyncTrigger((prev) => prev + 1);
+    setCurrentPage(1); // Reset to first page after sync
   }, []);
+
+  // Apply filters and sorting
+  useEffect(() => {
+    let filtered = [...requests];
+    
+    // Apply status filter
+    if (filters.status !== 'ALL') {
+      filtered = filtered.filter((r) => r.status === filters.status);
+    }
+    
+    // Apply search filter
+    if (filters.search) {
+      const searchLower = filters.search.toLowerCase();
+      filtered = filtered.filter(
+        (r) =>
+          r.requester.toLowerCase().includes(searchLower) ||
+          r.email.toLowerCase().includes(searchLower) ||
+          r.description.toLowerCase().includes(searchLower)
+      );
+    }
+    
+    // Apply sorting
+    if (filters.sortBy === 'recent') {
+      filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    } else if (filters.sortBy === 'oldest') {
+      filtered.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    }
+    
+    setFilteredRequests(filtered);
+  }, [requests, filters]);
 
   const fetchRequests = useCallback(async () => {
     if (!axiosInstance) {
@@ -96,28 +131,7 @@ export default function EmailRequestsPage() {
       });
 
       console.log('Requests response:', JSON.stringify(response.data, null, 2));
-
-      // Client-side filtering and sorting
-      let filteredRequests = response.data;
-      if (filters.status !== 'ALL') {
-        filteredRequests = filteredRequests.filter((r) => r.status === filters.status);
-      }
-      if (filters.search) {
-        const searchLower = filters.search.toLowerCase();
-        filteredRequests = filteredRequests.filter(
-          (r) =>
-            r.requester.toLowerCase().includes(searchLower) ||
-            r.email.toLowerCase().includes(searchLower) ||
-            r.description.toLowerCase().includes(searchLower)
-        );
-      }
-      if (filters.sortBy === 'recent') {
-        filteredRequests.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-      } else if (filters.sortBy === 'oldest') {
-        filteredRequests.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-      }
-
-      setRequests(filteredRequests);
+      setRequests(response.data);
     } catch (err: any) {
       console.error('Error fetching requests:', err);
       const errorMessage = err.response?.data?.message || t('failed_to_load_requests');
@@ -126,11 +140,29 @@ export default function EmailRequestsPage() {
     } finally {
       setLoading(false);
     }
-  }, [axiosInstance, t, filters]);
+  }, [axiosInstance, t]);
 
   useEffect(() => {
     fetchRequests();
   }, [fetchRequests, syncTrigger]);
+
+  // Pagination calculations
+  const totalItems = filteredRequests.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+  const currentRequests = filteredRequests.slice(startIndex, endIndex);
+
+  const handlePageChange = useCallback((page: number) => {
+    setCurrentPage(page);
+    // Scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const handleItemsPerPageChange = useCallback((value: number) => {
+    setItemsPerPage(value);
+    setCurrentPage(1); // Reset to first page when items per page changes
+  }, []);
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-950 transition-colors duration-300">
@@ -219,7 +251,14 @@ export default function EmailRequestsPage() {
             
             {!loading && !error && (
               <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-6 transition-all duration-300 hover:shadow-md">
-                <EmailRequestsList requests={requests} />
+                <EmailRequestsList 
+                  requests={currentRequests} 
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                  itemsPerPage={itemsPerPage}
+                  onItemsPerPageChange={handleItemsPerPageChange}
+                />
               </div>
             )}
           </div>

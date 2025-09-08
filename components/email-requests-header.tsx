@@ -93,8 +93,8 @@ export function EmailRequestsHeader({
   if (loading) {
     return (
       <div className="text-center">
-        <Loader2 className="h-8 w-8 text-blue-500 animate-spin mx-auto" />
-        <p className="text-gray-600 dark:text-gray-300 mt-2">{t('loading')}</p>
+        {/* <Loader2 className="h-8 w-8 text-blue-500 animate-spin mx-auto" />
+        <p className="text-gray-600 dark:text-gray-300 mt-2">{t('loading')}</p> */}
       </div>
     );
   }
