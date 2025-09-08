@@ -151,7 +151,7 @@ export function PendingApprovals() {
       const approval = approvals.find((a) => a.id === approvalId);
       if (!approval) throw new Error('Approval not found');
       await axiosInstance.patch(`/emails/quotations/${approval.quotationId}/status`, {
-        status: 'rejected',
+        status: 'REJECTED',
       });
       setApprovals(approvals.filter((a) => a.id !== approvalId));
       toast.success(t('approval_rejected_successfully'));

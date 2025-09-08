@@ -72,7 +72,7 @@ export function RecentQuotations() {
           .map((apiQuotation) => ({
             id: apiQuotation.id || 'unknown',
             totalValue: apiQuotation.jsonData.total ?? 0,
-            approved: apiQuotation.status.toUpperCase() === 'APPROVED',
+            approved: apiQuotation.status.toUpperCase() === 'COMPLETED',
             createdAt: apiQuotation.createdAt || new Date().toISOString(),
             request: {
               requester: 'Unknown', // No requester in API
