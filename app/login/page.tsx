@@ -2,13 +2,14 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { useAuth } from "@/lib/auth/auth-context"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Eye, EyeOff, Loader2, Sparkles, Mail, Lock, Zap, ChevronRight } from "lucide-react"
+import { Eye, EyeOff, Loader2, Sparkles, Mail, Lock, Zap, ChevronRight, ArrowLeft } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageSwitcher } from "@/components/language-switcher"
 
@@ -20,6 +21,7 @@ export default function LoginPage() {
   const [isMounted, setIsMounted] = useState(false)
   const { login, isLoading } = useAuth()
   const { t } = useLanguage()
+  const router = useRouter()
 
   useEffect(() => {
     setIsMounted(true)
@@ -30,13 +32,13 @@ export default function LoginPage() {
     setError("")
 
     if (!email || !password) {
-      setError(t("auth.fillAllFields"))
+      setError(t("fillAllFields"))
       return
     }
 
     const success = await login(email, password)
     if (!success) {
-      setError(t("auth.invalidCredentials"))
+      setError(t("invalidCredentials"))
     }
   }
 
@@ -61,22 +63,41 @@ export default function LoginPage() {
       {/* Floating elements */}
       <div className="absolute top-10 left-10 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-10 right-10 w-96 h-96 bg-blue-600/3 rounded-full blur-3xl animate-pulse delay-1000"></div>
-
+      
+      {/* Botão Voltar para Home */}
+      <div className="absolute top-6 left-6 z-20">
+        <Button
+          variant="ghost"
+          onClick={() => router.push("/")}
+          className="group bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-gray-200/50 dark:border-gray-700/50 hover:bg-white dark:hover:bg-gray-800 rounded-xl px-4 py-2 transition-all duration-300 shadow-md hover:shadow-lg"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2 text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
+          <span className="text-gray-700 dark:text-gray-300 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
+            {t("backToHome")}
+          </span>
+        </Button>
+      </div>
+        
       <div className="relative z-10 w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center space-x-3 mb-6">
-            <div className="h-12 w-12 bg-gradient-to-br from-blue-600 to-blue-400 rounded-xl flex items-center justify-center shadow-lg">
-              <Zap className="h-6 w-6 text-white" />
+            {/* Logo para modo claro */}
+            <div className="hidden dark:block">
+              <img src="/LogoRCS.png" alt="RCS" className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 flex-shrink-0" />
+            </div>
+            {/* Logo alternativa para modo escuro */}
+            <div className="dark:hidden">
+              <img src="/LogoRCS-Dark.png" alt="RCS" className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 flex-shrink-0" />
             </div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
               Smart<span className="text-blue-600">Quote</span>
             </h1>
           </div>
-          
+
           <div className="flex items-center justify-center gap-2 text-blue-600 dark:text-blue-400 mb-2">
             <Sparkles size={16} className="animate-pulse" />
-            <p className="text-sm font-medium">{t("auth.aiPoweredQuotations")}</p>
+            <p className="text-sm font-medium">{t("aiPoweredQuotations")}</p>
             <Sparkles size={16} className="animate-pulse delay-500" />
           </div>
         </div>
@@ -84,11 +105,11 @@ export default function LoginPage() {
         {/* Login Card */}
         <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-gray-200/50 dark:border-gray-700/50 shadow-xl rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-2xl">
           <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-blue-500 via-blue-400 to-blue-600"></div>
-          
+
           <CardHeader className="space-y-3 pb-6">
             <div className="flex items-center justify-between">
               <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">
-                {t("auth.signIn")}
+                {t("signIn")}
               </CardTitle>
               <div className="flex items-center gap-2">
                 <LanguageSwitcher />
@@ -96,7 +117,7 @@ export default function LoginPage() {
               </div>
             </div>
             <CardDescription className="text-gray-600 dark:text-gray-400">
-              {t("auth.enterCredentials")}
+              {t("enterCredentials")}
             </CardDescription>
           </CardHeader>
 
@@ -106,13 +127,13 @@ export default function LoginPage() {
               <div className="space-y-2">
                 <label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
                   <Mail className="h-4 w-4" />
-                  {t("auth.email")}
+                  {t("email")}
                 </label>
                 <div className="relative group">
                   <Input
                     id="email"
                     type="email"
-                    placeholder={t("auth.emailPlaceholder")}
+                    placeholder={t("emailPlaceholder")}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="bg-white dark:bg-gray-700/50 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 h-12 px-4 rounded-xl transition-all duration-300 group-hover:border-blue-300 dark:group-hover:border-blue-500 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20"
@@ -125,13 +146,13 @@ export default function LoginPage() {
               <div className="space-y-2">
                 <label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
                   <Lock className="h-4 w-4" />
-                  {t("auth.password")}
+                  {t("password")}
                 </label>
                 <div className="relative group">
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder={t("auth.passwordPlaceholder")}
+                    placeholder={t("passwordPlaceholder")}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="bg-white dark:bg-gray-700/50 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 h-12 px-4 pr-12 rounded-xl transition-all duration-300 group-hover:border-blue-300 dark:group-hover:border-blue-500 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20"
@@ -163,11 +184,11 @@ export default function LoginPage() {
                 {isLoading ? (
                   <div className="flex items-center justify-center gap-2">
                     <Loader2 className="h-5 w-5 animate-spin" />
-                    <span>{t("auth.signingIn")}</span>
+                    <span>{t("signingIn")}</span>
                   </div>
                 ) : (
                   <div className="flex items-center justify-center gap-2">
-                    <span>{t("auth.signIn")}</span>
+                    <span>{t("signIn")}</span>
                     <ChevronRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                   </div>
                 )}
@@ -177,12 +198,12 @@ export default function LoginPage() {
             {/* Register Link */}
             <div className="text-center pt-4 border-t border-gray-200 dark:border-gray-700">
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {t("auth.noAccount")}{" "}
+                {t("noAccount")}{" "}
                 <Link
                   href="/register"
                   className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold transition-colors duration-200"
                 >
-                  {t("auth.signUp")}
+                  {t("signUp")}
                 </Link>
               </p>
             </div>

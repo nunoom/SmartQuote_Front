@@ -340,7 +340,7 @@ export default function SmartQuoteLandingPage() {
               <a href="#solucao" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 font-medium">Solução</a>
               <a href="#funcionamento" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 font-medium">{t("howItWorks")}</a>
               <a href="#beneficios" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 font-medium">{t("benefits")}</a>
-              <a href="#equipa" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 font-medium">Equipa</a>
+              <a href="#equipa" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 font-medium">{t("team")}</a>
             </nav>
             {/* Theme and Language controls */}
             <div className="flex items-center gap-1 sm:gap-2 md:gap-3 ml-2 sm:ml-3">
