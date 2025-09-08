@@ -21,7 +21,7 @@ export function DashboardSidebar() {
     { name: t("quotations"), href: "/quotations", icon: FileText },
     { name: t("approvals"), href: "/approvals", icon: CheckCircle },
     { name: t("emails"), href: "/emails", icon: Mail },
-    { name: t("aiProcessing"), href: "/ai-processing", icon: Brain },
+    // { name: t("aiProcessing"), href: "/ai-processing", icon: Brain },
     { name: t("analytics"), href: "/analytics", icon: TrendingUp },
     { name: t("settings"), href: "/settings", icon: Settings },
   ]
