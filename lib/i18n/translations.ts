@@ -286,7 +286,18 @@ export const translations = {
     quotation_approved_successfully: "Quotation Approved Successfully",
     failed_to_load_approvals: "Failed to Load Approvals",
     failed_to_load_pending_approvals: "Failed to Load Pending Approvals",
+    back: "Back",
 
+    customerInfo: "Customer Information",
+    customerName: "Customer Name",
+    items: "Items",
+    addItem: "Add Item",
+    description: "Description",
+    quantity: "Quantity",
+    unitPrice: "Unit Price",
+    observations: "Observations",
+    total: "Total",
+    saveQuotation: "Save Quotation",
   },
   pt: {
     // Navigation
@@ -576,6 +587,18 @@ export const translations = {
     quotation_approved_successfully: "Cotação aprovada com sucesso",
     failed_to_load_approvals: "Falha ao carregar aprovações",
     failed_to_load_pending_approvals: "Falha ao carregar aprovações pendentes",
+    back: "Voltar",
+
+    customerInfo: "Informações do Cliente",
+    customerName: "Nome do Cliente",
+    items: "Itens",
+    addItem: "Adicionar Item",
+    description: "Descrição",
+    quantity: "Quantidade",
+    unitPrice: "Preço Unitário",
+    observations: "Observações",
+    total: "Total",
+    saveQuotation: "Salvar Cotação",
   },
 } as const
 

@@ -12,7 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Eye, Edit, Send, MoreHorizontal, AlertTriangle, Loader2, Trash, Copy } from 'lucide-react';
+import { Eye, Edit, Send, MoreHorizontal, AlertTriangle, Loader2, Trash, Copy, ChevronLeft, ChevronRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 // Interface for API response
@@ -70,6 +70,152 @@ interface Quotation {
   }[];
 }
 
+// Componente Content Loader para QuotationsList
+function QuotationsListContentLoader() {
+  return (
+    <div className="space-y-6">
+      {/* Informações de paginação do loader */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-40 animate-pulse"></div>
+        <div className="flex items-center gap-4">
+          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-32 animate-pulse"></div>
+        </div>
+      </div>
+
+      {/* Lista de cotações do loader */}
+      <div className="space-y-4">
+        {[1, 2, 3, 4, 5].map((item) => (
+          <div
+            key={item}
+            className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-6"
+          >
+            <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
+              <div className="flex-1 space-y-4">
+                {/* Header do loader */}
+                <div className="flex flex-wrap items-center gap-3 mb-4">
+                  <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-24 animate-pulse"></div>
+                  <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-20 animate-pulse"></div>
+                  <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-28 animate-pulse"></div>
+                </div>
+
+                {/* Grid de informações do loader */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  <div className="space-y-2">
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-16 animate-pulse"></div>
+                    <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-24 animate-pulse"></div>
+                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-20 animate-pulse"></div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20 animate-pulse"></div>
+                    <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-16 animate-pulse"></div>
+                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-12 animate-pulse"></div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-12 animate-pulse"></div>
+                    <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-16 animate-pulse"></div>
+                  </div>
+                </div>
+
+                {/* Email e descrição do loader */}
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 animate-pulse mb-2"></div>
+                <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+              </div>
+
+              {/* Botões do loader */}
+              <div className="flex flex-col sm:flex-row lg:flex-col gap-2">
+                <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-24 animate-pulse"></div>
+                <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-24 animate-pulse"></div>
+                <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-10 animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Paginação do loader */}
+      <div className="flex items-center justify-center gap-2 mt-6">
+        <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+        <div className="flex items-center gap-1">
+          {[1, 2, 3, 4, 5].map((page) => (
+            <div key={page} className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+          ))}
+        </div>
+        <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+      </div>
+    </div>
+  );
+}
+
+// Componente de Paginação
+function Pagination({ currentPage, totalPages, onPageChange }: { currentPage: number; totalPages: number; onPageChange: (page: number) => void }) {
+  if (totalPages <= 1) return null;
+
+  return (
+    <div className="flex items-center justify-center gap-2 mt-6">
+      <Button
+        variant="outline"
+        size="sm"
+        className="h-8 w-8 p-0 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+      >
+        <ChevronLeft className="h-4 w-4" />
+      </Button>
+
+      <div className="flex items-center gap-1">
+        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+          const page = currentPage <= 3 
+            ? i + 1 
+            : currentPage >= totalPages - 2 
+            ? totalPages - 4 + i 
+            : currentPage - 2 + i
+          
+          if (page > 0 && page <= totalPages) {
+            return (
+              <Button
+                key={page}
+                variant={currentPage === page ? "default" : "outline"}
+                size="sm"
+                className="h-8 w-8 p-0 text-sm"
+                onClick={() => onPageChange(page)}
+              >
+                {page}
+              </Button>
+            )
+          }
+          return null
+        })}
+
+        {totalPages > 5 && currentPage < totalPages - 2 && (
+          <>
+            <span className="px-2 text-gray-500">...</span>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 w-8 p-0 text-sm"
+              onClick={() => onPageChange(totalPages)}
+            >
+              {totalPages}
+            </Button>
+          </>
+        )}
+      </div>
+
+      <Button
+        variant="outline"
+        size="sm"
+        className="h-8 w-8 p-0 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+      >
+        <ChevronRight className="h-4 w-4" />
+      </Button>
+    </div>
+  );
+}
+
 export function QuotationsList() {
   const { t } = useLanguage();
   const { axiosInstance } = useAuth();
@@ -77,6 +223,8 @@ export function QuotationsList() {
   const [quotations, setQuotations] = useState<Quotation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const fetchQuotations = async () => {
     if (!axiosInstance) {
@@ -179,6 +327,13 @@ export function QuotationsList() {
     fetchQuotations();
   }, [axiosInstance]);
 
+  // Cálculos de paginação
+  const totalItems = quotations.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+  const currentQuotations = quotations.slice(startIndex, endIndex);
+
   const handleViewDetails = (id: string) => {
     router.push(`/quotations/${id}`);
   };
@@ -203,26 +358,7 @@ export function QuotationsList() {
       fetchQuotations();
     } catch (err: any) {
       console.error('Erro ao enviar cotação:', err);
-      let errorMessage = 'Falha ao enviar cotação: Erro desconhecido.';
-
-      if (err.response) {
-        if (err.response.status === 429 || err.response.data?.error?.code === 'rate_limit_exceeded') {
-          errorMessage = 'Limite de uso do servidor atingido. Tente novamente em 15 minutos.';
-        } else if (err.response.status === 500) {
-          errorMessage = 'Erro interno no servidor ao enviar cotação.';
-        } else if (err.response.status === 401) {
-          errorMessage = 'Autenticação falhou ao enviar cotação.';
-        } else {
-          errorMessage = err.response.data?.message || `Erro HTTP: ${err.response.status}`;
-        }
-      } else if (err.code === 'ECONNABORTED') {
-        errorMessage = 'Tempo de conexão esgotado ao enviar cotação.';
-      } else if (err.message.includes('Network Error')) {
-        errorMessage = 'Não foi possível conectar ao servidor ao enviar cotação.';
-      } else {
-        errorMessage = err.message;
-      }
-
+      const errorMessage = err.response?.data?.message || 'Falha ao enviar cotação';
       toast.error(errorMessage);
     }
   };
@@ -243,26 +379,7 @@ export function QuotationsList() {
       fetchQuotations();
     } catch (err: any) {
       console.error('Erro ao excluir cotação:', err);
-      let errorMessage = 'Falha ao excluir cotação: Erro desconhecido.';
-
-      if (err.response) {
-        if (err.response.status === 429 || err.response.data?.error?.code === 'rate_limit_exceeded') {
-          errorMessage = 'Limite de uso do servidor atingido. Tente novamente em 15 minutos.';
-        } else if (err.response.status === 500) {
-          errorMessage = 'Erro interno no servidor ao excluir cotação.';
-        } else if (err.response.status === 401) {
-          errorMessage = 'Autenticação falhou ao excluir cotação.';
-        } else {
-          errorMessage = err.response.data?.message || `Erro HTTP: ${err.response.status}`;
-        }
-      } else if (err.code === 'ECONNABORTED') {
-        errorMessage = 'Tempo de conexão esgotado ao excluir cotação.';
-      } else if (err.message.includes('Network Error')) {
-        errorMessage = 'Não foi possível conectar ao servidor ao excluir cotação.';
-      } else {
-        errorMessage = err.message;
-      }
-
+      const errorMessage = err.response?.data?.message || 'Falha ao excluir cotação';
       toast.error(errorMessage);
     }
   };
@@ -276,7 +393,7 @@ export function QuotationsList() {
       const response = await axiosInstance.get(`/emails/quotations/${id}`, {
         headers: {
           Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWYzeWVpZzEwMDAwYno4em5vbXNpYWs1IiwiZW1haWwiOiI0M0ByY3MuY28uYW8iLCJyb2xlIjoiTUFOQUdFUiIsImlhdCI�MTc1NzI3MjgyNywiZXhwIjoxNzU3MzU5MjI3fQ.uhAq3OPLNxD9oiexsORd_qIVhmw1EAJfBiKSh3LCTl4',
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWYzeWVpZzEwMDAwYno4em5vbXNpYWs1IiwiZW1haWwiOiI0M0ByY3MuY28uYW8iLCJyb2xlIjoiTUFOQUdFUiIsImlhdCI6MTc1NzI3MjgyNywiZXhwIjoxNzU3MzU5MjI3fQ.uhAq3OPLNxD9oiexsORd_qIVhmw1EAJfBiKSh3LCTl4',
         },
       });
 
@@ -300,26 +417,7 @@ export function QuotationsList() {
       fetchQuotations();
     } catch (err: any) {
       console.error('Erro ao duplicar cotação:', err);
-      let errorMessage = 'Falha ao duplicar cotação: Erro desconhecido.';
-
-      if (err.response) {
-        if (err.response.status === 429 || err.response.data?.error?.code === 'rate_limit_exceeded') {
-          errorMessage = 'Limite de uso do servidor atingido. Tente novamente em 15 minutos.';
-        } else if (err.response.status === 500) {
-          errorMessage = 'Erro interno no servidor ao duplicar cotação.';
-        } else if (err.response.status === 401) {
-          errorMessage = 'Autenticação falhou ao duplicar cotação.';
-        } else {
-          errorMessage = err.response.data?.message || `Erro HTTP: ${err.response.status}`;
-        }
-      } else if (err.code === 'ECONNABORTED') {
-        errorMessage = 'Tempo de conexão esgotado ao duplicar cotação.';
-      } else if (err.message.includes('Network Error')) {
-        errorMessage = 'Não foi possível conectar ao servidor ao duplicar cotação.';
-      } else {
-        errorMessage = err.message;
-      }
-
+      const errorMessage = err.response?.data?.message || 'Falha ao duplicar cotação';
       toast.error(errorMessage);
     }
   };
@@ -344,13 +442,9 @@ export function QuotationsList() {
     }
   };
 
+  // Exibir content loader durante o carregamento
   if (loading) {
-    return (
-      <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-6 text-center transition-all duration-300">
-        <Loader2 className="h-8 w-8 text-blue-500 animate-spin mx-auto" />
-        <p className="text-gray-600 dark:text-gray-300 mt-2">Carregando cotações...</p>
-      </div>
-    );
+    return <QuotationsListContentLoader />;
   }
 
   if (error) {
@@ -377,109 +471,145 @@ export function QuotationsList() {
   }
 
   return (
-    <div className="space-y-4">
-      {quotations.map((quotation) => (
-        <div
-          key={quotation.id}
-          className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-6 transition-all duration-300 hover:shadow-md"
-        >
-          <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
-            <div className="flex-1">
-              <div className="flex flex-wrap items-center gap-3 mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{quotation.id}</h3>
-                <Badge className={getStatusColor(quotation.approved ? 'approved' : 'pending')}>
-                  {quotation.approved ? 'Aprovada' : 'Pendente'}
-                </Badge>
-                {quotation.request.status === 'PENDING' && (
-                  <Badge className="bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 border-orange-200 dark:border-orange-800">
-                    <AlertTriangle className="h-3 w-3 mr-1" />
-                    Aprovação Necessária
+    <div className="space-y-6">
+      {/* Informações de paginação */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="text-sm text-gray-600 dark:text-gray-400">
+          Exibindo {startIndex + 1}-{endIndex} de {totalItems} cotações
+        </div>
+
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-600 dark:text-gray-400">Itens por página:</span>
+            <select
+              value={itemsPerPage}
+              onChange={(e) => {
+                setItemsPerPage(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+              className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 text-sm"
+            >
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Lista de cotações */}
+      <div className="space-y-4">
+        {currentQuotations.map((quotation) => (
+          <div
+            key={quotation.id}
+            className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-6 transition-all duration-300 hover:shadow-md"
+          >
+            <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
+              <div className="flex-1">
+                <div className="flex flex-wrap items-center gap-3 mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{quotation.id}</h3>
+                  <Badge className={getStatusColor(quotation.approved ? 'approved' : 'pending')}>
+                    {quotation.approved ? 'Aprovada' : 'Pendente'}
                   </Badge>
+                  {quotation.request.status === 'PENDING' && (
+                    <Badge className="bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 border-orange-200 dark:border-orange-800">
+                      <AlertTriangle className="h-3 w-3 mr-1" />
+                      Aprovação Necessária
+                    </Badge>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  <div>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">Cliente</p>
+                    <p className="font-medium text-gray-900 dark:text-white">{quotation.customer?.name || 'N/A'}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{quotation.customer?.email || 'N/A'}</p>
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">Valor Total</p>
+                    <p className="text-xl font-bold text-blue-600 dark:text-blue-400">{formatCurrency(quotation.totalValue)}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {quotation.items.length} {quotation.items.length !== 1 ? 'itens' : 'item'}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">Criado</p>
+                    <p className="font-medium text-gray-900 dark:text-white">{new Date(quotation.createdAt).toLocaleDateString('pt-AO')}</p>
+                  </div>
+                </div>
+
+                {quotation.request.email && (
+                  <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg mb-4 border border-blue-200 dark:border-blue-800">
+                    <p className="text-sm text-blue-700 dark:text-blue-300">
+                      <span className="font-medium">Solicitação de Email:</span> {quotation.request.email}
+                    </p>
+                  </div>
+                )}
+
+                {quotation.request.description && (
+                  <div className="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg mb-4 border border-gray-200 dark:border-gray-600">
+                    <p className="text-sm text-gray-700 dark:text-gray-300">{quotation.request.description}</p>
+                  </div>
                 )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">Cliente</p>
-                  <p className="font-medium text-gray-900 dark:text-white">{quotation.customer?.name || 'N/A'}</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{quotation.customer?.email || 'N/A'}</p>
-                </div>
-
-                <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">Valor Total</p>
-                  <p className="text-xl font-bold text-blue-600 dark:text-blue-400">{formatCurrency(quotation.totalValue)}</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {quotation.items.length} {quotation.items.length !== 1 ? 'itens' : 'item'}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">Criado</p>
-                  <p className="font-medium text-gray-900 dark:text-white">{new Date(quotation.createdAt).toLocaleDateString('pt-AO')}</p>
-                </div>
+              <div className="flex flex-col sm:flex-row lg:flex-col gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                  onClick={() => handleViewDetails(quotation.id)}
+                >
+                  <Eye className="h-4 w-4 mr-1" />
+                  Visualizar
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                  onClick={() => handleEdit(quotation.id)}
+                >
+                  <Edit className="h-4 w-4 mr-1" />
+                  Editar
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                    <DropdownMenuItem
+                      className="text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                      onClick={() => handleDuplicate(quotation.id)}
+                    >
+                      <Copy className="h-4 w-4 mr-2" />
+                      Duplicar
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                      onClick={() => handleDelete(quotation.id)}
+                    >
+                      <Trash className="h-4 w-4 mr-2" />
+                      Excluir
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
-
-              {quotation.request.email && (
-                <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg mb-4 border border-blue-200 dark:border-blue-800">
-                  <p className="text-sm text-blue-700 dark:text-blue-300">
-                    <span className="font-medium">Solicitação de Email:</span> {quotation.request.email}
-                  </p>
-                </div>
-              )}
-
-              {quotation.request.description && (
-                <div className="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg mb-4 border border-gray-200 dark:border-gray-600">
-                  <p className="text-sm text-gray-700 dark:text-gray-300">{quotation.request.description}</p>
-                </div>
-              )}
-            </div>
-
-            <div className="flex flex-col sm:flex-row lg:flex-col gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-                onClick={() => handleViewDetails(quotation.id)}
-              >
-                <Eye className="h-4 w-4 mr-1" />
-                Visualizar
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-                onClick={() => handleEdit(quotation.id)}
-              >
-                <Edit className="h-4 w-4 mr-1" />
-                Editar
-              </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                  <DropdownMenuItem
-                    className="text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-                    onClick={() => handleDuplicate(quotation.id)}
-                  >
-                    <Copy className="h-4 w-4 mr-2" />
-                    Duplicar
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
-                    onClick={() => handleDelete(quotation.id)}
-                  >
-                    <Trash className="h-4 w-4 mr-2" />
-                    Excluir
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
+
+      {/* Paginação */}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
     </div>
   );
 }
