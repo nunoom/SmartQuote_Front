@@ -82,7 +82,7 @@ export default function SmartQuoteLandingPage() {
       description: "Desenvolveu a interface do usuário e experiência do dashboard, Responsável pela infraestrutura de banco de dados. Especialista em React, TypeScript e design systems.",
       social: {
         github: "https://github.com/rsambing",
-        linkedin: "https://linkedin.com/in/anarodrigues",
+        linkedin: "https://www.linkedin.com/in/rsambing/",
         portfolio: "https://anarodrigues.dev"
       }
     },
@@ -104,7 +104,7 @@ export default function SmartQuoteLandingPage() {
       description: "Desenvolveu os algoritmos de IA para processamento de emails e análise de cotações. Especialista em machine learning e NLP.",
       social: {
         github: "https://github.com/sofiacosta",
-        linkedin: "https://linkedin.com/in/sofiacosta",
+        linkedin: "https://www.linkedin.com/in/aurora-sim%C3%A3o-00623a2a9/",
         portfolio: "https://sofiacosta.dev"
       }
     },

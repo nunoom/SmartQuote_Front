@@ -20,12 +20,18 @@ export default function SettingsPage() {
     }
     try {
       setIsSaving(true);
-      // O backend espera receber os dados diretamente, não dentro de um objeto "system"
-      await axiosInstance.patch(`/settings/${user.id}`, data);
+      // Verificar se o usuário é admin antes de tentar salvar
+      if (user.role !== 'ADMIN') {
+        toast.error('Apenas administradores podem alterar configurações');
+        return;
+      }
+      
+      await axiosInstance.patch(`/settings/basic/${user.id}`, data);
       toast.success('Configurações salvas com sucesso');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro ao salvar configurações:', error);
-      toast.error('Falha ao salvar configurações');
+      const errorMessage = error.response?.data?.message || 'Falha ao salvar configurações';
+      toast.error(errorMessage);
     } finally {
       setIsSaving(false);
     }
@@ -88,12 +94,12 @@ export default function SettingsPage() {
           <div className="max-w-4xl mx-auto space-y-6 relative z-10">
             {/* Header */}
             <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-6 transition-all duration-300 hover:shadow-md">
-              <SettingsHeader onSave={handleSave} isSaving={isSaving} />
+              <SettingsHeader onSave={handleSave} isSaving={isSaving} userRole={user?.role} />
             </div>
 
             {/* Tabs de configurações */}
             <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-6 transition-all duration-300 hover:shadow-md">
-              <SettingsTabs onSave={handleSave} userId={user?.id || ''} />
+              <SettingsTabs onSave={handleSave} userId={user?.id || ''} userRole={user?.role} />
             </div>
           </div>
         </div>
