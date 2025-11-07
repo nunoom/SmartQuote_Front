@@ -12,14 +12,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
 import { Eye, Edit, MoreHorizontal, AlertTriangle, Loader2, Trash, Copy, ChevronLeft, ChevronRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -303,186 +295,14 @@ function Pagination({ currentPage, totalPages, onPageChange }: { currentPage: nu
 //   );
 // }
 
-// Componente de Preview da Factura Premium - Azul Escuro & Compacto
-function InvoicePreview({ quotation }: { quotation: Quotation }) {
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-AO', {
-      style: 'currency',
-      currency: 'AOA',
-    }).format(value);
-  };
 
-  const formatDate = (date: string) => {
-    return new Intl.DateTimeFormat('pt-AO', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    }).format(new Date(date));
-  };
-
-  return (
-    <div className="w-full max-w-3xl mx-auto">
-      {/* Glow Effect Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-blue-500/5 rounded-2xl blur-2xl -z-10" />
-      
-      <div className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 rounded-2xl shadow-2xl border border-amber-500/20 overflow-hidden">
-        {/* Decorative Top Border */}
-        <div className="h-0.5 bg-gradient-to-r from-transparent via-amber-500 to-transparent" />
-        
-        <div className="p-6">
-          {/* Header Compacto */}
-          <div className="flex justify-between items-start gap-4 mb-6 pb-4 border-b border-slate-800">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg flex items-center justify-center shadow-lg shadow-amber-500/20">
-                  <span className="text-base">✨</span>
-                </div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-amber-400 to-amber-500 bg-clip-text text-transparent">
-                  Cotação Premium
-                </h1>
-              </div>
-              <div className="text-xs text-slate-400 space-y-0.5">
-                <p><span className="text-amber-500">ID:</span> #{quotation.id.slice(0, 8).toUpperCase()}</p>
-                <p><span className="text-amber-500">Data:</span> {formatDate(quotation.createdAt)}</p>
-              </div>
-            </div>
-            
-            <div className="text-right bg-slate-800/50 backdrop-blur-sm rounded-lg p-3 border border-slate-700/50">
-              <h2 className="text-sm font-bold text-white mb-1">RCS Angola</h2>
-              <div className="space-y-0.5 text-xs text-slate-400">
-                <p>📍 Luanda, Angola</p>
-                <p>📧 info@rcsangola.ao</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Cliente Compacto */}
-          <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm rounded-lg p-4 mb-4 border border-amber-500/10">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-amber-500/20 to-blue-500/20 rounded-lg flex items-center justify-center border border-amber-500/30 flex-shrink-0">
-                <span className="text-lg">👤</span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-xs text-amber-500 font-semibold uppercase mb-0.5">Cliente</h3>
-                <p className="text-sm font-bold text-white truncate">{quotation.customer?.name || 'N/A'}</p>
-                <p className="text-xs text-slate-400 truncate">{quotation.customer?.email || 'N/A'}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Tabela Compacta */}
-          <div className="mb-4">
-            <h3 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
-              <span className="w-0.5 h-4 bg-gradient-to-b from-amber-500 to-amber-600 rounded-full" />
-              Itens da Cotação
-            </h3>
-            
-            <div className="overflow-x-auto rounded-lg border border-slate-800">
-              <table className="w-full text-xs">
-                <thead>
-                  <tr className="bg-slate-800/80">
-                    <th className="p-2 text-left font-semibold text-amber-500 uppercase tracking-wide">Item</th>
-                    <th className="p-2 text-center font-semibold text-amber-500 uppercase tracking-wide">Qtd</th>
-                    <th className="p-2 text-right font-semibold text-amber-500 uppercase tracking-wide">Preço</th>
-                    <th className="p-2 text-right font-semibold text-amber-500 uppercase tracking-wide">Total</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-800">
-                  {quotation.items.map((item, index) => (
-                    <tr 
-                      key={item.id} 
-                      className="group hover:bg-slate-800/30 transition-all"
-                    >
-                      <td className="p-2">
-                        <div className="flex items-center gap-2">
-                          <div className="w-1.5 h-1.5 bg-amber-500/50 rounded-full group-hover:bg-amber-500 transition-colors flex-shrink-0" />
-                          <span className="text-white font-medium truncate">{item.description}</span>
-                        </div>
-                      </td>
-                      <td className="p-2 text-center text-slate-300 font-medium">{item.quantity}</td>
-                      <td className="p-2 text-right text-slate-300 font-mono text-xs">{formatCurrency(item.unitPrice)}</td>
-                      <td className="p-2 text-right">
-                        <span className="font-bold text-amber-500 font-mono text-xs">{formatCurrency(item.total)}</span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Observações Compactas */}
-          {quotation.request.description && (
-            <div className="mb-4 bg-slate-800/30 backdrop-blur-sm rounded-lg p-3 border border-slate-700/50">
-              <h3 className="text-xs font-bold text-amber-500 uppercase tracking-wide mb-2 flex items-center gap-1">
-                <span>📝</span> Observações
-              </h3>
-              <p className="text-xs text-slate-300 leading-relaxed line-clamp-3">{quotation.request.description}</p>
-            </div>
-          )}
-
-          {/* Total Compacto */}
-          <div className="border-t border-slate-800 pt-4">
-            <div className="bg-gradient-to-br from-amber-500/10 to-blue-500/10 backdrop-blur-sm rounded-lg p-4 border border-amber-500/30">
-              <div className="space-y-2">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-slate-400">Subtotal</span>
-                  <span className="text-slate-300 font-mono">{formatCurrency(quotation.totalValue * 0.86)}</span>
-                </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-slate-400">IVA (14%)</span>
-                  <span className="text-slate-300 font-mono">{formatCurrency(quotation.totalValue * 0.14)}</span>
-                </div>
-                <div className="h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
-                <div className="flex justify-between items-center pt-1">
-                  <span className="text-amber-500 font-semibold uppercase tracking-wide text-sm">Total</span>
-                  <span className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent font-mono">
-                    {formatCurrency(quotation.totalValue)}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Footer Compacto */}
-          <div className="mt-4 pt-4 border-t border-slate-800">
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-xs">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-gradient-to-br from-amber-500 to-amber-600 rounded flex items-center justify-center flex-shrink-0">
-                  <span className="text-xs">✨</span>
-                </div>
-                <div className="text-center sm:text-left">
-                  <p className="text-slate-500">Gerado por IA • SmartQuote</p>
-                </div>
-              </div>
-              
-              <div className="text-center sm:text-right">
-                <p className="text-slate-600">© 2024 RCS Angola</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Decorative Bottom Border */}
-        <div className="h-0.5 bg-gradient-to-r from-transparent via-amber-500 to-transparent" />
-      </div>
-
-      {/* Action Buttons Compactos */}
-      <div className="mt-4 flex flex-wrap gap-2 justify-center">
-        <button className="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-black text-xs font-semibold rounded-lg hover:shadow-lg hover:shadow-amber-500/20 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-1">
-          📄 Download
-        </button>
-        <button className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold rounded-lg border border-slate-700 hover:border-amber-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-1">
-          📧 Email
-        </button>
-        <button className="px-4 py-2 bg-slate-800/50 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg border border-slate-700 hover:border-slate-600 transition-all duration-300 flex items-center gap-1">
-          🖨️ Imprimir
-        </button>
-      </div>
-    </div>
-  );
-}
-export function QuotationsList({ filters }: { filters?: { status: string; requiresApproval: string; search: string } }) {
+export function QuotationsList({ 
+  filters,
+  onDataLoad 
+}: { 
+  filters?: { status: string; requiresApproval: string; search: string };
+  onDataLoad?: (data: Quotation[]) => void;
+}) {
   const { t } = useLanguage();
   const { axiosInstance } = useAuth();
   const router = useRouter();
@@ -491,8 +311,6 @@ export function QuotationsList({ filters }: { filters?: { status: string; requir
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [selectedQuotation, setSelectedQuotation] = useState<Quotation | null>(null);
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const fetchQuotations = async () => {
     if (!axiosInstance) {
@@ -527,7 +345,9 @@ export function QuotationsList({ filters }: { filters?: { status: string; requir
 
           return {
             id: apiQuotation.id || `fallback-${index}`,
-            totalValue: jsonData.total || 0,
+            totalValue: typeof jsonData.total === 'number' 
+              ? jsonData.total 
+              : parseFloat(jsonData.total || '0') || 0,
             approved: (apiQuotation.status || '').toUpperCase() === 'COMPLETED',
             createdAt: apiQuotation.createdAt || new Date().toISOString(),
             request: {
@@ -543,16 +363,25 @@ export function QuotationsList({ filters }: { filters?: { status: string; requir
             approvals: [],
             items: itens
               .filter((item: any) => item && item.descricao)
-              .map((item: any, itemIndex: number) => ({
-                id: `${apiQuotation.id || 'unknown'}-${itemIndex}`,
-                description: item.descricao || 'Unknown item',
-                quantity: item.quantidade || 0,
-                unitPrice: item.precoUnit || 0,
-                total: (item.quantidade || 0) * (item.precoUnit || 0),
-                supplier: {
-                  name: 'Unknown',
-                },
-              })),
+              .map((item: any, itemIndex: number) => {
+                const quantity = typeof item.quantidade === 'number' 
+                  ? item.quantidade 
+                  : parseFloat(item.quantidade || '0') || 0;
+                const unitPrice = typeof item.precoUnit === 'number' 
+                  ? item.precoUnit 
+                  : parseFloat(item.precoUnit || '0') || 0;
+                
+                return {
+                  id: `${apiQuotation.id || 'unknown'}-${itemIndex}`,
+                  description: item.descricao || 'Unknown item',
+                  quantity: quantity,
+                  unitPrice: unitPrice,
+                  total: quantity * unitPrice,
+                  supplier: {
+                    name: 'Unknown',
+                  },
+                };
+              }),
           };
         });
 
@@ -602,14 +431,18 @@ export function QuotationsList({ filters }: { filters?: { status: string; requir
 
     // Filtro de aprovação (simulado - pode ser ajustado conforme necessidade)
     if (filters?.requiresApproval && filters.requiresApproval !== 'all-approval') {
+      const totalValue = typeof quotation.totalValue === 'number' 
+        ? quotation.totalValue 
+        : parseFloat(quotation.totalValue || '0') || 0;
+        
       if (filters.requiresApproval === 'requires-approval') {
         // Lógica: cotações acima de um certo valor ou pendentes requerem aprovação
-        if (quotation.totalValue < 100000 || quotation.approved) {
+        if (totalValue < 100000 || quotation.approved) {
           return false;
         }
       } else if (filters.requiresApproval === 'no-approval') {
         // Lógica: cotações já aprovadas ou de valor baixo
-        if (quotation.totalValue >= 100000 && !quotation.approved) {
+        if (totalValue >= 100000 && !quotation.approved) {
           return false;
         }
       }
@@ -646,9 +479,15 @@ export function QuotationsList({ filters }: { filters?: { status: string; requir
     setCurrentPage(1);
   }, [filters]);
 
+  // Notificar o componente pai sobre os dados filtrados
+  useEffect(() => {
+    if (onDataLoad && filteredQuotations.length >= 0) {
+      onDataLoad(filteredQuotations);
+    }
+  }, [filteredQuotations, onDataLoad]);
+
   const handleViewDetails = (quotation: Quotation) => {
-    setSelectedQuotation(quotation);
-    setIsPreviewOpen(true);
+    router.push(`/quotations/${quotation.id}`);
   };
 
   const handleEdit = (id: string) => {
@@ -838,28 +677,15 @@ export function QuotationsList({ filters }: { filters?: { status: string; requir
                 </div>
 
                 <div className="flex flex-col sm:flex-row lg:flex-col gap-2 min-w-fit">
-                  <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-                    <DialogTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 flex-1 justify-center"
-                        onClick={() => handleViewDetails(quotation)}
-                      >
-                        <Eye className="h-4 w-4 mr-1" />
-                        Visualizar
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle>Pré-visualização da Factura</DialogTitle>
-                        <DialogDescription>
-                          Esta é a factura que será enviada ao cliente por email.
-                        </DialogDescription>
-                      </DialogHeader>
-                      {selectedQuotation && <InvoicePreview quotation={selectedQuotation} />}
-                    </DialogContent>
-                  </Dialog>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 flex-1 justify-center"
+                    onClick={() => handleViewDetails(quotation)}
+                  >
+                    <Eye className="h-4 w-4 mr-1" />
+                    Visualizar
+                  </Button>
                   {/* <Button
                     variant="outline"
                     size="sm"

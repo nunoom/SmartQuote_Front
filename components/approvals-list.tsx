@@ -58,9 +58,10 @@ interface ApprovalsListProps {
     itemsPerPage: number;
   };
   onPageChange: (page: number) => void;
+  onDataLoad?: (data: Approval[]) => void;
 }
 
-export function ApprovalsList({ filters, pagination, onPageChange }: ApprovalsListProps) {
+export function ApprovalsList({ filters, pagination, onPageChange, onDataLoad }: ApprovalsListProps) {
   const { t } = useLanguage();
   const { axiosInstance } = useAuth();
   const [approvals, setApprovals] = useState<Approval[]>([]);
@@ -104,6 +105,13 @@ export function ApprovalsList({ filters, pagination, onPageChange }: ApprovalsLi
   useEffect(() => {
     fetchApprovals();
   }, []);
+
+  // Notificar o componente pai sobre os dados carregados
+  useEffect(() => {
+    if (onDataLoad && approvals.length > 0) {
+      onDataLoad(approvals);
+    }
+  }, [approvals, onDataLoad]);
 
   const handleApprove = async () => {
     if (!selectedApproval || !axiosInstance) return;

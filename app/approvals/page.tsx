@@ -1,10 +1,12 @@
 "use client"
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { ApprovalsHeader } from "@/components/approvals-header"
 import { ApprovalsList } from "@/components/approvals-list"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { CheckCircle } from "lucide-react"
+import toast from 'react-hot-toast'
+import { exportToCSV, formatDateForExport, sanitizeForCSV, generateTimestampedFilename } from '@/lib/utils/export-utils'
 
 export default function ApprovalsPage() {
   const [filters, setFilters] = useState({
@@ -17,6 +19,9 @@ export default function ApprovalsPage() {
     currentPage: 1,
     itemsPerPage: 10
   });
+
+  // Ref para acessar os dados de aprovações do componente filho
+  const approvalsDataRef = useRef<any[]>([]);
 
   const handleFilterChange = useCallback((newFilters: { search: string; status: string; amount: string }) => {
     setFilters(newFilters);
@@ -32,8 +37,47 @@ export default function ApprovalsPage() {
   }, []);
 
   const handleExport = useCallback(() => {
-    // TODO: Implementar export
-    console.log('Export approvals');
+    const approvals = approvalsDataRef.current;
+    
+    if (!approvals || approvals.length === 0) {
+      toast.error('Nenhuma aprovação para exportar');
+      return;
+    }
+
+    try {
+      exportToCSV(
+        approvals,
+        generateTimestampedFilename('aprovacoes', ''),
+        {
+          transformer: (approval: any) => {
+            const itensDetalhes = approval.jsonData?.itens?.map((item: any, idx: number) => 
+              `Item ${idx + 1}: ${item.descricao} (Qtd: ${item.quantidade}, Preço: ${item.precoUnit})`
+            ).join(' | ') || '-';
+
+            return {
+              'ID': approval.id || '-',
+              'Request ID': approval.requestId || '-',
+              'Cliente': approval.jsonData?.cliente || '-',
+              'Email': approval.jsonData?.email || '-',
+              'Total (Kz)': approval.jsonData?.total || '0',
+              'Status': approval.status || 'PENDING',
+              'Validação': approval.jsonData?.isvalide ? 'Válido' : 'Inválido',
+              'Revisão Necessária': approval.jsonData?.revisao ? 'Sim' : 'Não',
+              'Qtd. Itens': approval.jsonData?.itens?.length || 0,
+              'Itens Detalhados': itensDetalhes,
+              'Data de Criação': formatDateForExport(approval.createdAt),
+              'Observações': sanitizeForCSV(approval.jsonData?.observacoes) || '-',
+              'Descrição Gerada': sanitizeForCSV(approval.jsonData?.descricaoGerada) || '-'
+            };
+          }
+        }
+      );
+
+      toast.success(`✅ ${approvals.length} aprovações exportadas com sucesso!`);
+    } catch (error) {
+      console.error('Erro ao exportar:', error);
+      toast.error('Erro ao exportar aprovações');
+    }
   }, []);
 
   return (
@@ -58,6 +102,7 @@ export default function ApprovalsPage() {
             filters={filters}
             pagination={pagination}
             onPageChange={handlePageChange}
+            onDataLoad={(data) => { approvalsDataRef.current = data; }}
           />
         </div>
       </div>

@@ -316,3 +316,175 @@ html {
 .group-hover .group-hover\:animate-float:hover {
   animation: float 3s ease-in-out infinite;
 }
+
+/* Estilos de impressão para facturas */
+@media print {
+  /* Ocultar elementos desnecessários */
+  .print\:hidden {
+    display: none !important;
+  }
+  
+  /* Garantir fundo branco */
+  .print\:bg-white {
+    background-color: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  /* Remover sombras na impressão */
+  .print\:shadow-none {
+    box-shadow: none !important;
+  }
+  
+  /* Ajustar bordas para impressão */
+  .print\:border-gray-300 {
+    border-color: #d1d5db !important;
+  }
+  
+  /* Ajustar cores de texto para impressão */
+  .print\:text-gray-900 {
+    color: #111827 !important;
+  }
+  
+  .print\:text-gray-700 {
+    color: #374151 !important;
+  }
+  
+  .print\:text-gray-600 {
+    color: #4b5563 !important;
+  }
+  
+  /* Ajustar cores de fundo para impressão */
+  .print\:bg-gray-50 {
+    background-color: #f9fafb !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .print\:bg-gray-100 {
+    background-color: #f3f4f6 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  /* Garantir que cores sejam impressas */
+  .print\:bg-blue-50 {
+    background-color: #eff6ff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .print\:bg-blue-100 {
+    background-color: #dbeafe !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .print\:bg-blue-600 {
+    background-color: #2563eb !important;
+    color: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .print\:bg-blue-700 {
+    background-color: #1d4ed8 !important;
+    color: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .print\:bg-green-100 {
+    background-color: #dcfce7 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .print\:bg-amber-100 {
+    background-color: #fef3c7 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .print\:bg-purple-100 {
+    background-color: #f3e8ff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .print\:text-gray-500 {
+    color: #6b7280 !important;
+  }
+  
+  .print\:text-gray-400 {
+    color: #9ca3af !important;
+  }
+  
+  .print\:border-gray-200 {
+    border-color: #e5e7eb !important;
+  }
+  
+  .print\:border-blue-200 {
+    border-color: #bfdbfe !important;
+  }
+  
+  .print\:border-blue-300 {
+    border-color: #93c5fd !important;
+  }
+  
+  .print\:text-blue-700 {
+    color: #1d4ed8 !important;
+  }
+  
+  .print\:text-green-700 {
+    color: #15803d !important;
+  }
+  
+  .print\:text-amber-700 {
+    color: #b45309 !important;
+  }
+  
+  .print\:border-green-300 {
+    border-color: #86efac !important;
+  }
+  
+  .print\:border-amber-300 {
+    border-color: #fcd34d !important;
+  }
+  
+  .print\:border-0 {
+    border: 0 !important;
+  }
+  
+  /* Configurações gerais de página */
+  @page {
+    margin: 1cm;
+    size: A4;
+  }
+  
+  body {
+    background: white !important;
+  }
+  
+  /* Evitar quebras de página em elementos importantes */
+  table, .no-page-break {
+    page-break-inside: avoid;
+  }
+  
+  /* Ajustar tamanho de fontes para impressão */
+  body {
+    font-size: 12pt;
+  }
+  
+  h1 {
+    font-size: 20pt;
+  }
+  
+  h2 {
+    font-size: 16pt;
+  }
+  
+  h3 {
+    font-size: 14pt;
+  }
+}

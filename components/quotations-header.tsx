@@ -6,10 +6,16 @@ import { useAuth } from '@/lib/auth/auth-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Search, Filter } from 'lucide-react';
+import { Plus, Search, Filter, Download } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-export function QuotationsHeader({ onFilterChange }: { onFilterChange: (filters: { status: string; requiresApproval: string; search: string }) => void }) {
+export function QuotationsHeader({ 
+  onFilterChange,
+  onExport 
+}: { 
+  onFilterChange: (filters: { status: string; requiresApproval: string; search: string }) => void;
+  onExport?: () => void;
+}) {
   const router = useRouter();
   const { axiosInstance } = useAuth();
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -45,6 +51,17 @@ export function QuotationsHeader({ onFilterChange }: { onFilterChange: (filters:
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">Cotações</h1>
+        
+        {onExport && (
+          <Button 
+            onClick={onExport} 
+            variant="outline" 
+            className="border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Exportar
+          </Button>
+        )}
       </div>
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">

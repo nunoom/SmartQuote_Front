@@ -148,6 +148,7 @@ interface AuthContextType {
   register: (name: string, email: string, password: string) => Promise<boolean>;
   logout: () => void;
   axiosInstance: AxiosInstance;
+  token: string | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -155,6 +156,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [token, setToken] = useState<string | null>(null);
   const router = useRouter();
 
   // Create axios instance using centralized config
@@ -187,6 +189,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const savedUser = localStorage.getItem('smartquote_user');
+    const savedToken = localStorage.getItem('token');
+    
     if (savedUser) {
       try {
         setUser(JSON.parse(savedUser));
@@ -195,6 +199,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.removeItem('smartquote_user');
       }
     }
+    
+    if (savedToken) {
+      setToken(savedToken);
+    }
+    
     setIsLoading(false);
   }, []);
 
@@ -209,6 +218,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { access_token, user: userData } = response.data;
       
       localStorage.setItem('token', access_token);
+      setToken(access_token);
       
       const user: User = {
         email: userData?.email || email,
@@ -263,12 +273,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('smartquote_user');
+    setToken(null);
     setUser(null);
     router.push('/login');
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, logout, axiosInstance }}>
+    <AuthContext.Provider value={{ user, isLoading, login, register, logout, axiosInstance, token }}>
       {children}
     </AuthContext.Provider>
   );
