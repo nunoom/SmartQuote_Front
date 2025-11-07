@@ -1,44 +1,97 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Mail, Phone, Building2, FileText, Send, Loader2, CheckCircle, AlertCircle } from "lucide-react"
+import { Mail, Phone, Building2, FileText, Send, Loader2, CheckCircle, AlertCircle, Upload, X } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
+import { useAuth } from "@/lib/auth/auth-context"
 import toast from "react-hot-toast"
 
 interface QuotationRequestDialogProps {
   trigger?: React.ReactNode
 }
 
+interface Attachment {
+  fileName: string
+  fileUrl: string
+  fileType: string
+}
+
 export function QuotationRequestDialog({ trigger }: QuotationRequestDialogProps) {
   const { t } = useLanguage()
+  const { axiosInstance } = useAuth()
   const [open, setOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [formData, setFormData] = useState({
-    name: "",
+    requester: "",
     email: "",
-    company: "",
-    phone: "",
     description: "",
   })
+
+  const [attachments, setAttachments] = useState<Attachment[]>([])
+  const [uploadingFiles, setUploadingFiles] = useState(false)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files || files.length === 0) return
+
+    setUploadingFiles(true)
+    
+    try {
+      // Simular upload de arquivos
+      // Em produção, você faria upload real para um serviço de armazenamento
+      const newAttachments: Attachment[] = []
+      
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+        
+        // Simular URL (em produção, seria a URL retornada pelo upload)
+        const fileUrl = `https://exemplo.com/uploads/${Date.now()}-${file.name}`
+        
+        newAttachments.push({
+          fileName: file.name,
+          fileUrl: fileUrl,
+          fileType: file.type
+        })
+      }
+      
+      setAttachments(prev => [...prev, ...newAttachments])
+      toast.success(`${newAttachments.length} arquivo(s) adicionado(s)`)
+      
+    } catch (error) {
+      console.error("Erro ao processar arquivos:", error)
+      toast.error("Erro ao adicionar arquivos")
+    } finally {
+      setUploadingFiles(false)
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ""
+      }
+    }
+  }
+
+  const removeAttachment = (index: number) => {
+    setAttachments(prev => prev.filter((_, i) => i !== index))
+    toast.success("Arquivo removido")
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     // Validação básica
-    if (!formData.name || !formData.email || !formData.description) {
-      toast.error(t("fillAllFields") || "Por favor, preencha todos os campos obrigatórios")
+    if (!formData.requester || !formData.email || !formData.description) {
+      toast.error("Por favor, preencha todos os campos obrigatórios")
       return
     }
 
@@ -52,32 +105,36 @@ export function QuotationRequestDialog({ trigger }: QuotationRequestDialogProps)
     setIsSubmitting(true)
 
     try {
-      // Aqui você pode integrar com seu backend
-      // Por enquanto, vou simular um envio
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      // Montar payload conforme especificação
+      const payload = {
+        requester: formData.requester,
+        email: formData.email,
+        description: formData.description,
+        attachments: attachments
+      }
       
-      // Simular envio para API
-      // const response = await axios.post('/api/quotation-requests', formData)
+      // Enviar para a API
+      const response = await axiosInstance.post('/forms', payload)
       
       setIsSuccess(true)
-      toast.success(t("quotationRequestSent") || "Solicitação enviada com sucesso!")
+      toast.success("Solicitação enviada com sucesso!")
       
       // Resetar form após 2 segundos
       setTimeout(() => {
         setFormData({
-          name: "",
+          requester: "",
           email: "",
-          company: "",
-          phone: "",
           description: "",
         })
+        setAttachments([])
         setIsSuccess(false)
         setOpen(false)
       }, 2000)
       
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro ao enviar solicitação:", error)
-      toast.error(t("quotationRequestError") || "Erro ao enviar solicitação. Tente novamente.")
+      const errorMessage = error.response?.data?.message || "Erro ao enviar solicitação. Tente novamente."
+      toast.error(errorMessage)
     } finally {
       setIsSubmitting(false)
     }
@@ -120,18 +177,18 @@ export function QuotationRequestDialog({ trigger }: QuotationRequestDialogProps)
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4 py-4">
-            {/* Nome */}
+            {/* Nome Completo (Requester) */}
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                <Building2 className="h-4 w-4" />
+              <Label htmlFor="requester" className="text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                <FileText className="h-4 w-4" />
                 {t("fullName") || "Nome Completo"} <span className="text-red-500">*</span>
               </Label>
               <Input
-                id="name"
-                name="name"
+                id="requester"
+                name="requester"
                 type="text"
                 placeholder={t("enterYourName") || "Digite seu nome completo"}
-                value={formData.name}
+                value={formData.requester}
                 onChange={handleInputChange}
                 required
                 className="w-full"
@@ -158,42 +215,6 @@ export function QuotationRequestDialog({ trigger }: QuotationRequestDialogProps)
               />
             </div>
 
-            {/* Empresa */}
-            <div className="space-y-2">
-              <Label htmlFor="company" className="text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                <Building2 className="h-4 w-4" />
-                {t("company") || "Empresa"}
-              </Label>
-              <Input
-                id="company"
-                name="company"
-                type="text"
-                placeholder={t("enterYourCompany") || "Digite o nome da empresa"}
-                value={formData.company}
-                onChange={handleInputChange}
-                className="w-full"
-                disabled={isSubmitting}
-              />
-            </div>
-
-            {/* Telefone */}
-            <div className="space-y-2">
-              <Label htmlFor="phone" className="text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                <Phone className="h-4 w-4" />
-                {t("phone") || "Telefone"}
-              </Label>
-              <Input
-                id="phone"
-                name="phone"
-                type="tel"
-                placeholder={t("enterYourPhone") || "Digite seu telefone"}
-                value={formData.phone}
-                onChange={handleInputChange}
-                className="w-full"
-                disabled={isSubmitting}
-              />
-            </div>
-
             {/* Descrição */}
             <div className="space-y-2">
               <Label htmlFor="description" className="text-gray-700 dark:text-gray-300 flex items-center gap-2">
@@ -212,6 +233,64 @@ export function QuotationRequestDialog({ trigger }: QuotationRequestDialogProps)
               />
             </div>
 
+            {/* Upload de Anexos */}
+            <div className="space-y-2">
+              <Label className="text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                <Upload className="h-4 w-4" />
+                {t("attachments") || "Anexos"} <span className="text-xs text-muted-foreground">(opcional)</span>
+              </Label>
+              
+              <div className="space-y-2">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  onChange={handleFileChange}
+                  disabled={isSubmitting || uploadingFiles}
+                  multiple
+                  className="hidden"
+                  id="file-upload"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isSubmitting || uploadingFiles}
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  {uploadingFiles ? "Processando..." : "Adicionar Arquivos"}
+                </Button>
+
+                {/* Lista de anexos */}
+                {attachments.length > 0 && (
+                  <div className="space-y-2 mt-3">
+                    <p className="text-sm text-muted-foreground">{attachments.length} arquivo(s) anexado(s)</p>
+                    {attachments.map((attachment, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center justify-between p-2 bg-muted rounded-md border"
+                      >
+                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                          <FileText className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
+                          <span className="text-sm truncate">{attachment.fileName}</span>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeAttachment(index)}
+                          disabled={isSubmitting}
+                          className="h-8 w-8 p-0 flex-shrink-0"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
             {/* Botões */}
             <div className="flex gap-3 pt-4">
               <Button
@@ -225,7 +304,7 @@ export function QuotationRequestDialog({ trigger }: QuotationRequestDialogProps)
               </Button>
               <Button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || uploadingFiles}
                 className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
               >
                 {isSubmitting ? (
@@ -241,6 +320,10 @@ export function QuotationRequestDialog({ trigger }: QuotationRequestDialogProps)
                 )}
               </Button>
             </div>
+
+            <p className="text-xs text-muted-foreground text-center">
+              <span className="text-red-500">*</span> Campos obrigatórios
+            </p>
           </form>
         )}
       </DialogContent>
