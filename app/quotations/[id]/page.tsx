@@ -127,8 +127,212 @@ export default function QuotationInvoicePage() {
     window.print();
   };
 
-  const handleDownload = () => {
-    toast.success('Funcionalidade de download em desenvolvimento');
+  const handleDownload = async () => {
+    try {
+      toast.loading('Gerando PDF...');
+      
+      // Usar window.print() com CSS para salvar como PDF
+      // Criar um iframe temporário com conteúdo simplificado
+      const iframe = document.createElement('iframe');
+      iframe.style.position = 'absolute';
+      iframe.style.width = '0';
+      iframe.style.height = '0';
+      iframe.style.border = 'none';
+      
+      document.body.appendChild(iframe);
+      
+      const iframeDoc = iframe.contentWindow?.document;
+      if (!iframeDoc) {
+        throw new Error('Erro ao criar iframe');
+      }
+      
+      // Conteúdo HTML simples para o PDF
+      const pdfContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Factura ${quotation?.id.slice(0, 12).toUpperCase()}</title>
+          <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body { 
+              font-family: Arial, sans-serif; 
+              padding: 20px;
+              color: #000;
+              background: #fff;
+            }
+            .header {
+              background: #1d4ed8;
+              color: white;
+              padding: 30px;
+              margin-bottom: 20px;
+            }
+            .header h1 { font-size: 24px; margin-bottom: 5px; }
+            .header p { font-size: 12px; opacity: 0.9; }
+            .info-section {
+              background: #f3f4f6;
+              padding: 15px;
+              margin-bottom: 20px;
+              border-radius: 5px;
+            }
+            .info-section h3 {
+              font-size: 14px;
+              color: #1f2937;
+              margin-bottom: 10px;
+              border-bottom: 2px solid #d1d5db;
+              padding-bottom: 5px;
+            }
+            .invoice-number {
+              background: #2563eb;
+              color: white;
+              padding: 10px 20px;
+              display: inline-block;
+              margin-bottom: 20px;
+              border-radius: 5px;
+            }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              margin: 20px 0;
+            }
+            th {
+              background: #f3f4f6;
+              padding: 12px;
+              text-align: left;
+              font-size: 12px;
+              border: 1px solid #d1d5db;
+            }
+            td {
+              padding: 10px 12px;
+              border: 1px solid #e5e7eb;
+              font-size: 11px;
+            }
+            .totals {
+              margin-top: 20px;
+              text-align: right;
+            }
+            .totals-table {
+              display: inline-block;
+              min-width: 300px;
+            }
+            .total-row {
+              background: #2563eb;
+              color: white;
+              font-weight: bold;
+              font-size: 18px;
+            }
+            .footer {
+              margin-top: 40px;
+              padding-top: 20px;
+              border-top: 2px solid #1d4ed8;
+              text-align: center;
+              font-size: 10px;
+              color: #6b7280;
+            }
+            @media print {
+              body { padding: 0; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>RCS ANGOLA</h1>
+            <p>Soluções Empresariais Inteligentes</p>
+            <p>📍 Luanda, Angola | 📞 +244 XXX XXX XXX | 📧 info@rcsangola.ao</p>
+          </div>
+          
+          <div class="invoice-number">
+            <strong>FACTURA PROFORMA</strong><br>
+            Nº ${quotation?.id.slice(0, 12).toUpperCase()}
+          </div>
+          
+          <div class="info-section">
+            <h3>Informações da Factura</h3>
+            <p><strong>Data:</strong> ${formatDate(quotation?.createdAt || '')}</p>
+            <p><strong>Cliente:</strong> ${quotation?.customer?.name || 'N/A'}</p>
+            <p><strong>Email:</strong> ${quotation?.customer?.email || 'N/A'}</p>
+            <p><strong>Status:</strong> ${quotation?.approved ? 'Aprovada' : 'Pendente'}</p>
+          </div>
+          
+          <h3>Itens da Cotação</h3>
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 50px;">#</th>
+                <th>Descrição</th>
+                <th style="width: 80px; text-align: center;">Qtd</th>
+                <th style="width: 120px; text-align: right;">Preço Unit.</th>
+                <th style="width: 120px; text-align: right;">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${quotation?.items.map((item, index) => `
+                <tr>
+                  <td style="text-align: center;">${index + 1}</td>
+                  <td>${item.description}</td>
+                  <td style="text-align: center;">${item.quantity}</td>
+                  <td style="text-align: right;">${formatCurrency(item.unitPrice)}</td>
+                  <td style="text-align: right;">${formatCurrency(item.total)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+          
+          ${quotation?.request.description ? `
+          <div class="info-section">
+            <h3>Observações</h3>
+            <p>${quotation.request.description}</p>
+          </div>
+          ` : ''}
+          
+          <div class="totals">
+            <table class="totals-table">
+              <tr>
+                <td><strong>Subtotal:</strong></td>
+                <td style="text-align: right;">${formatCurrency((typeof quotation?.totalValue === 'number' ? quotation.totalValue : parseFloat(quotation?.totalValue || '0') || 0) / 1.14)}</td>
+              </tr>
+              <tr>
+                <td><strong>IVA (14%):</strong></td>
+                <td style="text-align: right;">${formatCurrency((typeof quotation?.totalValue === 'number' ? quotation.totalValue : parseFloat(quotation?.totalValue || '0') || 0) - ((typeof quotation?.totalValue === 'number' ? quotation.totalValue : parseFloat(quotation?.totalValue || '0') || 0) / 1.14))}</td>
+              </tr>
+              <tr class="total-row">
+                <td style="padding: 15px;"><strong>TOTAL:</strong></td>
+                <td style="text-align: right; padding: 15px;">${formatCurrency(typeof quotation?.totalValue === 'number' ? quotation.totalValue : parseFloat(quotation?.totalValue || '0') || 0)}</td>
+              </tr>
+            </table>
+          </div>
+          
+          <div class="footer">
+            <p>Gerado automaticamente por SmartQuote AI</p>
+            <p>RCS Angola © 2025 - Todos os direitos reservados | NIF: XXXXXXXXXX</p>
+          </div>
+        </body>
+        </html>
+      `;
+      
+      iframeDoc.open();
+      iframeDoc.write(pdfContent);
+      iframeDoc.close();
+      
+      // Aguardar o carregamento
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Abrir diálogo de impressão/salvar como PDF
+      iframe.contentWindow?.print();
+      
+      // Limpar
+      setTimeout(() => {
+        document.body.removeChild(iframe);
+      }, 1000);
+      
+      toast.dismiss();
+      toast.success('Abra o diálogo de impressão e escolha "Salvar como PDF"');
+      
+    } catch (error) {
+      console.error('Erro ao gerar PDF:', error);
+      toast.dismiss();
+      toast.error('Erro ao gerar PDF');
+    }
   };
 
   const handleEmail = () => {
@@ -211,10 +415,13 @@ export default function QuotationInvoicePage() {
 
       {/* Factura */}
       <div className="max-w-5xl mx-auto">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden print:shadow-none print:border-0">
+        <div id="invoice-content" className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden print:shadow-none print:border-0">
           
           {/* Cabeçalho com Logo e Informações da Empresa */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-800 px-8 py-6 print:bg-blue-700">
+          <div 
+            className="bg-gradient-to-r from-blue-600 to-blue-800 px-8 py-6 print:bg-blue-700"
+            style={{ backgroundColor: '#1d4ed8', color: '#ffffff' }}
+          >
             <div className="flex justify-between items-start">
               {/* Logo e Nome da Empresa */}
               <div className="flex items-center gap-4">
@@ -248,7 +455,10 @@ export default function QuotationInvoicePage() {
                 <p className="text-sm text-gray-600 mt-1">Cotação de Serviços</p>
               </div>
               <div className="text-right">
-                <div className="bg-blue-600 text-white px-4 py-2 rounded-lg inline-block">
+                <div 
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg inline-block"
+                  style={{ backgroundColor: '#2563eb', color: '#ffffff' }}
+                >
                   <p className="text-xs font-semibold">Nº FACTURA</p>
                   <p className="text-lg font-bold font-mono">{quotation.id.slice(0, 12).toUpperCase()}</p>
                 </div>
@@ -393,10 +603,13 @@ export default function QuotationInvoicePage() {
                       <span className="text-sm font-semibold text-gray-800 font-mono">{formatCurrency(iva)}</span>
                     </div>
                   </div>
-                  <div className="bg-blue-600 px-6 py-4">
+                  <div 
+                    className="bg-blue-600 px-6 py-4"
+                    style={{ backgroundColor: '#2563eb' }}
+                  >
                     <div className="flex justify-between items-center">
-                      <span className="text-lg font-bold text-white uppercase">Total</span>
-                      <span className="text-2xl font-bold text-white font-mono">{formatCurrency(totalValue)}</span>
+                      <span className="text-lg font-bold text-white uppercase" style={{ color: '#ffffff' }}>Total</span>
+                      <span className="text-2xl font-bold text-white font-mono" style={{ color: '#ffffff' }}>{formatCurrency(totalValue)}</span>
                     </div>
                   </div>
                 </div>
@@ -446,7 +659,10 @@ export default function QuotationInvoicePage() {
           </div>
 
           {/* Rodapé com cor */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-800 h-2 print:bg-blue-700"></div>
+          <div 
+            className="bg-gradient-to-r from-blue-600 to-blue-800 h-2 print:bg-blue-700"
+            style={{ backgroundColor: '#1d4ed8', height: '8px' }}
+          ></div>
         </div>
       </div>
     </div>
