@@ -86,7 +86,11 @@ export function AnalyticsOverview() {
       const totalRequests = statsResponse.data.pending + statsResponse.data.approved + statsResponse.data.rejected;
       const totalRevenue = quotationsResponse.data
         .filter((q) => q.status.toUpperCase() === 'COMPLETED' && q.jsonData.total)
-        .reduce((sum, q) => sum + (q.jsonData.total || 0), 0);
+        // .reduce((sum, q) => sum + (q.jsonData.total || 0), 0);
+        .reduce((sum, q) => {
+            const totalValue = parseFloat(String(q.jsonData.total)) || 0;
+            return sum + totalValue;
+          }, 0);
 
       const completedQuotations = quotationsResponse.data.filter(
         (q) => q.status.toUpperCase() === 'COMPLETED'

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/auth-context';
 import { Button } from '@/components/ui/button';
@@ -16,49 +16,35 @@ export function QuotationsHeader({ onFilterChange }: { onFilterChange: (filters:
   const [approvalFilter, setApprovalFilter] = useState<string>('all-approval');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  // Handle new quotation creation
-  const handleNewQuotation = () => {
-    router.push('/quotations/new');
-  };
-
-  // Handle filter changes
-  const handleFilterChange = () => {
+  // Handle filter changes - atualizar quando qualquer filtro muda
+  useEffect(() => {
     onFilterChange({
       status: statusFilter,
       requiresApproval: approvalFilter,
       search: searchQuery,
     });
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [statusFilter, approvalFilter, searchQuery]);
 
   // Update search query
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
-    handleFilterChange();
   };
 
   // Update status filter
   const handleStatusChange = (value: string) => {
     setStatusFilter(value);
-    handleFilterChange();
   };
 
   // Update approval filter
   const handleApprovalChange = (value: string) => {
     setApprovalFilter(value);
-    handleFilterChange();
   };
 
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">Cotações</h1>
-        <Button
-          className="bg-blue-600 hover:bg-blue-700 text-white rounded-full"
-          onClick={handleNewQuotation}
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Nova Cotação
-        </Button>
       </div>
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">

@@ -13,7 +13,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'https://smartquote-iom8.onrender.com/:path*',
+        destination: 'https://smart-quote-1.onrender.com/:path*',
       },
     ];
   },

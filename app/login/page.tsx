@@ -195,32 +195,19 @@ export default function LoginPage() {
               </Button>
             </form>
 
-            {/* Register Link */}
-            <div className="text-center pt-4 border-t border-gray-200 dark:border-gray-700">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                {t("noAccount")}{" "}
-                <Link
-                  href="/register"
-                  className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold transition-colors duration-200"
-                >
-                  {t("signUp")}
-                </Link>
-              </p>
-            </div>
-
-            {/* Demo Credentials (optional) */}
-            {/* <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
+            {/* Demo Credentials Info */}
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 mt-4">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <Sparkles size={14} className="text-blue-500" />
                 <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
-                  Demo Access
+                  {t("contactAdmin")}
                 </span>
                 <Sparkles size={14} className="text-blue-500" />
               </div>
-              <p className="text-xs text-blue-700 dark:text-blue-300 text-center font-mono">
-                admin@smartquote.com / admin123
+              <p className="text-xs text-blue-700 dark:text-blue-300 text-center">
+                {t("needAccess")}
               </p>
-            </div> */}
+            </div>
           </CardContent>
         </Card>
 

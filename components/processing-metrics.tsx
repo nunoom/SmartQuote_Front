@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, Cpu, Mail, FileText, AlertCircle, RefreshCw } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { useAuth } from '@/lib/auth/auth-context';
 import { useLanguage } from '@/lib/i18n/language-context';
 import toast from 'react-hot-toast';
@@ -197,77 +198,138 @@ export function ProcessingMetrics() {
   }
 
   // Success State
+  const pieData = processingStats.map(stat => ({
+    name: t(stat.category as any),
+    value: stat.processed,
+    color: stat.color.replace('bg-', '#').replace('500', '').trim()
+  }));
+
+  const COLORS = ['#3B82F6', '#10B981', '#A855F7']; // Blue, Green, Purple
+
   return (
     <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-300">
-      <CardHeader>
-        <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">
-          {t('processing_pipeline_performance')}
-        </CardTitle>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          {t('success_rates_across_processing_stages')}
-        </p>
+      <CardHeader className="pb-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+              <Cpu className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              {t('processing_pipeline_performance')}
+            </CardTitle>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              {t('success_rates_across_processing_stages')}
+            </p>
+          </div>
+          <Button
+            onClick={fetchProcessingMetrics}
+            variant="outline"
+            size="sm"
+            className="border-gray-300 dark:border-gray-600"
+          >
+            <RefreshCw className="h-4 w-4" />
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-6">
-          {processingStats.map((stat) => {
-            const Icon = stat.icon;
-            return (
-              <div key={stat.category} className="space-y-3 group">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${stat.bgColor} transition-colors duration-200 group-hover:scale-110`}>
-                      <Icon className={`h-4 w-4 ${stat.color.replace('bg-', 'text-')}`} />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Donut Chart */}
+          <div className="flex flex-col items-center justify-center">
+            <div className="h-64 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={90}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {pieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: 'white',
+                      border: '1px solid #E5E7EB',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                      fontSize: '14px',
+                      padding: '8px 12px'
+                    }}
+                  />
+                  <Legend 
+                    verticalAlign="bottom" 
+                    height={36}
+                    iconType="circle"
+                    iconSize={10}
+                    formatter={(value) => (
+                      <span className="text-sm text-gray-600 dark:text-gray-400">{value}</span>
+                    )}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Progress Bars */}
+          <div className="space-y-6">
+            {processingStats.map((stat) => {
+              const Icon = stat.icon;
+              return (
+                <div key={stat.category} className="space-y-3 group">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`p-2 rounded-lg ${stat.bgColor} transition-colors duration-200 group-hover:scale-110`}>
+                        <Icon className={`h-4 w-4 ${stat.color.replace('bg-', 'text-')}`} />
+                      </div>
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-200">
+                        {t(stat.category as keyof typeof t)}
+                      </span>
                     </div>
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-200">
-                      {t(stat.category as keyof typeof t)}
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                      {Math.round(stat.percentage)}%
                     </span>
                   </div>
-                  <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                    {Math.round(stat.percentage)}%
-                  </span>
+                  
+                  <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                    <span>{stat.processed}/{stat.total} {t('processed')}</span>
+                  </div>
+                  
+                  <Progress 
+                    value={stat.percentage} 
+                    className={`h-3 bg-gray-200 dark:bg-gray-700`}
+                    style={{
+                      ['--progress-background' as any]: COLORS[processingStats.indexOf(stat)]
+                    }}
+                  />
                 </div>
-                
-                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-                  <span>{stat.processed}/{stat.total} {t('processed')}</span>
-                  <span>{t('completion')}</span>
-                </div>
-                
-                <Progress 
-                  value={stat.percentage} 
-                  className={`h-2 bg-gray-200 dark:bg-gray-700 ${stat.color}`}
-                />
-                
-                {/* Performance indicator */}
-                <div className="flex justify-between text-xs">
-                  <span className="text-gray-500 dark:text-gray-400">0%</span>
-                  <span className="text-gray-500 dark:text-gray-400">50%</span>
-                  <span className="text-gray-500 dark:text-gray-400">100%</span>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
         {/* Summary Stats */}
-        <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-          <div className="grid grid-cols-3 gap-4 text-center">
-            <div>
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+        <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <div className="grid grid-cols-3 gap-6 text-center">
+            <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20">
+              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
                 {processingStats[0]?.processed || 0}
               </div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">{t('total_submissions')}</div>
+              <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mt-1">{t('total_submissions')}</div>
             </div>
-            <div>
-              <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+            <div className="p-4 rounded-lg bg-green-50 dark:bg-green-900/20">
+              <div className="text-3xl font-bold text-green-600 dark:text-green-400">
                 {processingStats[1]?.processed || 0}
               </div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">{t('ai_processed')}</div>
+              <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mt-1">{t('ai_processed')}</div>
             </div>
-            <div>
-              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+            <div className="p-4 rounded-lg bg-purple-50 dark:bg-purple-900/20">
+              <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
                 {processingStats[2]?.processed || 0}
               </div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">{t('emails_sent')}</div>
+              <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mt-1">{t('emails_sent')}</div>
             </div>
           </div>
         </div>

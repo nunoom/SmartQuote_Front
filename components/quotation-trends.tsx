@@ -175,20 +175,34 @@ export function QuotationTrends() {
   return (
     <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-300">
       <CardHeader className="pb-4">
-        <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">
-          {t('quotation_activity')}
-        </CardTitle>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          {t('monthly_quotation_creation_and_approval_rates')}
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+              <BarChart3 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              {t('quotation_activity')}
+            </CardTitle>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              {t('monthly_quotation_creation_and_approval_rates')}
+            </p>
+          </div>
+          <Button
+            onClick={fetchQuotationTrends}
+            variant="outline"
+            size="sm"
+            className="border-gray-300 dark:border-gray-600"
+          >
+            <RefreshCw className="h-4 w-4" />
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="pt-0">
-        <div className="h-64 w-full">
+        <div className="h-96 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={quotationData}
-              margin={{ top: 5, right: 10, left: 0, bottom: 5 }}
-              barGap={2}
+              margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+              barGap={4}
+              barCategoryGap="20%"
             >
               <CartesianGrid 
                 strokeDasharray="3 3" 
@@ -198,13 +212,14 @@ export function QuotationTrends() {
               />
               <XAxis 
                 dataKey="month" 
-                fontSize={12}
+                fontSize={13}
                 stroke="#6B7280"
                 tickLine={false}
                 axisLine={false}
+                dy={10}
               />
               <YAxis 
-                fontSize={12}
+                fontSize={13}
                 width={50}
                 stroke="#6B7280"
                 tickLine={false}
@@ -217,21 +232,23 @@ export function QuotationTrends() {
                   borderRadius: '8px',
                   boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                   fontSize: '14px',
-                  color: '#374151'
+                  padding: '12px'
                 }}
                 formatter={(value, name) => [
                   value,
                   name === 'created' ? t('created') : 
                   name === 'approved' ? t('approved') : t('rejected')
                 ]}
+                cursor={{ fill: 'rgba(59, 130, 246, 0.1)' }}
               />
               <Legend 
                 verticalAlign="top" 
-                height={36}
-                iconType="circle"
-                iconSize={8}
+                height={40}
+                iconType="rect"
+                iconSize={12}
+                wrapperStyle={{ paddingBottom: '10px' }}
                 formatter={(value) => (
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
                     {value === 'created' ? t('created') : 
                      value === 'approved' ? t('approved') : t('rejected')}
                   </span>
@@ -241,43 +258,46 @@ export function QuotationTrends() {
                 dataKey="created"
                 fill="#3B82F6" // Blue-500
                 name="created"
-                radius={[4, 4, 0, 0]}
+                radius={[6, 6, 0, 0]}
+                maxBarSize={50}
               />
               <Bar
                 dataKey="approved"
                 fill="#10B981" // Green-500
                 name="approved"
-                radius={[4, 4, 0, 0]}
+                radius={[6, 6, 0, 0]}
+                maxBarSize={50}
               />
               <Bar
                 dataKey="rejected"
                 fill="#EF4444" // Red-500
                 name="rejected"
-                radius={[4, 4, 0, 0]}
+                radius={[6, 6, 0, 0]}
+                maxBarSize={50}
               />
             </BarChart>
           </ResponsiveContainer>
         </div>
         
         {/* Stats Summary */}
-        <div className="grid grid-cols-3 gap-4 mt-6">
+        <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
           <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+            <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
               {quotationData.reduce((sum, item) => sum + item.created, 0)}
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">{t('total_created')}</div>
+            <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mt-1">{t('total_created')}</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+            <div className="text-3xl font-bold text-green-600 dark:text-green-400">
               {quotationData.reduce((sum, item) => sum + item.approved, 0)}
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">{t('total_approved')}</div>
+            <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mt-1">{t('total_approved')}</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-red-600 dark:text-red-400">
+            <div className="text-3xl font-bold text-red-600 dark:text-red-400">
               {quotationData.reduce((sum, item) => sum + item.rejected, 0)}
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">{t('total_rejected')}</div>
+            <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mt-1">{t('total_rejected')}</div>
           </div>
         </div>
       </CardContent>

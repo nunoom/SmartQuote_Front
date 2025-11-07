@@ -132,9 +132,13 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios, { AxiosInstance } from 'axios';
+import { API_CONFIG } from '@/lib/config';
 
 interface User {
   email: string;
+  id?: string;
+  name?: string;
+  role?: string;
 }
 
 interface AuthContextType {
@@ -153,26 +157,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
+  // Create axios instance using centralized config
   const axiosInstance = axios.create({
-    baseURL: 'https://smart-quote-ia-1.onrender.com/',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    baseURL: API_CONFIG.baseURL,
+    timeout: API_CONFIG.timeout,
+    headers: API_CONFIG.headers,
   });
 
+  // Request interceptor - Add token to all requests
   axiosInstance.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
-    console.log('Token enviado:', token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   });
 
+  // Response interceptor - Handle token expiration
+  axiosInstance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (error.response?.status === 401) {
+        // Token expired or invalid
+        logout();
+      }
+      return Promise.reject(error);
+    }
+  );
+
   useEffect(() => {
     const savedUser = localStorage.getItem('smartquote_user');
     if (savedUser) {
-      setUser(JSON.parse(savedUser));
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch (error) {
+        console.error('Error parsing saved user:', error);
+        localStorage.removeItem('smartquote_user');
+      }
     }
     setIsLoading(false);
   }, []);
@@ -180,29 +201,45 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const response = await axios.post('https://smart-quote-ia-1.onrender.com/auth/login', {
+      const response = await axios.post(`${API_CONFIG.baseURL}/auth/login`, {
         email,
         password,
       });
-      const { access_token } = response.data;
+      
+      const { access_token, user: userData } = response.data;
+      
       localStorage.setItem('token', access_token);
-      const user = { email };
+      
+      const user: User = {
+        email: userData?.email || email,
+        id: userData?.id,
+        name: userData?.name,
+        role: userData?.role,
+      };
+      
       setUser(user);
       localStorage.setItem('smartquote_user', JSON.stringify(user));
+      
       router.push('/dashboard');
       return true;
-    } catch (error) {
-      console.error('Erro no login:', error);
+    } catch (error: any) {
+      console.error('Login error:', error);
       return false;
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Register function disabled for security - only admins should create users
+  // Keep commented for potential future admin user creation feature
   const register = async (name: string, email: string, password: string) => {
+    console.warn('Public registration is disabled. Contact administrator for access.');
+    return false;
+    
+    /* Original implementation - commented for security
     setIsLoading(true);
     try {
-      const response = await axios.post('https://smart-quote-ia-1.onrender.com/auth/register', {
+      const response = await axios.post(`${API_CONFIG.baseURL}/auth/register`, {
         name,
         email,
         password,
@@ -215,11 +252,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       router.push('/dashboard');
       return true;
     } catch (error) {
-      console.error('Erro no registro:', error);
+      console.error('Registration error:', error);
       return false;
     } finally {
       setIsLoading(false);
     }
+    */
   };
 
   const logout = () => {

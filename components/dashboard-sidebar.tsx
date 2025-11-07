@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
 import { cn } from "@/lib/utils"
-import { LayoutDashboard, FileText, Users, CheckCircle, Mail, Settings, TrendingUp, Brain, LogOut, Zap, ChevronLeft, ChevronRight, SunMoon, Languages } from "lucide-react"
+import { LayoutDashboard, FileText, Users, CheckCircle, Settings, TrendingUp, Brain, LogOut, Zap, ChevronLeft, ChevronRight, SunMoon, Languages, Bot, Package, Building2 } from "lucide-react"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { NotificationsDropdown } from "@/components/notifications-dropdown"
 import { useLanguage } from "@/lib/i18n/language-context"
+import { useSidebar } from "@/lib/sidebar-context"
 import { usePathname } from "next/navigation"
 import { useAuth } from "@/lib/auth/auth-context"
 import Link from "next/link"
@@ -14,14 +15,15 @@ export function DashboardSidebar() {
   const { t } = useLanguage()
   const pathname = usePathname()
   const { logout } = useAuth()
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const { isCollapsed, toggleSidebar } = useSidebar()
 
   const navigation = [
     { name: t("dashboard"), href: "/dashboard", icon: LayoutDashboard },
+    { name: "RICAS", href: "/assistant", icon: Bot },
     { name: t("quotations"), href: "/quotations", icon: FileText },
     { name: t("approvals"), href: "/approvals", icon: CheckCircle },
-    { name: t("emails"), href: "/emails", icon: Mail },
-    // { name: t("aiProcessing"), href: "/ai-processing", icon: Brain },
+    { name: "Fornecedores", href: "/suppliers", icon: Building2 },
+    { name: "Produtos", href: "/products", icon: Package },
     { name: t("analytics"), href: "/analytics", icon: TrendingUp },
     { name: t("settings"), href: "/settings", icon: Settings },
   ]
@@ -104,7 +106,7 @@ export function DashboardSidebar() {
 
         {/* Botão de collapse com efeito flutuante */}
         <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={toggleSidebar}
           className="p-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-110 hover:-translate-y-0.5 relative z-10 group/button"
         >
           <div className="transform transition-transform duration-500 group-hover/button:rotate-180">
@@ -148,7 +150,19 @@ export function DashboardSidebar() {
         </ul>
       </nav>
 
-      {/* Footer com Controles e Logout */}
+      {/* Notificações - Antes do Footer */}
+      <div className="px-3 pb-3">
+        {!isCollapsed ? (
+          <div className="bg-gray-50 dark:bg-gray-800 rounded-lg overflow-hidden">
+            <NotificationsDropdown showLabel={true} />
+          </div>
+        ) : (
+          <div className="flex justify-center">
+            <NotificationsDropdown />
+          </div>
+        )}
+      </div>
+
       {/* Footer com Controles e Logout */}
       <div className="p-3 border-t border-gray-200 dark:border-gray-700 space-y-2">
         {/* Controles de Idioma e Tema - Versão Simplificada */}

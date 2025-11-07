@@ -89,7 +89,6 @@ export function PendingApprovals() {
   const { axiosInstance } = useAuth();
   const { dateRange } = useDateRange();
   const [quotations, setQuotations] = useState<Quotation[]>([]);
-  const [visibleCount, setVisibleCount] = useState(2); // Show 2 by default
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -168,10 +167,6 @@ export function PendingApprovals() {
     router.push('/approvals');
   };
 
-  const toggleShowMore = () => {
-    setVisibleCount(visibleCount === 2 ? quotations.length : 2);
-  };
-
   // Exibir content loader durante o carregamento
   if (loading) {
     return <PendingApprovalsContentLoader />;
@@ -212,16 +207,16 @@ export function PendingApprovals() {
           </div>
         ) : (
           <>
-            {quotations.slice(0, visibleCount).map((quotation) => (
+            {quotations.slice(0, 2).map((quotation) => (
               <div
                 key={quotation.id}
                 className="p-4 bg-white dark:bg-gray-700/50 border border-gray-200/50 dark:border-gray-600/50 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/70 transition-all duration-300"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <h4 className="font-medium text-gray-900 dark:text-white">{quotation.id}</h4>
+                    <h4 className="font-medium text-gray-900 dark:text-white">{quotation.jsonData.cliente || quotation.request?.requester || 'Unknown'}</h4>
                     <p className="text-sm text-gray-600 dark:text-gray-300">
-                      {quotation.jsonData.cliente || quotation.request?.requester || 'Unknown'}
+                      {quotation.jsonData.email || quotation.request?.email || 'N/A'}
                     </p>
                   </div>
                   <div className="text-right">
@@ -263,9 +258,9 @@ export function PendingApprovals() {
               <Button
                 variant="outline"
                 className="w-full text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-                onClick={toggleShowMore}
+                onClick={handleShow}
               >
-                {visibleCount === 2 ? 'Show More' : 'Show Less'}
+                View More
               </Button>
             )}
           </>

@@ -5,12 +5,17 @@ import { GeistMono } from "geist/font/mono"
 import { LanguageProvider } from "@/lib/i18n/language-context"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/lib/auth/auth-context"
+import { SidebarProvider } from "@/lib/sidebar-context"
+import PageReloadLoader from "@/components/page-reload-loader"
 import "./globals.css"
 
 export const metadata: Metadata = {
   title: "SmartQuote - AI-Powered Quotations",
   description: "Intelligent quotation system with AI processing and approval workflows",
   generator: "v0.app",
+  icons: {
+    icon: "/favicon.ico",
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -30,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         `}</style>
       </head>
       <body>
+        <PageReloadLoader />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -37,7 +43,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           disableTransitionOnChange
         >
           <AuthProvider>
-            <LanguageProvider>{children}</LanguageProvider>
+            <SidebarProvider>
+              <LanguageProvider>{children}</LanguageProvider>
+            </SidebarProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

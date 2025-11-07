@@ -119,7 +119,7 @@ export function RecentQuotations() {
             approved: apiQuotation.status.toUpperCase() === 'COMPLETED',
             createdAt: apiQuotation.createdAt || new Date().toISOString(),
             request: {
-              requester: 'Unknown', // No requester in API
+              requester: apiQuotation.jsonData.cliente || 'Unknown', // Use 'cliente' as requester
               email: apiQuotation.jsonData.email || 'N/A',
               description: apiQuotation.jsonData.observacoes || 'No description',
               status: apiQuotation.status || 'UNKNOWN',
@@ -195,7 +195,7 @@ export function RecentQuotations() {
           >
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
-                <span className="font-medium text-gray-900 dark:text-white">{quotation.id}</span>
+                <span className="font-medium text-gray-900 dark:text-white">{quotation.request.requester}</span>
                 <Badge 
                   className={`${getStatusColor(quotation.request.status as "draft" | "pending" | "approved" | "rejected" | "sent")} text-xs font-medium`}
                   variant="outline"
@@ -211,7 +211,7 @@ export function RecentQuotations() {
                   </Badge>
                 )}
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">{quotation.request.requester}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">{quotation.request.email}</p>
               <p className="text-lg font-semibold text-blue-600 dark:text-blue-400">
                 {formatCurrency(quotation.totalValue)}
               </p>
@@ -223,14 +223,14 @@ export function RecentQuotations() {
                 className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/20"
                 onClick={() => handleViewDetails(quotation.id)}
               >
-                <Eye className="h-4 w-4" />
+                {/* <Eye className="h-4 w-4" /> */}
               </Button>
               <Button 
                 variant="ghost" 
                 size="sm"
                 className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/20"
               >
-                <MoreHorizontal className="h-4 w-4" />
+                {/* <MoreHorizontal className="h-4 w-4" /> */}
               </Button>
             </div>
           </div>

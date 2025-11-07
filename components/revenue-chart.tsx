@@ -171,55 +171,83 @@ export function RevenueChart() {
   return (
     <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-300">
       <CardHeader className="pb-4">
-        <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">
-          {t('revenue_trends')}
-        </CardTitle>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          {t('monthly_revenue_vs_targets')}
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              {t('revenue_trends')}
+            </CardTitle>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              {t('monthly_revenue_vs_targets')}
+            </p>
+          </div>
+          <Button
+            onClick={fetchRevenueTrends}
+            variant="outline"
+            size="sm"
+            className="border-gray-300 dark:border-gray-600"
+          >
+            <RefreshCw className="h-4 w-4" />
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="pt-0">
         <ChartContainer
           config={{
             revenue: {
               label: t('revenue'),
-              color: '#3B82F6', // Blue-500
+              color: 'hsl(217, 91%, 60%)', // Blue adaptável
             },
             target: {
               label: t('target'),
-              color: '#10B981', // Green-500
+              color: 'hsl(142, 76%, 36%)', // Green adaptável
             },
           }}
-          className="h-64 w-full"
+          className="h-96 w-full"
         >
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={revenueData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+            <LineChart data={revenueData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+              <defs>
+                <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="hsl(217, 91%, 60%)" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="hsl(217, 91%, 60%)" stopOpacity={0}/>
+                </linearGradient>
+                <linearGradient id="colorTarget" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="hsl(142, 76%, 36%)" stopOpacity={0.2}/>
+                  <stop offset="95%" stopColor="hsl(142, 76%, 36%)" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
               <CartesianGrid 
                 strokeDasharray="3 3" 
-                stroke="#E5E7EB" 
+                className="stroke-gray-200 dark:stroke-gray-700"
                 strokeOpacity={0.5}
+                vertical={false}
               />
               <XAxis 
                 dataKey="month" 
-                fontSize={12}
-                stroke="#6B7280"
+                fontSize={13}
+                className="fill-gray-600 dark:fill-gray-400"
                 tickLine={false}
                 axisLine={false}
+                dy={10}
               />
               <YAxis 
-                fontSize={12}
-                width={50}
-                stroke="#6B7280"
+                fontSize={13}
+                width={80}
+                className="fill-gray-600 dark:fill-gray-400"
                 tickLine={false}
                 axisLine={false}
-                tickFormatter={(value) => `$${value / 1000}k`}
+                tickFormatter={(value) => `${(value / 1000).toFixed(0)}k Kz`}
               />
               <ChartTooltip 
                 content={
                   <ChartTooltipContent 
                     className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg rounded-lg p-3"
                     formatter={(value, name) => [
-                      `$${Number(value).toLocaleString()}`,
+                      `${Number(value).toLocaleString('pt-AO', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                      })} Kz`,
                       name === 'revenue' ? t('revenue') : t('target')
                     ]}
                   />
@@ -228,35 +256,37 @@ export function RevenueChart() {
               <Line
                 type="monotone"
                 dataKey="revenue"
-                stroke="#3B82F6"
+                className="stroke-blue-600 dark:stroke-blue-400"
                 strokeWidth={3}
-                dot={{ fill: '#3B82F6', strokeWidth: 2, r: 4 }}
-                activeDot={{ r: 6, fill: '#3B82F6' }}
+                dot={{ fill: 'hsl(217, 91%, 60%)', strokeWidth: 2, r: 5 }}
+                activeDot={{ r: 7, fill: 'hsl(217, 91%, 60%)', strokeWidth: 2 }}
                 name={t('revenue')}
+                fill="url(#colorRevenue)"
               />
               <Line
                 type="monotone"
                 dataKey="target"
-                stroke="#10B981"
-                strokeWidth={3}
+                className="stroke-green-600 dark:stroke-green-400"
+                strokeWidth={2}
                 strokeDasharray="5 5"
-                dot={{ fill: '#10B981', strokeWidth: 2, r: 4 }}
-                activeDot={{ r: 6, fill: '#10B981' }}
+                dot={{ fill: 'hsl(142, 76%, 36%)', strokeWidth: 2, r: 4 }}
+                activeDot={{ r: 6, fill: 'hsl(142, 76%, 36%)' }}
                 name={t('target')}
+                fill="url(#colorTarget)"
               />
             </LineChart>
           </ResponsiveContainer>
         </ChartContainer>
         
         {/* Legend */}
-        <div className="flex justify-center gap-6 mt-4">
+        <div className="flex justify-center gap-6 mt-6">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-            <span className="text-sm text-gray-600 dark:text-gray-400">{t('revenue')}</span>
+            <div className="w-4 h-4 bg-blue-600 dark:bg-blue-400 rounded-sm"></div>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('revenue')}</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-            <span className="text-sm text-gray-600 dark:text-gray-400">{t('target')}</span>
+            <div className="w-4 h-1 bg-green-600 dark:bg-green-400"></div>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('target')}</span>
           </div>
         </div>
       </CardContent>

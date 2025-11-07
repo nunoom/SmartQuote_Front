@@ -52,6 +52,7 @@ import { LanguageSwitcher } from "@/components/language-switcher"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { Button } from "@/components/ui/button"
+import { QuotationRequestDialog } from "@/components/quotation-request-dialog"
 
 export default function SmartQuoteLandingPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -67,67 +68,67 @@ export default function SmartQuoteLandingPage() {
     {
       name: "Nuno Mendes",
       role: "Tech Lead & Front-end Developer",
-      image: "/team/carlos.jpg",
+      image: "/team/nmendes.jpg",
       description: "Liderou a arquitetura do sistema e desenvolvimento da API principal. Especialista em React, Node.js e integração de IA.",
       social: {
         github: "https://github.com/nunoom",
         linkedin: "https://linkedin.com/in/nuno-mendes-07a259253",
-        portfolio: "https://carlossilva.dev"
+        portfolio: "#"
       }
     },
     {
       name: "Reinaldo Sambinga",
-      role: "Frontend Engineer",
-      image: "/team/ana.jpg",
+      role: "Fullstack Engineer",
+      image: "/team/rsambing.jpg",
       description: "Desenvolveu a interface do usuário e experiência do dashboard, Responsável pela infraestrutura de banco de dados. Especialista em React, TypeScript e design systems.",
       social: {
         github: "https://github.com/rsambing",
         linkedin: "https://www.linkedin.com/in/rsambing/",
-        portfolio: "https://anarodrigues.dev"
+        portfolio: "#"
       }
     },
     {
       name: "Joison Miguel",
       role: "Backend Engineer",
-      image: "/team/miguel.jpg",
-      description: "Responsável pela infraestrutura de banco de dados e APIs de integração. Especialista em Python, PostgreSQL e AWS.",
+      image: "/team/jmiguel.jpg",
+      description: "Responsável pela infraestrutura de banco de dados e APIs de integração. Especialista em NodeJS e PostgreSQL",
       social: {
         github: "https://github.com/joissonm1",
         linkedin: "https://www.linkedin.com/in/joisson-miguel-4a921b262/",
-        portfolio: "https://miguelsantos.dev"
+        portfolio: "#"
       }
     },
     {
       name: "Aurora Simão",
-      role: "UI/UX",
-      image: "/team/sofia.jpg",
-      description: "Desenvolveu os algoritmos de IA para processamento de emails e análise de cotações. Especialista em machine learning e NLP.",
+      role: "UI/UX & Storyteller",
+      image: "/team/asimao.jpg",
+      description: "Criou a experiência do usuário e interface visual da plataforma. Especialista em design thinking e prototipagem.",
       social: {
         github: "https://github.com/sofiacosta",
         linkedin: "https://www.linkedin.com/in/aurora-sim%C3%A3o-00623a2a9/",
-        portfolio: "https://sofiacosta.dev"
+        portfolio: "#"
       }
     },
     {
       name: "Liedson Habacuc",
       role: "AI Engineer",
-      image: "/team/ricardo.jpg",
-      description: "Criou a experiência do usuário e interface visual da plataforma. Especialista em design thinking e prototipagem.",
+      image: "/team/lhabacuc.jpg",
+      description: "Desenvolveu os algoritmos de IA para processamento de emails e análise de cotações. Especialista em machine learning e NLP.",
       social: {
         github: "https://github.com/ricardolima",
         linkedin: "https://linkedin.com/in/ricardolima",
-        portfolio: "https://ricardolima.design"
+        portfolio: "#"
       }
     },
     {
       name: "Gildo Komba",
       role: "AI Engineer",
-      image: "/team/ricardo.jpg",
-      description: "Criou a experiência do usuário e interface visual da plataforma. Especialista em design thinking e prototipagem.",
+      image: "/team/gkomba.jpg",
+      description: "Desenvolveu os algoritmos de IA para processamento de emails e análise de cotações. Especialista em machine learning e NLP.",
       social: {
         github: "https://github.com/ricardolima",
         linkedin: "https://linkedin.com/in/ricardolima",
-        portfolio: "https://ricardolima.design"
+        portfolio: "#"
       }
     }
   ]
@@ -348,7 +349,7 @@ export default function SmartQuoteLandingPage() {
           <div className="hidden md:flex items-center gap-6">
             <nav className="flex items-center gap-6">
               <a href="#problema" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 font-medium">{t("solveProblems")}</a>
-              <a href="#solucao" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 font-medium">Solução</a>
+              {/* <a href="#solucao" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 font-medium">Solução</a> */}
               <a href="#funcionamento" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 font-medium">{t("howItWorks")}</a>
               <a href="#beneficios" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 font-medium">{t("benefits")}</a>
               <a href="#equipa" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 font-medium">{t("team")}</a>
@@ -467,13 +468,7 @@ export default function SmartQuoteLandingPage() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/register" className="bg-blue-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg">
-              {t("tryFree")}
-              <ChevronRight className="inline ml-2 h-5 w-5" />
-            </Link>
-            <button className="border-2 border-blue-300 dark:border-blue-700 text-blue-600 dark:text-blue-400 px-8 py-4 rounded-xl text-lg font-semibold hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-300">
-              Ver Demonstração
-            </button>
+            <QuotationRequestDialog />
           </div>
         </div>
       </section >
@@ -742,9 +737,11 @@ export default function SmartQuoteLandingPage() {
               {/* Imagem do membro da equipa */}
               <div className="w-full md:w-1/3 mb-6 md:mb-0 md:pr-8">
                 <div className="relative w-48 h-48 mx-auto">
-                  <div className="w-full h-full bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-400">
-                    <Users className="h-16 w-16" />
-                  </div>
+                  <img
+                    src={teamMembers[currentTeamIndex].image}
+                    alt={teamMembers[currentTeamIndex].name}
+                    className="w-full h-full object-cover rounded-full"
+                  />
                   {/* Indicador de carregamento da próxima imagem */}
                   <div className="absolute -bottom-2 left-0 right-0">
                     <div className="h-1 w-full bg-gray-200 dark:bg-gray-700 rounded-full">
@@ -853,13 +850,14 @@ export default function SmartQuoteLandingPage() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <button className="bg-blue-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg">
-              {t("requestDemo")}
-              <ArrowRight className="inline ml-2 h-5 w-5" />
-            </button>
-            <button className="border-2 border-blue-300 dark:border-blue-700 text-blue-600 dark:text-blue-400 px-8 py-4 rounded-xl text-lg font-semibold hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-300">
-              {t("talkToSpecialist")}
-            </button>
+            <QuotationRequestDialog 
+              trigger={
+                <Button className="bg-blue-600 text-white px-8 py-7 rounded-xl text-lg font-semibold hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg">
+                  {t("requestQuotation")}
+                  <ArrowRight className="inline ml-2 h-5 w-5" />
+                </Button>
+              }
+            />
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 text-center">
